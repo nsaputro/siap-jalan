@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-05-24
+
+### Fixed
+- HA addon UI now matches the Home Assistant theme in both light and dark mode.
+  All hardcoded hex colors replaced with HA CSS custom properties
+  (`--primary-color`, `--primary-background-color`, `--card-background-color`,
+  `--primary-text-color`, `--secondary-text-color`, `--divider-color`,
+  `--error-color`, `--secondary-background-color`).
+  A `prefers-color-scheme: dark` media query provides dark-mode fallbacks when
+  accessed outside HA. Form inputs, modals, badges, and progress bars all adapt.
+
 ## [0.1.1] - 2026-05-24
 
 ### Added
@@ -44,6 +55,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Backend-tests and frontend-tests CI jobs run on every PR
 - `PackingItemBulkCreate` schema with `list_id` field for `/items/bulk` endpoint
 
-[Unreleased]: https://github.com/nsaputro/siap-jalan/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/nsaputro/siap-jalan/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/nsaputro/siap-jalan/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/nsaputro/siap-jalan/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/nsaputro/siap-jalan/releases/tag/v0.1.0
