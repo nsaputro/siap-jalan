@@ -179,8 +179,18 @@ There are **three pipelines**. CI never publishes images — that is exclusively
 1. Check latest release: `mcp__github__get_latest_release`
 2. Bump `version` in `ha-addon/config.yaml` to next `X.Y.Z`
 3. Move `## [Unreleased]` entries in `CHANGELOG.md` to `## [x.y.z] - YYYY-MM-DD` and update comparison links
-4. Merge via PR to `main`
-5. Go to **Actions → Release → Run workflow** → enter the version number
+4. Update `ha-addon/CHANGELOG.md` — replace its content with **only the new version's bullet points** (copied from the root `CHANGELOG.md`) followed by the full-changelog link:
+   ```markdown
+   ## x.y.z
+
+   - Added/Fixed/Changed: …
+
+   ---
+
+   [Full changelog](https://github.com/nsaputro/siap-jalan/blob/main/CHANGELOG.md)
+   ```
+5. Merge via PR to `main`
+6. Go to **Actions → Release → Run workflow** → enter the version number
 
 **To ship a pre-release:**
 
