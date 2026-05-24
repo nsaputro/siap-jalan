@@ -1,0 +1,168 @@
+from __future__ import annotations
+
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+from sqlalchemy.orm import selectinload
+
+from ..database import get_db
+from ..dependencies import get_ha_user
+from ..models.packing import PackingItem, PackingList, Trip
+from ..schemas.packing import TripCreate, TripResponse, TripUpdate
+from ..services.activity_merger import merge_activities
+from ..services.weather import get_weather
+
+router = APIRouter(prefix="/trips", tags=["trips"])
+
+
+@router.get("", response_model=list[TripResponse])
+async def list_trips(
+    db: AsyncSession = Depends(get_db),
+    ha_user: str = Depends(get_ha_user),
+):
+    result = await db.execute(
+        select(Trip)
+        .where(Trip.ha_user_id == ha_user)
+        .order_by(Trip.start_date.desc())
+        .options(
+            selectinload(Trip.packing_lists).selectinload(PackingList.items)
+        )
+    )
+    return result.scalars().all()
+
+
+@router.post("", response_model=TripResponse, status_code=201)
+async def create_trip(
+    body: TripCreate,
+    db: AsyncSession = Depends(get_db),
+    ha_user: str = Depends(get_ha_user),
+):
+    trip = Trip(
+        ha_user_id=ha_user,
+        **body.model_dump(),
+    )
+    db.add(trip)
+    await db.flush()
+
+    # Create default packing list
+    default_list = PackingList(
+        trip_id=trip.id,
+        name="Main Packing List",
+        is_default=True,
+    )
+    db.add(default_list)
+    await db.flush()
+
+    # If activities specified, merge and bulk-insert items
+    if body.activities:
+        merged = await merge_activities(db, body.activities)
+        for mi in merged:
+            item = PackingItem(
+                list_id=default_list.id,
+                category=mi.category,
+                name=mi.name,
+                quantity=mi.quantity,
+                unit=mi.unit,
+                is_essential=mi.is_essential,
+                added_by="activity",
+                source_activities=mi.source_activities,
+                template_item_id=mi.template_item_id,
+                is_customised=False,
+            )
+            db.add(item)
+
+    await db.commit()
+    await db.refresh(trip)
+
+    result = await db.execute(
+        select(Trip)
+        .where(Trip.id == trip.id)
+        .options(
+            selectinload(Trip.packing_lists).selectinload(PackingList.items)
+        )
+    )
+    return result.scalar_one()
+
+
+@router.get("/{trip_id}", response_model=TripResponse)
+async def get_trip(
+    trip_id: int,
+    db: AsyncSession = Depends(get_db),
+    ha_user: str = Depends(get_ha_user),
+):
+    result = await db.execute(
+        select(Trip)
+        .where(Trip.id == trip_id, Trip.ha_user_id == ha_user)
+        .options(
+            selectinload(Trip.packing_lists).selectinload(PackingList.items)
+        )
+    )
+    trip = result.scalar_one_or_none()
+    if not trip:
+        raise HTTPException(status_code=404, detail="Trip not found")
+    return trip
+
+
+@router.put("/{trip_id}", response_model=TripResponse)
+async def update_trip(
+    trip_id: int,
+    body: TripUpdate,
+    db: AsyncSession = Depends(get_db),
+    ha_user: str = Depends(get_ha_user),
+):
+    result = await db.execute(
+        select(Trip).where(Trip.id == trip_id, Trip.ha_user_id == ha_user)
+    )
+    trip = result.scalar_one_or_none()
+    if not trip:
+        raise HTTPException(status_code=404, detail="Trip not found")
+
+    for field, value in body.model_dump(exclude_unset=True).items():
+        setattr(trip, field, value)
+
+    await db.commit()
+    await db.refresh(trip)
+
+    result = await db.execute(
+        select(Trip)
+        .where(Trip.id == trip_id)
+        .options(
+            selectinload(Trip.packing_lists).selectinload(PackingList.items)
+        )
+    )
+    return result.scalar_one()
+
+
+@router.delete("/{trip_id}", status_code=204)
+async def delete_trip(
+    trip_id: int,
+    db: AsyncSession = Depends(get_db),
+    ha_user: str = Depends(get_ha_user),
+):
+    result = await db.execute(
+        select(Trip).where(Trip.id == trip_id, Trip.ha_user_id == ha_user)
+    )
+    trip = result.scalar_one_or_none()
+    if not trip:
+        raise HTTPException(status_code=404, detail="Trip not found")
+    await db.delete(trip)
+    await db.commit()
+
+
+@router.get("/{trip_id}/weather")
+async def trip_weather(
+    trip_id: int,
+    db: AsyncSession = Depends(get_db),
+    ha_user: str = Depends(get_ha_user),
+):
+    result = await db.execute(
+        select(Trip).where(Trip.id == trip_id, Trip.ha_user_id == ha_user)
+    )
+    trip = result.scalar_one_or_none()
+    if not trip:
+        raise HTTPException(status_code=404, detail="Trip not found")
+
+    weather = await get_weather(trip.destination, trip.start_date, trip.end_date)
+    if not weather:
+        raise HTTPException(status_code=503, detail="Weather data unavailable")
+    return weather
