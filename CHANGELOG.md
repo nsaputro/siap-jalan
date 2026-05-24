@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `ha-addon-dev/` — dev/pre-release HA addon (slug: `siap_jalan_dev`, port: 8100, icon: `mdi:bag-suitcase-outline`) that always tracks the latest `main` branch
+- `ha-addon/config.yaml`: added `image:` field so HA pulls pre-built GHCR images instead of building locally
+- CI `publish-dev` job: builds and pushes `{arch}-siap_jalan_dev:dev` + `:{sha}` to GHCR on every merge to `main`
+- Release workflow upgraded: matrix strategy for amd64/aarch64, auto-creates git tag on `workflow_dispatch`, appends install instructions to GitHub release notes
+
 ### Fixed
 - HA addon Dockerfile now uses addon-directory-relative COPY paths (`app/`, `ui/`, `data/`) so HA Supervisor can build the image locally without error. Previously the paths were repo-root-relative (`ha-addon/app/`, `data/`), which only worked in CI where the build context was the repo root.
 - Added `ha-addon/data/activity_templates.json` so the seed data is inside the addon's build context.
