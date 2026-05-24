@@ -58,6 +58,22 @@ This produces a highly relevant list without overwhelming the user, since each a
 - Vanilla JS SPA (single `index.html`, no build step)
 - Matches HA color palette, Material card style, dark mode
 
+### Android App (Future — v0.5.0+)
+
+React Native is **not** used for the HA addon UI because it cannot run directly in a browser / HA ingress without a separate compilation target. The recommended strategy for Android is:
+
+**Shared layer (`packages/shared/`)** — a TypeScript package extracted from the standalone frontend containing:
+- API client (`client.ts` — base URL configurable at runtime)
+- TypeScript types / Zod schemas for all API models
+- Business logic (activity merging preview, packing progress calculations)
+
+**Native app** — a React Native (Expo) project that imports from `shared/` and builds its own native UI screens. This gives the maximum native feel (navigation, gestures, offline storage) while reusing all network and domain logic.
+
+> **Why not React Native Web for the HA addon?**
+> React Native Web _can_ compile to a browser bundle, but it requires a build step (breaking the addon's no-build-step simplicity), uses RN's `StyleSheet` API instead of CSS/Tailwind, and produces a heavier bundle. The HA ingress relative-URL constraint also needs extra handling. The standalone `frontend/` React app is already a better web-first codebase to build on.
+
+> **Simplest Android path with no new code**: add a `manifest.json` and service worker to `frontend/` to make it a **Progressive Web App (PWA)**. Android users can "Add to Home Screen" and get an app-like experience with zero native code. This is a viable v0.3.0 stepping stone before a full React Native app.
+
 ### Infrastructure
 | Tool | Purpose |
 |---|---|
@@ -72,6 +88,19 @@ This produces a highly relevant list without overwhelming the user, since each a
 
 ```
 siap-jalan/
+├── packages/
+│   └── shared/                  # (future) Shared TS package
+│       ├── src/
+│       │   ├── api/client.ts    # Fetch client, base URL injected at init
+│       │   ├── types/           # Shared TypeScript types + Zod schemas
+│       │   └── utils/           # Packing progress, activity merge preview
+│       └── package.json         # name: @siapjalan/shared
+│
+├── mobile/                      # (future) React Native / Expo Android app
+│   ├── app/                     # Expo Router screens
+│   ├── components/              # Native UI components
+│   └── package.json             # imports @siapjalan/shared
+│
 ├── ha-addon/                    # Home Assistant addon (primary)
 │   ├── config.yaml              # HA addon manifest
 │   ├── build.yaml               # Multi-arch build config
@@ -312,13 +341,21 @@ After adding an ad-hoc item the UI offers **"Also add to Hiking template?"**. Ac
 - [ ] Packing weight estimator (grams per item)
 - [ ] Export packing list (PDF / share link)
 - [ ] Multi-bag assignment: carry-on vs checked vs personal item
+- [ ] **PWA support**: add `manifest.json` + service worker to `frontend/` so standalone app is installable on Android as a home-screen app (zero native code — good stepping stone before v0.5.0)
 
-### Phase 4 — Advanced (v0.4.0+)
+### Phase 4 — Advanced (v0.4.0)
 - [ ] Flight/itinerary integration (parse booking confirmation)
 - [ ] Shopping list mode (items not owned yet → buy before trip)
 - [ ] HA automation triggers (reminder notification 2 days before trip)
 - [ ] Collaborative packing (family trips: assign items to travellers)
-- [ ] Offline mode / PWA support
+
+### Phase 5 — Android App (v0.5.0)
+- [ ] Extract `packages/shared/` — API client + types + utils as a standalone TypeScript package
+- [ ] Bootstrap `mobile/` as an Expo (React Native) project importing `@siapjalan/shared`
+- [ ] Core screens: Trip list, Trip detail + packing list, Activity picker, Templates
+- [ ] Native offline support (SQLite via `expo-sqlite`, sync when online)
+- [ ] Push notifications for trip reminders (replaces HA automation trigger for standalone users)
+- [ ] Publish to Google Play Store
 
 ---
 
@@ -541,8 +578,9 @@ schema:
 |---|---|
 | v0.1.0 | MVP: trip CRUD + packing list + activity templates + HA addon |
 | v0.2.0 | AI suggestions + weather integration + per-activity AI context |
-| v0.3.0 | Personalisation: gender filter, traveller count, custom activities, weight estimator |
+| v0.3.0 | Personalisation: gender filter, traveller count, custom activities, weight estimator, PWA |
 | v0.4.0 | Advanced: shopping list, HA automations, collaborative packing |
+| v0.5.0 | Android app: React Native (Expo) + shared TS package |
 
 ---
 
