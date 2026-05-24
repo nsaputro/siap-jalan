@@ -396,12 +396,12 @@ schema:
 
 ## Development Milestones
 
-| Milestone | Target | Description |
-|---|---|---|
-| v0.1.0 | Week 1-2 | MVP: trip CRUD + packing list + activity templates + HA addon |
-| v0.2.0 | Week 3-4 | AI suggestions + weather integration + per-activity AI context |
-| v0.3.0 | Week 5-6 | Personalisation: gender filter, traveller count, custom activities, weight estimator |
-| v0.4.0 | Week 7-8 | Advanced: shopping list, HA automations, collaborative packing |
+| Milestone | Description |
+|---|---|
+| v0.1.0 | MVP: trip CRUD + packing list + activity templates + HA addon |
+| v0.2.0 | AI suggestions + weather integration + per-activity AI context |
+| v0.3.0 | Personalisation: gender filter, traveller count, custom activities, weight estimator |
+| v0.4.0 | Advanced: shopping list, HA automations, collaborative packing |
 
 ---
 
