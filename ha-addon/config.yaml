@@ -1,0 +1,20 @@
+name: SiapJalan
+version: "0.1.0"
+slug: siap_jalan
+description: >-
+  Smart travel packing assistant with AI suggestions and activity-based templates.
+  Combine activities (Hiking, Beach, Flight…) to auto-generate a perfect packing list.
+url: https://github.com/nsaputro/siap-jalan
+ingress: true
+ingress_port: 8099
+panel_icon: mdi:bag-suitcase
+panel_title: SiapJalan
+arch:
+  - amd64
+  - aarch64
+options:
+  anthropic_api_key: ""
+  log_level: info
+schema:
+  anthropic_api_key: str
+  log_level: list(debug|info|warning|error)

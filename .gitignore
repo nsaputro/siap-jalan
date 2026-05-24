@@ -203,6 +203,17 @@ cython_debug/
 # Temporary file for partial code execution
 tempCodeRunnerFile.py
 
+# Node.js
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# SQLite databases
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
 # Ruff stuff:
 .ruff_cache/
 
