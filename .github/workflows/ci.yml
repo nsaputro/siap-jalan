@@ -65,7 +65,7 @@ jobs:
       - name: Build HA Addon (no push)
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ha-addon
           file: ha-addon/Dockerfile
           platforms: linux/amd64
           push: false
