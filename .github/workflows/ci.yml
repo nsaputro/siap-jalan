@@ -6,9 +6,17 @@ on:
       - main
       - "claude/**"
       - "feature/**"
+      - "fix/**"
   pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
+  # ── Lint ─────────────────────────────────────────────────────────────────────
   lint:
     name: Lint (YAML + Dockerfile)
     runs-on: ubuntu-latest
@@ -18,8 +26,13 @@ jobs:
       - name: Install yamllint
         run: pip install yamllint
 
-      - name: Lint YAML
-        run: yamllint -c .yamllint.yml ha-addon/config.yaml ha-addon/build.yaml
+      - name: Lint YAML (stable + dev addon configs)
+        run: |
+          yamllint -c .yamllint.yml \
+            ha-addon/config.yaml \
+            ha-addon/build.yaml \
+            ha-addon-dev/config.yaml \
+            ha-addon-dev/build.yaml
 
       - name: Install hadolint
         run: |
@@ -30,6 +43,27 @@ jobs:
       - name: Lint Dockerfiles
         run: hadolint ha-addon/Dockerfile backend/Dockerfile
 
+      - name: Validate addon config.yaml files
+        run: |
+          python3 - <<'EOF'
+          import yaml, sys
+          configs = ["ha-addon/config.yaml", "ha-addon-dev/config.yaml"]
+          required = ["name", "description", "version", "slug", "arch", "init", "image"]
+          ok = True
+          for path in configs:
+              with open(path) as f:
+                  cfg = yaml.safe_load(f)
+              missing = [k for k in required if k not in cfg]
+              if missing:
+                  print(f"ERROR: {path} missing required keys: {missing}")
+                  ok = False
+              else:
+                  print(f"  {path}  OK — v{cfg['version']}  slug={cfg['slug']}")
+          if not ok:
+              sys.exit(1)
+          EOF
+
+  # ── Python syntax ─────────────────────────────────────────────────────────────
   python-syntax:
     name: Python Syntax Check
     runs-on: ubuntu-latest
@@ -49,63 +83,7 @@ jobs:
         run: |
           python3 -c "import ast, pathlib; [ast.parse(f.read_text()) for f in pathlib.Path('backend/app').rglob('*.py')]"
 
-  build-ha-addon:
-    name: Build HA Addon (amd64)
-    runs-on: ubuntu-latest
-    needs: [lint, python-syntax]
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build HA Addon (no push)
-        uses: docker/build-push-action@v6
-        with:
-          context: ha-addon
-          file: ha-addon/Dockerfile
-          platforms: linux/amd64
-          push: false
-          build-args: |
-            BUILD_FROM=ghcr.io/home-assistant/amd64-base-python:3.12-alpine3.20
-
-  build-backend:
-    name: Build Backend (amd64)
-    runs-on: ubuntu-latest
-    needs: [lint, python-syntax]
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build standalone backend (no push)
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: backend/Dockerfile
-          platforms: linux/amd64
-          push: false
-
-  frontend-lint:
-    name: Frontend Lint & Build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node 22
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Install, lint, and build
-        run: cd frontend && npm ci && npm run lint && npm run build
-
+  # ── Backend tests ─────────────────────────────────────────────────────────────
   backend-tests:
     name: Backend Tests
     runs-on: ubuntu-latest
@@ -119,17 +97,14 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: |
-          cd backend
-          pip install -r requirements.txt -r requirements-test.txt
+        run: cd backend && pip install -r requirements.txt -r requirements-test.txt
 
       - name: Run tests
-        run: |
-          cd backend
-          python -m pytest tests/ -q
+        run: cd backend && python -m pytest tests/ -q
 
-  frontend-tests:
-    name: Frontend Tests
+  # ── Frontend lint + build + tests ─────────────────────────────────────────────
+  frontend:
+    name: Frontend (lint + build + tests)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -144,5 +119,108 @@ jobs:
       - name: Install dependencies
         run: cd frontend && npm ci
 
-      - name: Run tests
+      - name: Lint
+        run: cd frontend && npm run lint
+
+      - name: Build
+        run: cd frontend && npm run build
+
+      - name: Tests
         run: cd frontend && npm test -- --run
+
+  # ── Docker build smoke test ───────────────────────────────────────────────────
+  build-ha-addon:
+    name: Build HA Addon (amd64)
+    runs-on: ubuntu-latest
+    needs: [lint, python-syntax]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build HA Addon (no push)
+        uses: docker/build-push-action@v6
+        with:
+          context: ha-addon
+          file: ha-addon/Dockerfile
+          platforms: linux/amd64
+          push: false
+          build-args: |
+            BUILD_FROM=ghcr.io/home-assistant/amd64-base-python:3.12-alpine3.20
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  build-backend:
+    name: Build Backend (amd64)
+    runs-on: ubuntu-latest
+    needs: [lint, python-syntax]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build standalone backend (no push)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: backend/Dockerfile
+          platforms: linux/amd64
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ── Publish dev images (main branch merges only) ──────────────────────────────
+  publish-dev:
+    name: Publish dev image (${{ matrix.arch }})
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [lint, python-syntax, backend-tests, frontend, build-ha-addon]
+    permissions:
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            base: ghcr.io/home-assistant/amd64-base-python:3.12-alpine3.20
+            platform: linux/amd64
+          - arch: aarch64
+            base: ghcr.io/home-assistant/aarch64-base-python:3.12-alpine3.20
+            platform: linux/arm64
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push dev image (${{ matrix.arch }})
+        uses: docker/build-push-action@v6
+        with:
+          context: ha-addon
+          file: ha-addon/Dockerfile
+          platforms: ${{ matrix.platform }}
+          push: true
+          build-args: |
+            BUILD_FROM=${{ matrix.base }}
+          tags: |
+            ghcr.io/nsaputro/siap-jalan/${{ matrix.arch }}-siap_jalan_dev:dev
+            ghcr.io/nsaputro/siap-jalan/${{ matrix.arch }}-siap_jalan_dev:${{ github.sha }}
+          labels: |
+            org.opencontainers.image.title=SiapJalan dev (${{ matrix.arch }})
+            org.opencontainers.image.description=Development build — updated on every merge to main
+            org.opencontainers.image.source=https://github.com/nsaputro/siap-jalan
+            org.opencontainers.image.revision=${{ github.sha }}
+          cache-from: type=registry,ref=ghcr.io/nsaputro/siap-jalan/${{ matrix.arch }}-siap_jalan_dev:cache
+          cache-to: type=registry,ref=ghcr.io/nsaputro/siap-jalan/${{ matrix.arch }}-siap_jalan_dev:cache,mode=max

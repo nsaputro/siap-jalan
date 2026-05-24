@@ -1,0 +1,23 @@
+name: "SiapJalan (dev)"
+version: "0.2.0b0"
+slug: siap_jalan_dev
+description: >-
+  ⚠️ Development build — updated on every merge to main.
+  Smart travel packing assistant with AI suggestions and activity-based templates.
+url: https://github.com/nsaputro/siap-jalan
+# Dev images rebuilt on every push to main
+image: "ghcr.io/nsaputro/siap-jalan/{arch}-siap_jalan_dev"
+arch:
+  - amd64
+  - aarch64
+init: false
+ingress: true
+ingress_port: 8100
+panel_icon: mdi:bag-suitcase-outline
+panel_title: "SiapJalan (dev)"
+options:
+  anthropic_api_key: ""
+  log_level: debug
+schema:
+  anthropic_api_key: str
+  log_level: list(debug|info|warning|error)
