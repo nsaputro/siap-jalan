@@ -187,4 +187,4 @@ There are **three pipelines**. CI never publishes images — that is exclusively
 1. Bump `version` in `ha-addon-dev/config.yaml` to e.g. `0.2.0b1`
 2. Update `CHANGELOG.md`
 3. Merge via PR to `main`
-4. Go to **Actions → Pre-release → Run workflow** → enter the same version
+4. Go to **Actions → Pre-release → Run workflow** (no inputs — version is read from `ha-addon-dev/config.yaml`)
