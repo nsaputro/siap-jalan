@@ -2,18 +2,13 @@ name: Pre-release
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: "Pre-release version (must include suffix, e.g. 0.2.0b1 or 0.2.0rc1)"
-        required: true
-        type: string
 
 permissions:
   contents: write   # create GitHub pre-release + push tag
   packages: write   # push to ghcr.io
 
 jobs:
-  # ── Guard: version must be pre-release and match ha-addon-dev/config.yaml ────
+  # ── Guard: version must be pre-release and not already released ───────────────
   check-version:
     name: Validate pre-release version
     runs-on: ubuntu-latest
@@ -28,7 +23,8 @@ jobs:
       - name: Extract & validate version
         id: ver
         run: |
-          TAG="${{ github.event.inputs.version }}"
+          TAG=$(grep '^version:' ha-addon-dev/config.yaml | sed "s/version: //;s/['\"]//g;s/ //g")
+          echo "ha-addon-dev/config version: $TAG"
 
           # Reject pure semantic versions (X.Y.Z) — use the Release workflow instead
           if echo "$TAG" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
@@ -36,19 +32,9 @@ jobs:
             exit 1
           fi
 
-          CFG=$(grep '^version:' ha-addon-dev/config.yaml | sed "s/version: //;s/['\"]//g;s/ //g")
-          echo "Input version:       $TAG"
-          echo "ha-addon-dev/config: $CFG"
-
-          if [ "$TAG" != "$CFG" ]; then
-            echo "::error::Input version ($TAG) does not match ha-addon-dev/config.yaml version ($CFG)."
-            echo "::error::Bump ha-addon-dev/config.yaml before running this workflow."
-            exit 1
-          fi
-
-          # Prevent duplicate tags
+          # Prevent duplicate releases
           if git rev-parse "v${TAG}" >/dev/null 2>&1; then
-            echo "::error::Tag v${TAG} already exists. Bump the version first."
+            echo "::error::Tag v${TAG} already exists. Bump ha-addon-dev/config.yaml before re-running."
             exit 1
           fi
 
