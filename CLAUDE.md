@@ -149,23 +149,42 @@ Standard categories tracked across all trips:
 
 ## CI / Release
 
-**CI** (`.github/workflows/ci.yml`) runs on every push to `main`, `claude/**`, `feature/**` and on PRs:
+There are **three pipelines**. CI never publishes images — that is exclusively owned by the release and pre-release workflows.
 
-- yamllint on `ha-addon/config.yaml` + `build.yaml`
-- hadolint on `ha-addon/Dockerfile`
+**CI** (`.github/workflows/ci.yml`) — runs on every push to `main`, `claude/**`, `feature/**` and on PRs:
+
+- yamllint on `ha-addon/config.yaml` + `ha-addon-dev/config.yaml` + build.yamls
+- hadolint on `ha-addon/Dockerfile` + `backend/Dockerfile`
 - Python `ast.parse` syntax check on `ha-addon/app/` and `backend/app/`
-- Docker build test for `linux/amd64` (no push)
+- Backend pytest suite
+- Frontend lint + build + Vitest suite
+- Docker build smoke test for HA addon (no push)
+- Docker build smoke test for standalone backend (no push)
 
-**Release** (`.github/workflows/release.yml`) is triggered via `workflow_dispatch` (preferred — enter version in the GitHub Actions UI):
+**Pre-release** (`.github/workflows/prerelease.yml`) — `workflow_dispatch` only. Use for dev/beta/RC versions:
 
-1. Validates that the tag version matches `ha-addon/config.yaml` `version` field
-2. Builds and pushes Docker images to `ghcr.io/nsaputro/siap-jalan/{arch}-siap_jalan` for amd64 + aarch64
-3. Creates a GitHub release with install instructions
+1. Enter a version with a pre-release suffix (e.g. `0.2.0b1`, `0.2.0rc1`). Pure `X.Y.Z` is rejected.
+2. Version must match `ha-addon-dev/config.yaml` `version` field.
+3. Builds and pushes `{arch}-siap_jalan_dev:{version}` to GHCR for amd64 + aarch64 (**no** `:latest` tag).
+4. Creates a GitHub pre-release with install instructions for the dev channel (port 8100).
 
-**To release a new version:**
+**Release** (`.github/workflows/release.yml`) — `workflow_dispatch` (preferred) or tag push:
+
+1. Validates that the version matches `ha-addon/config.yaml` `version` field.
+2. Builds and pushes `{arch}-siap_jalan:{version}` + `:latest` to GHCR for amd64 + aarch64.
+3. Creates a GitHub release with install instructions.
+
+**To ship a stable release:**
 
 1. Check latest release: `mcp__github__get_latest_release`
-2. Bump `version` in `ha-addon/config.yaml` to next version
+2. Bump `version` in `ha-addon/config.yaml` to next `X.Y.Z`
 3. Move `## [Unreleased]` entries in `CHANGELOG.md` to `## [x.y.z] - YYYY-MM-DD` and update comparison links
 4. Merge via PR to `main`
-5. Go to Actions → Release → Run workflow → enter the new version number
+5. Go to **Actions → Release → Run workflow** → enter the version number
+
+**To ship a pre-release:**
+
+1. Bump `version` in `ha-addon-dev/config.yaml` to e.g. `0.2.0b1`
+2. Update `CHANGELOG.md`
+3. Merge via PR to `main`
+4. Go to **Actions → Pre-release → Run workflow** → enter the same version
