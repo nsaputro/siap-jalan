@@ -5,62 +5,193 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Siap Jalan</title>
   <style>
+    /* ── HA theme variables with light fallbacks ─────────────────────────────
+       HA injects --primary-color, --primary-background-color, etc. into the
+       ingress iframe automatically. The dark-mode media query provides
+       fallbacks when the page is accessed outside HA.                        */
+    :root {
+      --sj-bg:          var(--primary-background-color,   #f5f5f5);
+      --sj-card:        var(--card-background-color,      #ffffff);
+      --sj-text:        var(--primary-text-color,         #212121);
+      --sj-text-2:      var(--secondary-text-color,       #727272);
+      --sj-text-muted:  var(--disabled-text-color,        #9ca3af);
+      --sj-accent:      var(--primary-color,              #2563eb);
+      --sj-divider:     var(--divider-color,              #e0e0e0);
+      --sj-error:       var(--error-color,                #ef4444);
+      --sj-track:       var(--secondary-background-color, #e5e7eb);
+      --sj-shadow:      var(--ha-card-box-shadow,         0 1px 4px rgba(0,0,0,.08));
+      --sj-overlay:     rgba(0,0,0,.45);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --sj-bg:         var(--primary-background-color,   #111827);
+        --sj-card:       var(--card-background-color,      #1f2937);
+        --sj-text:       var(--primary-text-color,         #f3f4f6);
+        --sj-text-2:     var(--secondary-text-color,       #9ca3af);
+        --sj-text-muted: var(--disabled-text-color,        #6b7280);
+        --sj-accent:     var(--primary-color,              #3b82f6);
+        --sj-divider:    var(--divider-color,              #374151);
+        --sj-error:      var(--error-color,                #f87171);
+        --sj-track:      var(--secondary-background-color, #374151);
+        --sj-shadow:     var(--ha-card-box-shadow,         0 1px 4px rgba(0,0,0,.4));
+        --sj-overlay:    rgba(0,0,0,.6);
+      }
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, sans-serif; background: #f5f5f5; color: #1a1a1a; }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: var(--sj-bg);
+      color: var(--sj-text);
+    }
+
     #app { max-width: 800px; margin: 0 auto; padding: 1rem; }
 
-    header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; margin-bottom: 1rem; border-bottom: 2px solid #e5e7eb; }
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 0; margin-bottom: 1rem;
+      border-bottom: 2px solid var(--sj-divider);
+    }
     header h1 { font-size: 1.5rem; font-weight: 700; }
-    header h1 span { color: #2563eb; }
+    header h1 span { color: var(--sj-accent); }
 
-    .btn { display: inline-flex; align-items: center; gap: .4rem; padding: .45rem .9rem; border-radius: 6px; border: none; cursor: pointer; font-size: .9rem; font-weight: 500; transition: opacity .15s; }
-    .btn:hover { opacity: .85; }
-    .btn-primary { background: #2563eb; color: #fff; }
-    .btn-danger  { background: #ef4444; color: #fff; }
-    .btn-ghost   { background: transparent; border: 1px solid #d1d5db; color: #374151; }
+    /* ── Buttons ─────────────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: .4rem;
+      padding: .45rem .9rem; border-radius: 6px; border: none;
+      cursor: pointer; font-size: .9rem; font-weight: 500;
+      transition: opacity .15s;
+    }
+    .btn:hover { opacity: .82; }
+    .btn-primary { background: var(--sj-accent); color: #fff; }
+    .btn-danger  { background: var(--sj-error);  color: #fff; }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--sj-divider);
+      color: var(--sj-text);
+    }
     .btn-sm { padding: .3rem .6rem; font-size: .8rem; }
 
-    .card { background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.08); padding: 1rem; margin-bottom: .75rem; }
+    /* ── Cards ───────────────────────────────────────────────────────────── */
+    .card {
+      background: var(--sj-card);
+      border-radius: 10px;
+      box-shadow: var(--sj-shadow);
+      padding: 1rem;
+      margin-bottom: .75rem;
+    }
     .card-title { font-weight: 600; font-size: 1rem; margin-bottom: .25rem; }
-    .card-meta  { font-size: .8rem; color: #6b7280; }
+    .card-meta  { font-size: .8rem; color: var(--sj-text-2); }
 
-    .badge { display: inline-block; padding: .15rem .5rem; border-radius: 999px; font-size: .75rem; font-weight: 500; background: #dbeafe; color: #1d4ed8; margin-right: .25rem; margin-bottom: .25rem; }
+    /* ── Badge ───────────────────────────────────────────────────────────── */
+    .badge {
+      display: inline-block;
+      padding: .15rem .5rem; border-radius: 999px;
+      font-size: .75rem; font-weight: 500;
+      background: color-mix(in srgb, var(--sj-accent) 18%, transparent);
+      color: var(--sj-accent);
+      margin-right: .25rem; margin-bottom: .25rem;
+    }
 
-    .progress-bar { background: #e5e7eb; border-radius: 999px; height: 8px; overflow: hidden; margin: .5rem 0; }
-    .progress-fill { height: 100%; background: #2563eb; border-radius: 999px; transition: width .3s; }
+    /* ── Progress bar ────────────────────────────────────────────────────── */
+    .progress-bar {
+      background: var(--sj-track);
+      border-radius: 999px; height: 8px; overflow: hidden; margin: .5rem 0;
+    }
+    .progress-fill {
+      height: 100%; background: var(--sj-accent);
+      border-radius: 999px; transition: width .3s;
+    }
 
-    .item-row { display: flex; align-items: center; gap: .5rem; padding: .4rem 0; border-bottom: 1px solid #f3f4f6; }
+    /* ── Item rows ───────────────────────────────────────────────────────── */
+    .item-row {
+      display: flex; align-items: center; gap: .5rem;
+      padding: .4rem 0; border-bottom: 1px solid var(--sj-divider);
+    }
     .item-row:last-child { border-bottom: none; }
-    .item-row input[type=checkbox] { accent-color: #2563eb; width: 1rem; height: 1rem; flex-shrink: 0; }
+    .item-row input[type=checkbox] {
+      accent-color: var(--sj-accent); width: 1rem; height: 1rem; flex-shrink: 0;
+    }
     .item-row .item-name { flex: 1; font-size: .9rem; }
-    .item-row .item-name.packed { text-decoration: line-through; color: #9ca3af; }
-    .item-cat { font-size: .75rem; color: #6b7280; min-width: 5rem; }
+    .item-row .item-name.packed {
+      text-decoration: line-through; color: var(--sj-text-muted);
+    }
 
-    .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.4); display: flex; align-items: center; justify-content: center; z-index: 100; }
-    .modal { background: #fff; border-radius: 12px; padding: 1.5rem; width: min(95vw, 480px); max-height: 90vh; overflow-y: auto; }
+    /* ── Modal ───────────────────────────────────────────────────────────── */
+    .modal-bg {
+      position: fixed; inset: 0;
+      background: var(--sj-overlay);
+      display: flex; align-items: center; justify-content: center; z-index: 100;
+    }
+    .modal {
+      background: var(--sj-card);
+      border-radius: 12px; padding: 1.5rem;
+      width: min(95vw, 480px); max-height: 90vh; overflow-y: auto;
+    }
     .modal h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; }
+
+    /* ── Forms ───────────────────────────────────────────────────────────── */
     .form-group { margin-bottom: .8rem; }
-    .form-group label { display: block; font-size: .85rem; font-weight: 500; margin-bottom: .3rem; }
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%; padding: .45rem .6rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: .9rem;
+    .form-group label {
+      display: block; font-size: .85rem; font-weight: 500;
+      margin-bottom: .3rem; color: var(--sj-text);
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%; padding: .45rem .6rem;
+      border: 1px solid var(--sj-divider); border-radius: 6px;
+      font-size: .9rem;
+      background: var(--sj-bg);
+      color: var(--sj-text);
+      outline: none;
+      transition: border-color .15s;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--sj-accent);
     }
     .form-group textarea { min-height: 80px; resize: vertical; }
     .form-row { display: flex; gap: .5rem; }
     .form-row .form-group { flex: 1; }
     .modal-actions { display: flex; justify-content: flex-end; gap: .5rem; margin-top: 1rem; }
 
+    /* ── Activity picker ─────────────────────────────────────────────────── */
     .activity-grid { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .5rem; }
-    .activity-btn { padding: .35rem .7rem; border-radius: 999px; border: 1px solid #d1d5db; background: #fff; cursor: pointer; font-size: .85rem; transition: all .15s; }
-    .activity-btn.selected { background: #2563eb; color: #fff; border-color: #2563eb; }
+    .activity-btn {
+      padding: .35rem .7rem; border-radius: 999px;
+      border: 1px solid var(--sj-divider);
+      background: var(--sj-card); color: var(--sj-text);
+      cursor: pointer; font-size: .85rem; transition: all .15s;
+    }
+    .activity-btn.selected {
+      background: var(--sj-accent); color: #fff; border-color: var(--sj-accent);
+    }
 
-    .section-title { font-size: .95rem; font-weight: 600; color: #374151; margin: .75rem 0 .4rem; }
-    .empty { text-align: center; color: #9ca3af; padding: 2rem 0; font-size: .9rem; }
-    .error-msg { background: #fee2e2; color: #b91c1c; border-radius: 6px; padding: .5rem .75rem; font-size: .85rem; margin-bottom: .75rem; }
-    .loading { text-align: center; color: #6b7280; padding: 2rem 0; }
+    /* ── Misc ────────────────────────────────────────────────────────────── */
+    .section-title {
+      font-size: .95rem; font-weight: 600;
+      color: var(--sj-text-2); margin: .75rem 0 .4rem;
+    }
+    .empty { text-align: center; color: var(--sj-text-muted); padding: 2rem 0; font-size: .9rem; }
+    .error-msg {
+      background: color-mix(in srgb, var(--sj-error) 15%, transparent);
+      color: var(--sj-error);
+      border-radius: 6px; padding: .5rem .75rem; font-size: .85rem; margin-bottom: .75rem;
+    }
+    .loading { text-align: center; color: var(--sj-text-2); padding: 2rem 0; }
 
     nav { display: flex; gap: .5rem; margin-bottom: 1rem; }
-    .nav-tab { padding: .4rem .85rem; border-radius: 6px; border: none; background: transparent; cursor: pointer; font-size: .9rem; font-weight: 500; color: #6b7280; transition: all .15s; }
-    .nav-tab.active { background: #2563eb; color: #fff; }
+    .nav-tab {
+      padding: .4rem .85rem; border-radius: 6px; border: none;
+      background: transparent; cursor: pointer;
+      font-size: .9rem; font-weight: 500;
+      color: var(--sj-text-2); transition: all .15s;
+    }
+    .nav-tab.active { background: var(--sj-accent); color: #fff; }
   </style>
 </head>
 <body>
@@ -99,7 +230,7 @@
     </div>
     <div class="form-group">
       <label>Activities</label>
-      <div id="activity-picker" class="activity-grid"><span style="color:#9ca3af;font-size:.85rem">Loading…</span></div>
+      <div id="activity-picker" class="activity-grid"><span style="color:var(--sj-text-muted);font-size:.85rem">Loading…</span></div>
     </div>
     <div class="form-group">
       <label>Notes</label>
@@ -251,7 +382,7 @@ function renderTrip(root) {
     ${catItems.map(item => `
       <div class="item-row">
         <input type="checkbox" ${item.is_packed ? 'checked' : ''} data-item="${item.id}" class="toggle-item" />
-        <span class="item-name ${item.is_packed ? 'packed' : ''}">${esc(item.name)}${item.quantity > 1 ? ` ×${item.quantity}` : ''}${item.is_essential ? ' <span style="color:#ef4444;font-size:.75rem">★</span>' : ''}</span>
+        <span class="item-name ${item.is_packed ? 'packed' : ''}">${esc(item.name)}${item.quantity > 1 ? ` ×${item.quantity}` : ''}${item.is_essential ? ' <span style="color:var(--sj-error);font-size:.75rem">★</span>' : ''}</span>
         <button class="btn btn-danger btn-sm del-item" data-id="${item.id}">✕</button>
       </div>
     `).join('')}
