@@ -22,6 +22,8 @@ Like PackPoint, the core UX is built around **activities, not generic lists**:
 
 This produces a highly relevant list without overwhelming the user, since each activity template is curated to contain only what matters for that activity.
 
+5. When an activity template is **edited later**, all active trips that use it are **automatically updated** — items added/removed/changed in the template are propagated to every packing list that was built from it, preserving any manual changes the user has made.
+
 ---
 
 ## Tech Stack
@@ -90,9 +92,10 @@ siap-jalan/
 │   │   │   ├── templates.py     # User-saved trip templates
 │   │   │   └── ai.py            # AI suggestion endpoint
 │   │   └── services/
-│   │       ├── ai_suggestions.py   # Claude API integration
-│   │       ├── activity_merger.py  # Merge + deduplicate activity lists
-│   │       └── weather.py          # Open-Meteo weather fetch
+│   │       ├── ai_suggestions.py      # Claude API integration
+│   │       ├── activity_merger.py     # Merge + deduplicate activity lists
+│   │       ├── template_propagation.py # Propagate template edits to active trips
+│   │       └── weather.py             # Open-Meteo weather fetch
 │   └── ui/
 │       └── index.html           # Vanilla-JS SPA (HA addon UI)
 │
@@ -189,6 +192,53 @@ When a user selects multiple activities, `activity_merger.py` applies the follow
 
 ---
 
+## Template Propagation — Live Sync to Active Trips
+
+When a custom activity template is saved (PUT `/activities/{id}`), `template_propagation.py` automatically updates every **active trip** that includes that activity.
+
+**"Active trip"** = any trip where `end_date >= today` (trip hasn't ended yet).
+
+### Per-item propagation rules
+
+| Change in template | Item state in trip | Action |
+|---|---|---|
+| New item added | Not present | **Add** item to packing list |
+| New item added | Already present (same name) | Skip — user likely added it manually |
+| Item removed | `is_customised = false` | **Delete** item from packing list |
+| Item removed | `is_customised = true` | **Skip** — user modified it, keep it |
+| Item updated (name / qty / category / essential) | `is_customised = false` | **Update** matching fields |
+| Item updated | `is_customised = true` | **Skip** — preserve user's version |
+| Any change | `is_packed = true` | **Never** reset packed status |
+
+### How "customised" is tracked
+
+Each `packing_items` row stores:
+- `template_item_id` — FK back to the `activity_template_items` row it originated from (NULL for AI-added or manually-added items)
+- `is_customised` — set to `true` the first time a user edits any field (name, quantity, category, essential flag) on a template-sourced item
+
+This lets the propagation service distinguish between *"user chose to change this"* and *"this is still exactly as the template said"*.
+
+### Propagation is synchronous and atomic
+
+The `PUT /activities/{id}` handler runs propagation in the same database transaction as the template update, so either all active trips are updated or none are (on error, the whole operation rolls back).
+
+The response body includes a `propagation_summary` field:
+
+```json
+{
+  "template": { ... },
+  "propagation_summary": {
+    "trips_updated": 3,
+    "items_added": 2,
+    "items_updated": 1,
+    "items_removed": 0,
+    "items_skipped_customised": 1
+  }
+}
+```
+
+---
+
 ## Core Features
 
 ### Phase 1 — MVP + Activity Templates (v0.1.0)
@@ -202,6 +252,7 @@ When a user selects multiple activities, `activity_merger.py` applies the follow
 - [ ] **Built-in activity templates**: 16 activities seeded from JSON
 - [ ] **Activity merger service**: deduplication + source tagging
 - [ ] **Pre-fill packing list** from selected activities on trip creation
+- [ ] **Template propagation**: editing an activity template auto-updates all active trips that use it
 
 ### Phase 2 — AI & Weather Enrichment (v0.2.0)
 - [ ] AI packing suggestions via Claude API (destination + duration + activities + weather)
@@ -258,7 +309,7 @@ When a user selects multiple activities, `activity_merger.py` applies the follow
 | GET | `/activities` | List all activity templates (built-in + custom) |
 | GET | `/activities/{slug}` | Get activity template with its items |
 | POST | `/activities` | Create custom activity template |
-| PUT | `/activities/{id}` | Update custom activity template |
+| PUT | `/activities/{id}` | Update custom activity template; propagates changes to all active trips |
 | DELETE | `/activities/{id}` | Delete custom activity template |
 | POST | `/activities/merge` | Merge selected activities → deduplicated item list (preview) |
 
@@ -305,6 +356,11 @@ id, trip_id (FK), name, description, is_default, created_at
 id, list_id (FK), category, name, quantity, unit,
 is_packed, is_essential, added_by (ai|user|template|activity),
 source_activities (JSON array),   -- which activity templates added this item
+template_item_id (FK → activity_template_items.id, nullable),
+                                  -- NULL for AI/manual items; set for template-sourced items
+is_customised (bool, default false),
+                                  -- true once user edits any field on a template-sourced item;
+                                  -- prevents template propagation from overwriting user changes
 weight_grams, bag_type (carry_on|checked|personal),
 created_at, updated_at
 ```
