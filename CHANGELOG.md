@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- CI `publish-stable` job: builds and pushes `{arch}-siap_jalan:{version}` + `:latest` to GHCR on every merge to `main`, so HA Supervisor can always pull the stable addon image without needing a manual release trigger
+
+### Fixed
+- HA addon install error ("An unknown error occurred while trying to build the image"): stable images were never published to GHCR after `image:` field was added to `ha-addon/config.yaml`. The new `publish-stable` CI job ensures images exist at the expected GHCR tags on every `main` merge.
+
+### Added
 - `ha-addon-dev/` — dev/pre-release HA addon (slug: `siap_jalan_dev`, port: 8100, icon: `mdi:bag-suitcase-outline`) that always tracks the latest `main` branch
 - `ha-addon/config.yaml`: added `image:` field so HA pulls pre-built GHCR images instead of building locally
 - CI `publish-dev` job: builds and pushes `{arch}-siap_jalan_dev:dev` + `:{sha}` to GHCR on every merge to `main`
