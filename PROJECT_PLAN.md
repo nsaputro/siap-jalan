@@ -317,13 +317,14 @@ After adding an ad-hoc item the UI offers **"Also add to Hiking template?"**. Ac
 - [x] Packing progress indicator (% packed)
 - [x] HA addon: sidebar panel, multi-user via HA ingress
 - [x] Standalone: Docker Compose, single-user
-- [ ] **Activity picker UI**: icon grid, multi-select, live preview of item count
-- [ ] **Built-in activity templates**: 16 activities seeded from JSON
-- [ ] **Activity merger service**: deduplication + source tagging
-- [ ] **Pre-fill packing list** from selected activities on trip creation
-- [ ] **Template propagation**: editing an activity template auto-updates all active trips that use it
-- [ ] **Ad-hoc item entry**: add items directly to a trip under any activity section (one-off, doesn't touch the template)
-- [ ] **Promote ad-hoc to template**: optional "Also add to [Activity] template?" action after adding an ad-hoc item
+- [x] **Activity picker UI**: icon grid, multi-select, live preview of item count (`frontend/src/components/ActivityPicker.tsx`)
+- [x] **Built-in activity templates**: 16 activities seeded from `data/activity_templates.json` on startup
+- [x] **Activity merger service**: deduplication + source tagging (`backend/app/services/activity_merger.py`)
+- [x] **Pre-fill packing list** from selected activities on trip creation (trips router calls `merge_activities`)
+- [x] **Template propagation**: editing an activity template auto-updates all active trips that use it (`template_propagation.py`)
+- [x] **Ad-hoc item entry**: add items directly to a trip under any activity section via `source_activity` field → `added_by="adhoc"`, `template_item_id=NULL`
+- [x] **Promote ad-hoc to template**: `POST /items/{id}/promote` links item to template by name-match
+- [x] **Test suite**: 60 backend tests (pytest + pytest-asyncio, integration + unit) + 20 frontend tests (Vitest + @testing-library/react); run on every PR via CI
 
 ### Phase 2 — AI & Weather Enrichment (v0.2.0)
 - [ ] AI packing suggestions via Claude API (destination + duration + activities + weather)

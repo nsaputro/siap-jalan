@@ -2,6 +2,21 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Workflow — Before Implementing Any Feature
+
+Follow these steps in order every time a feature or bug fix is requested:
+
+1. **Read `PROJECT_PLAN.md`** to locate the feature in the milestone list and understand its scope and design intent.
+2. **Read the relevant source files** before writing or modifying any code — routers, models, schemas, services, components, and tests that the feature touches. Never assume file contents from memory.
+3. **Implement** the feature across both the standalone app (`backend/` + `frontend/`) and the HA addon (`ha-addon/`) where applicable, keeping the two in sync.
+4. **Run tests locally** to confirm nothing is broken:
+   ```bash
+   cd backend && python -m pytest tests/ -q
+   cd frontend && npm test -- --run
+   ```
+5. **Tick the item in `PROJECT_PLAN.md`** by changing `- [ ]` to `- [x]` for every checklist item the PR delivers. If all items in a phase are now checked, note that the phase is complete.
+6. **Update `CHANGELOG.md`** under `## [Unreleased]` with what was added/changed/fixed.
+
 ## Git Policy
 
 **Never push directly to `main`.** All changes must go through a pull request:
@@ -62,6 +77,22 @@ npm run lint    # ESLint on src/
 cp backend/.env.example backend/.env
 docker compose up --build
 # frontend → http://localhost:5173   backend → http://localhost:8000
+```
+
+### Tests
+
+```bash
+# Backend – run from backend/
+cd backend
+pip install -r requirements-test.txt   # first time only
+python -m pytest tests/ -q             # all 60 tests (integration + unit)
+python -m pytest tests/unit/ -q        # unit tests only (no DB seeding)
+
+# Frontend – run from frontend/
+cd frontend
+npm test              # vitest in watch mode
+npm test -- --run     # single run (used in CI)
+npm run coverage      # generate coverage report
 ```
 
 ### Lint (CI checks run these)

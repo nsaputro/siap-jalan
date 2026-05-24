@@ -21,5 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Standalone Docker Compose deployment
 - CI/CD: yamllint, hadolint, Python syntax check, Docker build test
 - Release workflow: multi-arch Docker build + GitHub release
+- Backend test suite: 60 tests (pytest + pytest-asyncio) covering trips, packing, activities, template propagation, activity merger
+- Frontend test suite: 20 tests (Vitest + @testing-library/react) covering Zustand store, ActivityPicker, PackingProgress
+- Backend-tests and frontend-tests CI jobs run on every PR
+- `PackingItemBulkCreate` schema with `list_id` field for `/items/bulk` endpoint
 
 [Unreleased]: https://github.com/nsaputro/siap-jalan/compare/HEAD...HEAD
