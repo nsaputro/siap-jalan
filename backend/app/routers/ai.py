@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-import os
-
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
+from ..config import settings
 from ..database import get_db
 from ..dependencies import get_ha_user
 from ..models.packing import PackingItem, PackingList, Trip
@@ -47,8 +46,7 @@ async def suggest_items(
 
     weather = await get_weather(trip.destination, trip.start_date, trip.end_date)
 
-    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
-    suggestions = await generate_suggestions(trip, weather, existing_names, api_key)
+    suggestions = await generate_suggestions(trip, weather, existing_names, settings.ANTHROPIC_API_KEY)
 
     if not suggestions:
         return {"added": 0, "items": []}
