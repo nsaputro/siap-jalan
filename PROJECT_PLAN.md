@@ -239,6 +239,46 @@ The response body includes a `propagation_summary` field:
 
 ---
 
+## Two Ways to Add Items to a Packing List
+
+Items can reach a packing list through two distinct paths:
+
+### Path A — Edit the Activity Template (persistent)
+
+User opens **Templates → Hiking → Edit** and adds "blister kit" to the template.
+
+- The item is saved to `activity_template_items`
+- `template_propagation.py` immediately adds "blister kit" to every **active trip** that includes Hiking (unless an item with that name already exists)
+- All **future trips** that pick Hiking will also include "blister kit" automatically
+
+Use this when the item belongs to the activity in general — it should be there every time someone goes hiking.
+
+### Path B — Add Ad-hoc to an Active Trip (one-off)
+
+User opens **Trip Detail → Hiking section → "+ Add item"** and types "blister kit" inline.
+
+- A new `packing_items` row is created with `template_item_id = NULL`, `added_by = 'user'`, and `source_activities = ['hiking']` (so it groups correctly under the Hiking section)
+- The Hiking template is **not touched** — this item exists only for this trip
+- Template propagation will never overwrite or remove it (since `template_item_id` is NULL)
+
+Use this for one-off needs specific to this trip that don't warrant changing the template.
+
+### Optional: Promote Ad-hoc Item to Template
+
+After adding an ad-hoc item the UI offers **"Also add to Hiking template?"**. Accepting calls `POST /activities/{slug}/items` with the item data, then sets `template_item_id` on the existing `packing_items` row so it becomes template-linked going forward.
+
+### Comparison
+
+| | Edit Template (Path A) | Ad-hoc to Trip (Path B) |
+|---|---|---|
+| Affects other active trips | ✅ Yes (propagated) | ❌ No |
+| Affects future trips | ✅ Yes | ❌ No |
+| Appears in template list | ✅ Yes | ❌ No |
+| Can be promoted later | — | ✅ Optional |
+| UI entry point | Templates screen | Trip detail screen |
+
+---
+
 ## Core Features
 
 ### Phase 1 — MVP + Activity Templates (v0.1.0)
@@ -253,6 +293,8 @@ The response body includes a `propagation_summary` field:
 - [ ] **Activity merger service**: deduplication + source tagging
 - [ ] **Pre-fill packing list** from selected activities on trip creation
 - [ ] **Template propagation**: editing an activity template auto-updates all active trips that use it
+- [ ] **Ad-hoc item entry**: add items directly to a trip under any activity section (one-off, doesn't touch the template)
+- [ ] **Promote ad-hoc to template**: optional "Also add to [Activity] template?" action after adding an ad-hoc item
 
 ### Phase 2 — AI & Weather Enrichment (v0.2.0)
 - [ ] AI packing suggestions via Claude API (destination + duration + activities + weather)
@@ -297,10 +339,11 @@ The response body includes a `propagation_summary` field:
 | GET | `/trips/{id}/lists` | Get packing lists for a trip |
 | POST | `/trips/{id}/lists` | Create packing list |
 | GET | `/lists/{id}/items` | Get items in a list |
-| POST | `/lists/{id}/items` | Add item to list |
-| PUT | `/items/{id}` | Update item (name, qty, packed status) |
+| POST | `/lists/{id}/items` | Add item to list; optional `source_activity` body field groups it under that activity section (ad-hoc Path B) |
+| PUT | `/items/{id}` | Update item (name, qty, packed status); sets `is_customised=true` if item is template-sourced |
 | DELETE | `/items/{id}` | Delete item |
 | POST | `/items/{id}/toggle` | Toggle packed status |
+| POST | `/items/{id}/promote` | Promote ad-hoc item to its activity template (Path A); sets `template_item_id` on the item |
 | POST | `/items/bulk` | Bulk create items (used when applying activity templates) |
 
 ### Activity Templates
@@ -309,8 +352,11 @@ The response body includes a `propagation_summary` field:
 | GET | `/activities` | List all activity templates (built-in + custom) |
 | GET | `/activities/{slug}` | Get activity template with its items |
 | POST | `/activities` | Create custom activity template |
-| PUT | `/activities/{id}` | Update custom activity template; propagates changes to all active trips |
+| PUT | `/activities/{id}` | Update custom activity template metadata; propagates changes to all active trips |
 | DELETE | `/activities/{id}` | Delete custom activity template |
+| POST | `/activities/{id}/items` | Add an item to an activity template (Path A); propagates to active trips |
+| PUT | `/activities/{id}/items/{item_id}` | Edit a template item; propagates change to active trips |
+| DELETE | `/activities/{id}/items/{item_id}` | Remove item from template; propagates removal to active trips |
 | POST | `/activities/merge` | Merge selected activities → deduplicated item list (preview) |
 
 ### AI & Weather
@@ -354,12 +400,19 @@ id, trip_id (FK), name, description, is_default, created_at
 ### `packing_items`
 ```
 id, list_id (FK), category, name, quantity, unit,
-is_packed, is_essential, added_by (ai|user|template|activity),
-source_activities (JSON array),   -- which activity templates added this item
+is_packed, is_essential,
+added_by (activity|adhoc|ai|user),
+  -- activity : seeded from an activity template on trip creation / propagation
+  -- adhoc    : user added directly to this trip under an activity section (Path B)
+  -- ai       : suggested by Claude API
+  -- user     : added manually with no activity context
+source_activities (JSON array),   -- activity slugs this item is grouped under
+                                  -- set for both 'activity' and 'adhoc' items
 template_item_id (FK → activity_template_items.id, nullable),
-                                  -- NULL for AI/manual items; set for template-sourced items
+                                  -- non-null only for added_by='activity' items;
+                                  -- NULL for adhoc/ai/user items
 is_customised (bool, default false),
-                                  -- true once user edits any field on a template-sourced item;
+                                  -- true once user edits any field on an 'activity' item;
                                   -- prevents template propagation from overwriting user changes
 weight_grams, bag_type (carry_on|checked|personal),
 created_at, updated_at
@@ -425,6 +478,38 @@ Trip creation wizard — **Step 2: Select Activities**
 - Clicking an activity toggles selection (highlighted border + checkmark)
 - Footer shows live item count as activities are toggled
 - "Next" applies the merged list and opens the trip detail view
+
+### Trip Detail — Packing List (per-activity sections)
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  🏕️ Bali Camping Trip  · 5 days  · Jun 1–5                  │
+│  Activities: ✈️ Flight  🥾 Hiking  🏕️ Camping               │
+│  ████████░░░░  64% packed (28/44 items)                      │
+│                                                              │
+│  ✈️ Flight  ──────────────────────────────────  [+ Add item] │
+│  ✅ Neck pillow                                              │
+│  ✅ Compression socks                                        │
+│  ☐  Travel adaptor                         [from template]  │
+│                                                              │
+│  🥾 Hiking  ──────────────────────────────── [+ Add item]   │
+│  ✅ Trail shoes                                              │
+│  ☐  Headlamp                               [from template]  │
+│  ☐  Blister kit          ★ [→ Add to Hiking template?]      │
+│        ↑ ad-hoc item added directly to this trip            │
+│                                                              │
+│  🏕️ Camping  ─────────────────────────────── [+ Add item]   │
+│  ☐  Tent                                   [from template]  │
+│  ☐  Sleeping bag                           [from template]  │
+│                                                              │
+│  ＋ General  ─────────────────────────────── [+ Add item]   │
+│        (items with no activity grouping)                     │
+└──────────────────────────────────────────────────────────────┘
+```
+
+**[+ Add item]** next to each activity section creates an ad-hoc item with `source_activities = [that_activity_slug]` (Path B).
+**[→ Add to Hiking template?]** appears on ad-hoc items; accepting calls `POST /items/{id}/promote` (Path A).
+Items sourced from a template show a small **[from template]** badge; clicking it opens the template for editing.
 
 ---
 
