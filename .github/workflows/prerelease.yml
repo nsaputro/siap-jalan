@@ -32,6 +32,15 @@ jobs:
             exit 1
           fi
 
+          # Validate dev version base matches NEXT_VERSION
+          NEXT=$(cat ha-addon/NEXT_VERSION | tr -d '[:space:]')
+          BASE=$(echo "${TAG}" | grep -oE '^[0-9]+\.[0-9]+\.[0-9]+')
+          if [ "${BASE}" != "${NEXT}" ]; then
+            echo "::error::Dev version base '${BASE}' does not match NEXT_VERSION '${NEXT}'."
+            echo "::error::Update ha-addon-dev/config.yaml version to ${NEXT}bN."
+            exit 1
+          fi
+
           # Prevent duplicate releases
           if git rev-parse "v${TAG}" >/dev/null 2>&1; then
             echo "::error::Tag v${TAG} already exists. Bump ha-addon-dev/config.yaml before re-running."
