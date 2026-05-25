@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `CATEGORIES` constant removed from `backend/app/schemas/packing.py` and `frontend/src/types/index.ts`
 
 ### Changed
+- HA addon UI: packing list items now grouped by activity/template — each selected activity gets its own section header (emoji + name + packed count), with a "General" section at the bottom for untagged items; each section has its own inline "Add to …" row
 - HA addon UI redesigned for simplicity: flat item list with no category grouping, circle checkboxes, and an inline "Type to add new item" field — no modal required to add items
 - AI suggestions no longer include or request category information; items use a silent backend default
 - `MergedItemResponse` and `MergedItem` dataclass no longer expose `category`; sorted by name only
