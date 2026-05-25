@@ -1,9 +1,7 @@
-## 0.1.2
+## 0.1.3
 
-- Fixed: UI now matches the active Home Assistant theme in both light and dark mode.
-  All colours are drawn from HA CSS custom properties (`--primary-color`,
-  `--card-background-color`, `--primary-text-color`, etc.) so the addon adapts
-  automatically to any HA theme, including dark mode.
+- Added: per-addon `CHANGELOG.md` so HA Supervisor shows "What's new" in the addon store
+- Changed: dev addon version now tracks the upcoming stable release (e.g. `0.1.3b1`) so testers always run a matching pre-release build
 
 ---
 

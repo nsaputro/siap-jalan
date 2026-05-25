@@ -43,6 +43,21 @@ The next version must be higher than the latest release. Never reuse an already-
 
 Update `ha-addon/config.yaml` `version` field in the same PR as the change.
 
+### Pre-release version must always match the upcoming stable version
+
+Every PR that bumps `ha-addon/config.yaml` **must also** update `ha-addon-dev/config.yaml` to a pre-release of the same target version:
+
+1. Determine the new stable version being set (e.g. `0.1.3`).
+2. List existing pre-release tags for that version prefix:
+   ```
+   mcp__github__list_tags  owner=nsaputro  repo=siap-jalan
+   ```
+   Filter for tags like `v0.1.3b*`. Find the highest `b` number; `X = highest + 1`. If none exist, `X = 1`.
+3. Set `ha-addon-dev/config.yaml` `version` to `{stable}b{X}` (e.g. `0.1.3b1`).
+
+**Example:** stable goes from `0.1.2` → `0.1.3`, no `v0.1.3b*` tags exist → dev becomes `0.1.3b1`.
+**Example:** stable goes to `0.2.0`, tags `v0.2.0b1` and `v0.2.0b2` already exist → dev becomes `0.2.0b3`.
+
 ## Changelog
 
 **Every PR that changes addon behaviour must update `CHANGELOG.md`.**

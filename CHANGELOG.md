@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-05-25
+
+### Added
+- `ha-addon/CHANGELOG.md`: per-addon changelog HA Supervisor reads to show "What's new" in the addon store
+
+### Changed
+- Pre-release version (`ha-addon-dev/config.yaml`) now tracks the upcoming stable version with a `bX` suffix (e.g. `0.1.3b1`) so testers always run a build that matches what will ship
+
+### Fixed
+- HA Supervisor no longer shows "No changelog found" when checking addon updates
+- CLAUDE.md: added rule to always verify PR exists via MCP before announcing the link, and to check PR state before pushing additional commits
+- CLAUDE.md: added rule to keep `ha-addon-dev/config.yaml` version in sync with the target stable version on every PR
+
 ## [0.1.2] - 2026-05-24
 
 ### Fixed
@@ -55,7 +68,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Backend-tests and frontend-tests CI jobs run on every PR
 - `PackingItemBulkCreate` schema with `list_id` field for `/items/bulk` endpoint
 
-[Unreleased]: https://github.com/nsaputro/siap-jalan/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/nsaputro/siap-jalan/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/nsaputro/siap-jalan/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/nsaputro/siap-jalan/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/nsaputro/siap-jalan/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/nsaputro/siap-jalan/releases/tag/v0.1.0
