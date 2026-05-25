@@ -1,11 +1,11 @@
 name: "SiapJalan (dev)"
-version: "0.1.3b1"
+version: "0.1.3b2"
 slug: siap_jalan_dev
 description: >-
-  ⚠️ Development build — updated on every merge to main.
+  ⚠️ Development build — published manually via the Pre-release workflow.
   Smart travel packing assistant with AI suggestions and activity-based templates.
 url: https://github.com/nsaputro/siap-jalan
-# Dev images rebuilt on every push to main
+# Dev images published via GitHub Actions → Pre-release workflow (manual trigger)
 image: "ghcr.io/nsaputro/siap-jalan/{arch}-siap_jalan_dev"
 arch:
   - amd64

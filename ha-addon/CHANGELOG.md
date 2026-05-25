@@ -4,6 +4,7 @@
 - Changed: UI redesigned for simplicity — flat item list, circle checkboxes, inline "Type to add new item" (no modal to add items)
 - Changed: AI suggestions no longer ask for or return a category
 - Fixed: HA Supervisor now shows release notes ("No changelog found" resolved)
+- Fixed: Dev addon 502 Bad Gateway resolved — dev image now correctly listens on port 8100
 
 ---
 

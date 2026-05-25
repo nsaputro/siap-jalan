@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All packing item category names updated to English
 - HA Supervisor no longer shows "No changelog found" when checking addon updates
 - CLAUDE.md: versioning rule — only bump version when the current one is already released
+- Dev addon 502 Bad Gateway: `ha-addon/run.sh` now uses `${PORT:-8099}` instead of a hardcoded `8099`; `ha-addon/Dockerfile` accepts a `PORT` build arg (default `8099`); the pre-release workflow passes `PORT=8100` so the dev image correctly listens on port 8100
 
 ## [0.1.2] - 2026-05-24
 
