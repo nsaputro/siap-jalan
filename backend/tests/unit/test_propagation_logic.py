@@ -44,7 +44,7 @@ async def make_template(session, slug="test_act") -> tuple[ActivityTemplate, Act
     await session.flush()
     item = ActivityTemplateItem(
         activity_template_id=tmpl.id,
-        category="Lainnya", name="Prop Item",
+        category="Other", name="Prop Item",
         quantity=1, is_essential=False, priority=5,
     )
     session.add(item)
@@ -71,7 +71,7 @@ async def make_trip(session, slug="test_act", end_date=FUTURE) -> tuple[Trip, Pa
 async def make_packing_item(session, list_id, template_item_id=None, name="Prop Item", is_customised=False, is_packed=False) -> PackingItem:
     pi = PackingItem(
         list_id=list_id,
-        category="Lainnya", name=name,
+        category="Other", name=name,
         quantity=1, is_essential=False,
         added_by="activity",
         source_activities=["test_act"],
@@ -243,7 +243,7 @@ async def test_summary_counts_are_correct(session):
     await session.commit()
 
     new_item = ActivityTemplateItem(
-        activity_template_id=tmpl.id, category="Lainnya", name="Brand new",
+        activity_template_id=tmpl.id, category="Other", name="Brand new",
         quantity=1, is_essential=False, priority=3,
     )
     session.add(new_item)

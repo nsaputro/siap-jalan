@@ -7,16 +7,16 @@ from pydantic import BaseModel, ConfigDict, model_validator
 
 
 CATEGORIES = [
-    "Pakaian",
-    "Toilet & Kebersihan",
-    "Dokumen",
-    "Elektronik",
-    "Obat-obatan",
-    "Sepatu & Aksesoris",
-    "Makanan & Minuman",
-    "Olahraga",
-    "Bayi & Anak",
-    "Lainnya",
+    "Clothing",
+    "Toiletries & Hygiene",
+    "Documents",
+    "Electronics",
+    "Medications",
+    "Shoes & Accessories",
+    "Food & Drinks",
+    "Sports & Fitness",
+    "Baby & Kids",
+    "Other",
 ]
 
 

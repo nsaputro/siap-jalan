@@ -313,7 +313,7 @@ After adding an ad-hoc item the UI offers **"Also add to Hiking template?"**. Ac
 ### Phase 1 — MVP + Activity Templates (v0.1.0)
 - [x] Trip management: create, edit, delete trips with destination, dates, activities
 - [x] Packing list CRUD: add/edit/delete items, check off when packed
-- [x] Item categories: Pakaian, Toilet & Kebersihan, Dokumen, Elektronik, Obat-obatan, etc.
+- [x] Item categories: Clothing, Toiletries & Hygiene, Documents, Electronics, Medications, etc.
 - [x] Packing progress indicator (% packed)
 - [x] HA addon: sidebar panel, multi-user via HA ingress
 - [x] Standalone: Docker Compose, single-user

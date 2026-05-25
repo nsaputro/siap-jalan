@@ -28,13 +28,13 @@ async def seeded_session():
 
         session.add_all([
             # Hiking items
-            ActivityTemplateItem(activity_template_id=hiking.id, category="Pakaian",            name="Trail shoes", quantity=1, is_essential=True,  priority=8),
-            ActivityTemplateItem(activity_template_id=hiking.id, category="Lainnya",            name="Headlamp",   quantity=1, is_essential=False, priority=5),
-            ActivityTemplateItem(activity_template_id=hiking.id, category="Toilet & Kebersihan", name="Sunscreen", quantity=1, is_essential=False, priority=4),
+            ActivityTemplateItem(activity_template_id=hiking.id, category="Clothing",            name="Trail shoes", quantity=1, is_essential=True,  priority=8),
+            ActivityTemplateItem(activity_template_id=hiking.id, category="Other",            name="Headlamp",   quantity=1, is_essential=False, priority=5),
+            ActivityTemplateItem(activity_template_id=hiking.id, category="Toiletries & Hygiene", name="Sunscreen", quantity=1, is_essential=False, priority=4),
             # Beach items
-            ActivityTemplateItem(activity_template_id=beach.id,  category="Pakaian",            name="Swimwear",   quantity=1, is_essential=True,  priority=8),
-            ActivityTemplateItem(activity_template_id=beach.id,  category="Toilet & Kebersihan", name="Sunscreen", quantity=2, is_essential=True,  priority=6),  # higher qty + essential
-            ActivityTemplateItem(activity_template_id=beach.id,  category="Sepatu & Aksesoris", name="Flip flops", quantity=1, is_essential=False, priority=3),
+            ActivityTemplateItem(activity_template_id=beach.id,  category="Clothing",            name="Swimwear",   quantity=1, is_essential=True,  priority=8),
+            ActivityTemplateItem(activity_template_id=beach.id,  category="Toiletries & Hygiene", name="Sunscreen", quantity=2, is_essential=True,  priority=6),  # higher qty + essential
+            ActivityTemplateItem(activity_template_id=beach.id,  category="Shoes & Accessories", name="Flip flops", quantity=1, is_essential=False, priority=3),
         ])
         await session.commit()
         yield session
@@ -114,7 +114,7 @@ async def test_dedup_is_case_insensitive(seeded_session):
     hiking = hiking_r.scalar_one()
     seeded_session.add(ActivityTemplateItem(
         activity_template_id=hiking.id,
-        category="Toilet & Kebersihan",
+        category="Toiletries & Hygiene",
         name="SUNSCREEN",   # upper-case duplicate
         quantity=1, is_essential=False, priority=2,
     ))
