@@ -29,34 +29,42 @@ Follow these steps in order every time a feature or bug fix is requested:
 
 ## Versioning
 
-**Before setting a version in any PR, always check the latest GitHub release first:**
+**Before touching any version number, check both the latest GitHub release and the current version in `ha-addon/config.yaml`:**
 
 ```
 mcp__github__get_latest_release  owner=nsaputro  repo=siap-jalan
 ```
 
-The next version must be higher than the latest release. Never reuse an already-released version number. Use semantic versioning (`MAJOR.MINOR.PATCH`):
+### Rule: only bump when the current version is already released
 
+- Read `ha-addon/config.yaml` `version` (the "current" version).
+- Read the latest GitHub release tag (the "last released" version).
+- **If current > last released** → the current version is still unreleased. **Keep it as-is.** Just add your changelog entry to the existing `## [current]` section in `CHANGELOG.md`. Do not create a new version.
+- **If current == last released** → every change in `ha-addon/config.yaml` has shipped. Pick the next version following semantic versioning and apply it.
+
+Use semantic versioning (`MAJOR.MINOR.PATCH`):
 - `PATCH` bump (e.g. `0.1.2` → `0.1.3`) for bug fixes and small improvements
 - `MINOR` bump (e.g. `0.1.x` → `0.2.0`) for new features
 - `MAJOR` bump for breaking changes
 
-Update `ha-addon/config.yaml` `version` field in the same PR as the change.
+**Example:** latest release is `v0.1.2`, `ha-addon/config.yaml` says `0.1.5` → `0.1.5` is unreleased → keep `0.1.5`, append to its changelog section.
+**Example:** latest release is `v0.1.5`, `ha-addon/config.yaml` says `0.1.5` → bump to `0.1.6`.
 
 ### Pre-release version must always match the upcoming stable version
 
-Every PR that bumps `ha-addon/config.yaml` **must also** update `ha-addon-dev/config.yaml` to a pre-release of the same target version:
+`ha-addon-dev/config.yaml` must always be a pre-release of the same version that is in `ha-addon/config.yaml`:
 
-1. Determine the new stable version being set (e.g. `0.1.3`).
+1. Determine the stable version (from `ha-addon/config.yaml`, possibly unchanged per the rule above).
 2. List existing pre-release tags for that version prefix:
    ```
    mcp__github__list_tags  owner=nsaputro  repo=siap-jalan
    ```
-   Filter for tags like `v0.1.3b*`. Find the highest `b` number; `X = highest + 1`. If none exist, `X = 1`.
-3. Set `ha-addon-dev/config.yaml` `version` to `{stable}b{X}` (e.g. `0.1.3b1`).
+   Filter for tags like `v0.1.5b*`. Find the highest `b` number; `X = highest + 1`. If none exist, `X = 1`.
+3. Set `ha-addon-dev/config.yaml` `version` to `{stable}b{X}` (e.g. `0.1.5b1`).
+4. **If the dev version is already set to `{stable}b{X}` and hasn't changed**, leave it — no bump needed there either.
 
-**Example:** stable goes from `0.1.2` → `0.1.3`, no `v0.1.3b*` tags exist → dev becomes `0.1.3b1`.
-**Example:** stable goes to `0.2.0`, tags `v0.2.0b1` and `v0.2.0b2` already exist → dev becomes `0.2.0b3`.
+**Example:** stable stays at `0.1.5` (unreleased), dev is already `0.1.5b1` → leave dev unchanged.
+**Example:** stable bumps from `0.1.5` → `0.1.6`, no `v0.1.6b*` tags → dev becomes `0.1.6b1`.
 
 ## Changelog
 
@@ -150,7 +158,7 @@ SQLAlchemy 2.x tables (identical in both apps):
 
 - `trips` — destination, start_date, end_date, duration_days, trip_type, activities (JSON), weather_destination, notes
 - `packing_lists` — trip_id (FK), name, description, is_template
-- `packing_items` — list_id (FK), category, name, quantity, is_packed, is_essential, added_by (ai|user)
+- `packing_items` — list_id (FK), name, quantity, is_packed, is_essential, added_by (ai|user), source_activities (JSON)
 - `trip_templates` — name, description, activities (JSON), climate_type, duration_range
 
 ### AI-powered suggestions
@@ -159,10 +167,6 @@ SQLAlchemy 2.x tables (identical in both apps):
 - `app/services/weather.py` — fetches weather forecast for destination to inform packing suggestions
 - Smart deduplication: AI suggestions merged with user's existing items; duplicates flagged, not re-added
 
-### Packing categories
-
-Standard categories tracked across all trips:
-`Clothing`, `Toiletries & Hygiene`, `Documents`, `Electronics`, `Medications`, `Shoes & Accessories`, `Food & Drinks`, `Sports & Fitness`, `Baby & Kids`, `Other`
 
 ## CI / Release
 
