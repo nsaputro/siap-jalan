@@ -1,7 +1,6 @@
-## 0.1.3
+## 0.1.4
 
-- Added: per-addon `CHANGELOG.md` so HA Supervisor shows "What's new" in the addon store
-- Changed: dev addon version now tracks the upcoming stable release (e.g. `0.1.3b1`) so testers always run a matching pre-release build
+- Fixed: all packing category labels are now in English (Clothing, Toiletries & Hygiene, Documents, Electronics, Medications, Shoes & Accessories, Food & Drinks, Sports & Fitness, Baby & Kids, Other)
 
 ---
 
