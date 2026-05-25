@@ -24,6 +24,8 @@ Follow these steps in order every time a feature or bug fix is requested:
 1. **Always** create the branch from the latest `main`: `git checkout origin/main -b feature/your-description`
 2. Commit changes and push the branch
 3. Open a PR targeting `main` via the GitHub MCP tools (`mcp__github__create_pull_request`)
+4. **Always verify** the PR was created by calling `mcp__github__pull_request_read` immediately after. Only tell the user the PR link once the MCP tool confirms it exists and is open.
+5. **Before adding commits** to an existing PR branch, check if the PR is still open with `mcp__github__pull_request_read`. If it was already merged, create a new branch from `origin/main`, cherry-pick the pending commits, push, and open a new PR.
 
 ## Versioning
 
