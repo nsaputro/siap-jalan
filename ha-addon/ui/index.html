@@ -260,16 +260,16 @@
     <div class="form-group">
       <label>Category</label>
       <select id="i-cat">
-        <option>Pakaian</option>
-        <option>Toilet &amp; Kebersihan</option>
-        <option>Dokumen</option>
-        <option>Elektronik</option>
-        <option>Obat-obatan</option>
-        <option>Sepatu &amp; Aksesoris</option>
-        <option>Makanan &amp; Minuman</option>
-        <option>Olahraga</option>
-        <option>Bayi &amp; Anak</option>
-        <option>Lainnya</option>
+        <option>Clothing</option>
+        <option>Toiletries &amp; Hygiene</option>
+        <option>Documents</option>
+        <option>Electronics</option>
+        <option>Medications</option>
+        <option>Shoes &amp; Accessories</option>
+        <option>Food &amp; Drinks</option>
+        <option>Sports &amp; Fitness</option>
+        <option>Baby &amp; Kids</option>
+        <option>Other</option>
       </select>
     </div>
     <div class="form-group">
@@ -372,7 +372,7 @@ function renderTrip(root) {
   // Group by category
   const byCategory = {};
   items.forEach(item => {
-    const c = item.category || 'Lainnya';
+    const c = item.category || 'Other';
     if (!byCategory[c]) byCategory[c] = [];
     byCategory[c].push(item);
   });

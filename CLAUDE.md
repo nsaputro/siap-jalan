@@ -162,7 +162,7 @@ SQLAlchemy 2.x tables (identical in both apps):
 ### Packing categories
 
 Standard categories tracked across all trips:
-`Pakaian`, `Toilet & Kebersihan`, `Dokumen`, `Elektronik`, `Obat-obatan`, `Sepatu & Aksesoris`, `Makanan & Minuman`, `Olahraga`, `Bayi & Anak`, `Lainnya`
+`Clothing`, `Toiletries & Hygiene`, `Documents`, `Electronics`, `Medications`, `Shoes & Accessories`, `Food & Drinks`, `Sports & Fitness`, `Baby & Kids`, `Other`
 
 ## CI / Release
 

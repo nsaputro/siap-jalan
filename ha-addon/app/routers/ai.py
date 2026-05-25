@@ -61,7 +61,7 @@ async def suggest_items(
             continue
         item = PackingItem(
             list_id=default_list.id,
-            category=suggestion.get("category", "Lainnya"),
+            category=suggestion.get("category", "Other"),
             name=name,
             quantity=suggestion.get("quantity", 1),
             is_essential=suggestion.get("is_essential", False),
