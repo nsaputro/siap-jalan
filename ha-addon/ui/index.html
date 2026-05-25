@@ -162,6 +162,19 @@
     }
     .activity-btn.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
 
+    /* ── Activity section headers ── */
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .5rem 1rem .3rem;
+      font-size: .75rem; font-weight: 600; letter-spacing: .06em;
+      color: var(--text2); text-transform: uppercase;
+      background: color-mix(in srgb, var(--div) 35%, transparent);
+      border-top: 1px solid var(--div);
+    }
+    /* Avoid double border when section follows pack-card-header */
+    .pack-card-header + .section-header { border-top: none; }
+    .section-count { font-weight: 400; font-size: .75rem; }
+
     /* ── Misc ── */
     .empty  { text-align: center; color: var(--muted); padding: 2.5rem 0; font-size: .88rem; }
     .loading { text-align: center; color: var(--text2); padding: 2rem 0; font-size: .88rem; }
@@ -290,15 +303,8 @@ function renderTrips() {
 }
 
 // ── Trip detail ───────────────────────────────────────────────────────────────
-function renderTrip() {
-  const root  = document.getElementById('root');
-  const t     = currentTrip;
-  const items = currentList?.items || [];
-  const packed = items.filter(i => i.is_packed).length;
-  const total  = items.length;
-  const done   = total > 0 && packed === total;
-
-  const rows = items.map(item => `
+function renderItemRow(item) {
+  return `
     <div class="item-row">
       <input type="checkbox" class="item-check toggle-item"
              data-item="${item.id}" ${item.is_packed ? 'checked' : ''} />
@@ -307,7 +313,79 @@ function renderTrip() {
       </span>
       <button class="btn-icon del-item" data-id="${item.id}">✕</button>
     </div>
-  `).join('');
+  `;
+}
+
+function addRowHTML(slug, placeholder) {
+  return `
+    <div class="add-row">
+      <span class="add-icon">+</span>
+      <input class="add-input section-add" type="text"
+             data-slug="${esc(slug)}" placeholder="${esc(placeholder)}" />
+    </div>
+  `;
+}
+
+function renderTrip() {
+  const root   = document.getElementById('root');
+  const t      = currentTrip;
+  const items  = currentList?.items || [];
+  const packed = items.filter(i => i.is_packed).length;
+  const total  = items.length;
+  const done   = total > 0 && packed === total;
+
+  // Activity lookup map: slug → {name, icon_emoji}
+  const actMap = {};
+  activities.forEach(a => { actMap[a.slug] = a; });
+
+  const tripActSlugs = t.activities || [];
+  let sectionsHTML = '';
+
+  if (tripActSlugs.length > 0) {
+    // Build per-activity item buckets (trip activity order)
+    const groupMap = {};
+    tripActSlugs.forEach(s => { groupMap[s] = []; });
+    const generalItems = [];
+
+    items.forEach(item => {
+      const srcs = item.source_activities || [];
+      const match = srcs.find(s => groupMap[s] !== undefined);
+      if (match) groupMap[match].push(item);
+      else generalItems.push(item);
+    });
+
+    // Render one section per activity
+    tripActSlugs.forEach(slug => {
+      const group  = groupMap[slug];
+      const act    = actMap[slug];
+      const label  = act ? `${act.icon_emoji} ${esc(act.name)}` : esc(slug);
+      const gPack  = group.filter(i => i.is_packed).length;
+      const gTotal = group.length;
+      sectionsHTML += `
+        <div class="section-header">
+          <span>${label}</span>
+          ${gTotal > 0 ? `<span class="section-count">${gPack} / ${gTotal}</span>` : ''}
+        </div>
+        ${group.map(renderItemRow).join('')}
+        ${addRowHTML(slug, `Add to ${act ? act.name : slug}…`)}
+      `;
+    });
+
+    // General section — always shown so users can add non-activity items
+    const gPack2  = generalItems.filter(i => i.is_packed).length;
+    const gTotal2 = generalItems.length;
+    sectionsHTML += `
+      <div class="section-header">
+        <span>General</span>
+        ${gTotal2 > 0 ? `<span class="section-count">${gPack2} / ${gTotal2}</span>` : ''}
+      </div>
+      ${generalItems.map(renderItemRow).join('')}
+      ${addRowHTML('', 'Add general item…')}
+    `;
+  } else {
+    // No activities — flat list with a single add row
+    sectionsHTML = items.map(renderItemRow).join('') + addRowHTML('', 'Type to add new item…');
+  }
 
   root.innerHTML = `
     <div class="detail-header">
@@ -322,32 +400,29 @@ function renderTrip() {
         <span class="pack-card-title">Packing List</span>
         <span class="pack-count ${done ? 'done' : ''}">${packed} / ${total}</span>
       </div>
-      ${rows}
-      <div class="add-row">
-        <span class="add-icon">+</span>
-        <input id="inline-add" class="add-input" type="text" placeholder="Type to add new item…" />
-      </div>
+      ${sectionsHTML}
     </div>
   `;
 
   document.getElementById('btn-back').onclick = () => {
     view = 'trips'; currentTrip = null; currentList = null; loadTrips();
   };
-
   root.querySelectorAll('.toggle-item').forEach(cb =>
     cb.addEventListener('change', () => toggleItem(+cb.dataset.item))
   );
   root.querySelectorAll('.del-item').forEach(btn =>
     btn.addEventListener('click', () => deleteItem(+btn.dataset.id))
   );
-
-  document.getElementById('inline-add').addEventListener('keydown', async e => {
-    if (e.key !== 'Enter') return;
-    const name = e.target.value.trim();
-    if (!name) return;
-    e.target.value = '';
-    await addItem(name);
-  });
+  root.querySelectorAll('.section-add').forEach(inp =>
+    inp.addEventListener('keydown', async e => {
+      if (e.key !== 'Enter') return;
+      const name = e.target.value.trim();
+      if (!name) return;
+      const slug = e.target.dataset.slug || null;
+      e.target.value = '';
+      await addItem(name, slug);
+    })
+  );
 }
 
 // ── Trip CRUD ─────────────────────────────────────────────────────────────────
@@ -403,15 +478,16 @@ async function createTrip() {
 }
 
 // ── Item CRUD ─────────────────────────────────────────────────────────────────
-async function addItem(name) {
+async function addItem(name, activitySlug = null) {
   if (!currentList) return;
-  const item = await POST(`lists/${currentList.id}/items`, {
-    name, quantity: 1, is_essential: false, added_by: 'user',
-  });
+  const body = { name, quantity: 1, is_essential: false, added_by: activitySlug ? 'adhoc' : 'user' };
+  if (activitySlug) body.source_activity = activitySlug;
+  const item = await POST(`lists/${currentList.id}/items`, body);
   currentList.items.push(item);
   renderTrip();
-  // Re-focus the input
-  const inp = document.getElementById('inline-add');
+  // Re-focus the same add input
+  const refSlug = activitySlug ?? '';
+  const inp = document.querySelector(`.section-add[data-slug="${refSlug}"]`);
   if (inp) inp.focus();
 }
 
