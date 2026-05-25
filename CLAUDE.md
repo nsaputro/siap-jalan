@@ -29,42 +29,49 @@ Follow these steps in order every time a feature or bug fix is requested:
 
 ## Versioning
 
-**Before touching any version number, check both the latest GitHub release and the current version in `ha-addon/config.yaml`:**
+### Three versioning files — know which to touch
 
-```
-mcp__github__get_latest_release  owner=nsaputro  repo=siap-jalan
-```
+| File | Who sets it | Rule |
+|------|-------------|------|
+| `ha-addon/NEXT_VERSION` | **PRs** | Next version to release (plain `X.Y.Z`). The only version file PRs should edit. |
+| `ha-addon/config.yaml` `version` | **Release workflow only** | Always the last *released* version. **Never edit in PRs.** The release workflow writes NEXT_VERSION here when cutting a release. |
+| `ha-addon-dev/config.yaml` `version` | **PRs** | Tracks `{NEXT_VERSION}b{N}` (pre-release suffix). |
 
-### Rule: only bump when the current version is already released
+**Why keep `config.yaml` at the last released version?**
+HA Supervisor reads `config.yaml` from the default branch. If it shows a version for which no Docker image exists yet, users see a broken "update available" prompt. Keeping `config.yaml` at the last released version prevents this. The release workflow atomically bumps it + publishes the image in one workflow run.
 
-- Read `ha-addon/config.yaml` `version` (the "current" version).
-- Read the latest GitHub release tag (the "last released" version).
-- **If current > last released** → the current version is still unreleased. **Keep it as-is.** Just add your changelog entry to the existing `## [current]` section in `CHANGELOG.md`. Do not create a new version.
-- **If current == last released** → every change in `ha-addon/config.yaml` has shipped. Pick the next version following semantic versioning and apply it.
+### Rule: what to do in every PR
 
-Use semantic versioning (`MAJOR.MINOR.PATCH`):
-- `PATCH` bump (e.g. `0.1.2` → `0.1.3`) for bug fixes and small improvements
-- `MINOR` bump (e.g. `0.1.x` → `0.2.0`) for new features
-- `MAJOR` bump for breaking changes
+1. **Read `ha-addon/NEXT_VERSION`** — all changelog entries go under `## [Unreleased]` for that version.
+2. **Check if NEXT_VERSION is already released:**
+   ```
+   mcp__github__get_latest_release  owner=nsaputro  repo=siap-jalan
+   ```
+   - **If latest release tag < NEXT_VERSION** → NEXT_VERSION is still unreleased. Leave it as-is.
+   - **If latest release tag == NEXT_VERSION** → bump NEXT_VERSION to the next semver and update `ha-addon/NEXT_VERSION`.
+3. **Never touch `ha-addon/config.yaml` version in PRs.**
+4. **Bump `ha-addon-dev/config.yaml`** as described below.
 
-**Example:** latest release is `v0.1.2`, `ha-addon/config.yaml` says `0.1.5` → `0.1.5` is unreleased → keep `0.1.5`, append to its changelog section.
-**Example:** latest release is `v0.1.5`, `ha-addon/config.yaml` says `0.1.5` → bump to `0.1.6`.
+Use semantic versioning (`MAJOR.MINOR.PATCH`) when bumping NEXT_VERSION:
+- `PATCH` (e.g. `0.1.3` → `0.1.4`) — bug fixes and small improvements
+- `MINOR` (e.g. `0.1.x` → `0.2.0`) — new user-facing features
+- `MAJOR` — breaking changes
 
-### Pre-release version must always match the upcoming stable version
+### Pre-release version must always track NEXT_VERSION
 
-`ha-addon-dev/config.yaml` must always be a pre-release of the same version that is in `ha-addon/config.yaml`:
+`ha-addon-dev/config.yaml` must always be `{NEXT_VERSION}b{N}`:
 
-1. Determine the stable version (from `ha-addon/config.yaml`, possibly unchanged per the rule above).
-2. List existing pre-release tags for that version prefix:
+1. Read `ha-addon/NEXT_VERSION` (e.g. `0.1.4`).
+2. List existing pre-release tags:
    ```
    mcp__github__list_tags  owner=nsaputro  repo=siap-jalan
    ```
-   Filter for tags like `v0.1.5b*`. Find the highest `b` number; `X = highest + 1`. If none exist, `X = 1`.
-3. Set `ha-addon-dev/config.yaml` `version` to `{stable}b{X}` (e.g. `0.1.5b1`).
-4. **If the dev version is already set to `{stable}b{X}` and hasn't changed**, leave it — no bump needed there either.
+   Filter for tags like `v0.1.4b*`. Find the highest `b` number; `X = highest + 1`. If none exist, `X = 1`.
+3. Set `ha-addon-dev/config.yaml` `version` to `{NEXT_VERSION}b{X}` (e.g. `0.1.4b1`).
+4. **If already set to the correct value**, leave it unchanged.
 
-**Example:** stable stays at `0.1.5` (unreleased), dev is already `0.1.5b1` → leave dev unchanged.
-**Example:** stable bumps from `0.1.5` → `0.1.6`, no `v0.1.6b*` tags → dev becomes `0.1.6b1`.
+**Example:** NEXT_VERSION=`0.1.4`, tags include `v0.1.4b2` → dev becomes `0.1.4b3`.
+**Example:** NEXT_VERSION bumped from `0.1.4` → `0.1.5`, no `v0.1.5b*` tags → dev becomes `0.1.5b1`.
 
 ## Changelog
 
@@ -197,10 +204,17 @@ There are **three pipelines**. CI never publishes images — that is exclusively
 
 **To ship a stable release:**
 
-1. Check latest release: `mcp__github__get_latest_release`
-2. Bump `version` in `ha-addon/config.yaml` to next `X.Y.Z`
-3. Move `## [Unreleased]` entries in `CHANGELOG.md` to `## [x.y.z] - YYYY-MM-DD` and update comparison links
-4. Update `ha-addon/CHANGELOG.md` — replace its content with **only the new version's bullet points** (copied from the root `CHANGELOG.md`) followed by the full-changelog link:
+1. Go to **Actions → Release → Run workflow** (no inputs needed).
+2. The workflow automatically:
+   - Reads `ha-addon/NEXT_VERSION`
+   - Writes that version into `ha-addon/config.yaml` with a `[skip ci]` commit pushed to `main`
+   - Creates and pushes the `vX.Y.Z` tag
+   - Builds and pushes images to GHCR
+   - Creates a GitHub release
+3. After the workflow completes, update `CHANGELOG.md`:
+   - Move `## [Unreleased]` entries to `## [x.y.z] - YYYY-MM-DD`
+   - Update the `[Unreleased]` comparison link from `v{old}...HEAD` to `v{new}...HEAD`
+4. Update `ha-addon/CHANGELOG.md` — replace with **only the new version's bullet points** followed by the full-changelog link:
    ```markdown
    ## x.y.z
 
@@ -210,12 +224,10 @@ There are **three pipelines**. CI never publishes images — that is exclusively
 
    [Full changelog](https://github.com/nsaputro/siap-jalan/blob/main/CHANGELOG.md)
    ```
-5. Merge via PR to `main`
-6. Go to **Actions → Release → Run workflow** → enter the version number
+5. Bump `ha-addon/NEXT_VERSION` to the next planned version (e.g. `0.1.4`).
 
 **To ship a pre-release:**
 
-1. Bump `version` in `ha-addon-dev/config.yaml` to e.g. `0.2.0b1`
-2. Update `CHANGELOG.md`
-3. Merge via PR to `main`
-4. Go to **Actions → Pre-release → Run workflow** (no inputs — version is read from `ha-addon-dev/config.yaml`)
+1. Ensure `ha-addon-dev/config.yaml` version is `{NEXT_VERSION}b{N}` (see versioning rules above).
+2. Merge the PR to `main`.
+3. Go to **Actions → Pre-release → Run workflow** (no inputs — version read from `ha-addon-dev/config.yaml`).

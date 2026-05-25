@@ -43,6 +43,15 @@ jobs:
       - name: Lint Dockerfiles
         run: hadolint ha-addon/Dockerfile backend/Dockerfile
 
+      - name: Validate ha-addon/NEXT_VERSION format
+        run: |
+          NEXT=$(cat ha-addon/NEXT_VERSION | tr -d '[:space:]')
+          if ! echo "${NEXT}" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::ha-addon/NEXT_VERSION '${NEXT}' must be a plain X.Y.Z version."
+            exit 1
+          fi
+          echo "NEXT_VERSION: ${NEXT}  ✓"
+
       - name: Validate addon config.yaml files
         run: |
           python3 - <<'EOF'

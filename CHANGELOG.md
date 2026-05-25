@@ -5,12 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
-## [0.1.3] - 2026-05-25
+## [Unreleased] — next: 0.1.3
 
 ### Added
 - `ha-addon/CHANGELOG.md`: per-addon changelog HA Supervisor reads to show "What's new" in the addon store
+- `ha-addon/NEXT_VERSION`: plain-text file holding the next unreleased version; PRs update this, never `config.yaml`
 
 ### Removed
 - `category` removed from the entire data model: API schemas (Create/Update/Response), activity merger, AI suggestion prompt and response, JSON seed templates, frontend TypeScript types, and HA addon UI
@@ -18,16 +17,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - HA addon UI: packing list items now grouped by activity/template — each selected activity gets its own section header (emoji + name + packed count), with a "General" section at the bottom for untagged items; each section has its own inline "Add to …" row
-- HA addon UI redesigned for simplicity: flat item list with no category grouping, circle checkboxes, and an inline "Type to add new item" field — no modal required to add items
+- HA addon UI redesigned for simplicity: circle checkboxes, inline add rows per section — no modal required to add items
 - AI suggestions no longer include or request category information; items use a silent backend default
 - `MergedItemResponse` and `MergedItem` dataclass no longer expose `category`; sorted by name only
-- Pre-release version (`ha-addon-dev/config.yaml`) now tracks the upcoming stable version with a `bX` suffix (e.g. `0.1.3b1`) so testers always run a build that matches what will ship
+- Pre-release version (`ha-addon-dev/config.yaml`) tracks `NEXT_VERSION + bN` and is validated against `NEXT_VERSION` in the pre-release workflow
+- Release workflow now writes version from `NEXT_VERSION` into `config.yaml`, commits to main, and tags — `config.yaml` on main always matches a published image
 
 ### Fixed
 - All packing item category names updated to English
 - HA Supervisor no longer shows "No changelog found" when checking addon updates
-- CLAUDE.md: versioning rule — only bump version when the current one is already released
-- Dev addon 502 Bad Gateway: `ha-addon/run.sh` now uses `${PORT:-8099}` instead of a hardcoded `8099`; `ha-addon/Dockerfile` accepts a `PORT` build arg (default `8099`); the pre-release workflow passes `PORT=8100` so the dev image correctly listens on port 8100
+- CLAUDE.md: versioning rule updated — use `NEXT_VERSION` file; never bump `config.yaml` in PRs
+- Dev addon 502 Bad Gateway: `ha-addon/run.sh` now uses `${PORT:-8099}`; `ha-addon/Dockerfile` accepts a `PORT` build arg; pre-release workflow passes `PORT=8100`
 
 ## [0.1.2] - 2026-05-24
 
@@ -77,8 +77,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Backend-tests and frontend-tests CI jobs run on every PR
 - `PackingItemBulkCreate` schema with `list_id` field for `/items/bulk` endpoint
 
-[Unreleased]: https://github.com/nsaputro/siap-jalan/compare/v0.1.3...HEAD
-[0.1.3]: https://github.com/nsaputro/siap-jalan/compare/v0.1.2...v0.1.3
+[Unreleased]: https://github.com/nsaputro/siap-jalan/compare/v0.1.2...HEAD
 [0.1.2]: https://github.com/nsaputro/siap-jalan/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/nsaputro/siap-jalan/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/nsaputro/siap-jalan/releases/tag/v0.1.0
