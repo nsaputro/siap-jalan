@@ -9,9 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.5] - 2026-05-25
 
+### Removed
+- `category` removed from the entire data model: API schemas (Create/Update/Response), activity merger, AI suggestion prompt and response, JSON seed templates, frontend TypeScript types, and HA addon UI
+- `CATEGORIES` constant removed from `backend/app/schemas/packing.py` and `frontend/src/types/index.ts`
+
 ### Changed
-- HA addon UI redesigned to match PackPoint's simplicity: flat item list with no category grouping, circle checkboxes, and an inline "Type to add new item" field — no modal required to add items
-- Category field removed from the UI entirely (still stored in backend for AI suggestions; all manually added items use a silent default)
+- HA addon UI redesigned for simplicity: flat item list with no category grouping, circle checkboxes, and an inline "Type to add new item" field — no modal required to add items
+- AI suggestions no longer include or request category information; items use a silent backend default
+- `MergedItemResponse` and `MergedItem` dataclass no longer expose `category`; sorted by name only
 
 ## [0.1.4] - 2026-05-25
 

@@ -28,13 +28,13 @@ async def seeded_session():
 
         session.add_all([
             # Hiking items
-            ActivityTemplateItem(activity_template_id=hiking.id, category="Clothing",            name="Trail shoes", quantity=1, is_essential=True,  priority=8),
-            ActivityTemplateItem(activity_template_id=hiking.id, category="Other",            name="Headlamp",   quantity=1, is_essential=False, priority=5),
-            ActivityTemplateItem(activity_template_id=hiking.id, category="Toiletries & Hygiene", name="Sunscreen", quantity=1, is_essential=False, priority=4),
+            ActivityTemplateItem(activity_template_id=hiking.id, name="Trail shoes", quantity=1, is_essential=True,  priority=8),
+            ActivityTemplateItem(activity_template_id=hiking.id, name="Headlamp",   quantity=1, is_essential=False, priority=5),
+            ActivityTemplateItem(activity_template_id=hiking.id, name="Sunscreen", quantity=1, is_essential=False, priority=4),
             # Beach items
-            ActivityTemplateItem(activity_template_id=beach.id,  category="Clothing",            name="Swimwear",   quantity=1, is_essential=True,  priority=8),
-            ActivityTemplateItem(activity_template_id=beach.id,  category="Toiletries & Hygiene", name="Sunscreen", quantity=2, is_essential=True,  priority=6),  # higher qty + essential
-            ActivityTemplateItem(activity_template_id=beach.id,  category="Shoes & Accessories", name="Flip flops", quantity=1, is_essential=False, priority=3),
+            ActivityTemplateItem(activity_template_id=beach.id,  name="Swimwear",   quantity=1, is_essential=True,  priority=8),
+            ActivityTemplateItem(activity_template_id=beach.id,  name="Sunscreen", quantity=2, is_essential=True,  priority=6),  # higher qty + essential
+            ActivityTemplateItem(activity_template_id=beach.id,  name="Flip flops", quantity=1, is_essential=False, priority=3),
         ])
         await session.commit()
         yield session
@@ -99,22 +99,20 @@ async def test_non_overlapping_items_keep_single_source(seeded_session):
     assert flipflops.source_activities == ["beach"]
 
 
-async def test_result_sorted_by_category_then_name(seeded_session):
+async def test_result_sorted_by_name(seeded_session):
     result = await merge_activities(seeded_session, ["hiking", "beach"])
-    pairs = [(r.category, r.name) for r in result]
-    assert pairs == sorted(pairs)
+    names = [r.name for r in result]
+    assert names == sorted(names)
 
 
 async def test_dedup_is_case_insensitive(seeded_session):
     """Add a duplicate with different casing; should still deduplicate."""
-    # Add SUNSCREEN directly via the existing session (avoids get_bind() on async session)
     hiking_r = await seeded_session.execute(
         sa_select(ActivityTemplate).where(ActivityTemplate.slug == "hiking")
     )
     hiking = hiking_r.scalar_one()
     seeded_session.add(ActivityTemplateItem(
         activity_template_id=hiking.id,
-        category="Toiletries & Hygiene",
         name="SUNSCREEN",   # upper-case duplicate
         quantity=1, is_essential=False, priority=2,
     ))

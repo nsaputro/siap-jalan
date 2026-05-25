@@ -9,7 +9,7 @@ CUSTOM = {
     "icon_emoji": "🧪",
     "climate_types": [],
     "items": [
-        {"category": "Other", "name": "Prop item one", "quantity": 1,
+        {"name": "Prop item one", "quantity": 1,
          "is_essential": False, "priority": 5, "gender_filter": "all"},
     ],
 }
@@ -45,7 +45,7 @@ async def test_propagation_add_item_to_active_trip(client):
     count_before = len(items_before)
 
     await client.post(f"/activities/{activity['id']}/items", json={
-        "category": "Documents", "name": "New template item",
+        "name": "New template item",
         "quantity": 1, "is_essential": False, "priority": 3, "gender_filter": "all",
     })
 
@@ -99,7 +99,7 @@ async def test_propagation_skips_add_if_name_already_exists(client):
 
     # Manually add an item with the same name as what we're about to add via template
     await client.post(f"/lists/{list_id}/items", json={
-        "name": "Duplicate item", "category": "Other",
+        "name": "Duplicate item",
         "quantity": 1, "is_essential": False,
     })
 
@@ -108,7 +108,7 @@ async def test_propagation_skips_add_if_name_already_exists(client):
 
     # Add template item with same name → should NOT create a duplicate
     await client.post(f"/activities/{activity['id']}/items", json={
-        "category": "Other", "name": "Duplicate item",
+        "name": "Duplicate item",
         "quantity": 1, "is_essential": False, "priority": 3, "gender_filter": "all",
     })
 

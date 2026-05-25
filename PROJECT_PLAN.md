@@ -7,13 +7,13 @@ _Siap = Ready | Jalan = Travel/Go_
 
 ## Vision
 
-SiapJalan is an AI-powered travel packing assistant that helps you pack the right things based on your destination, trip duration, activities, and live weather forecast. Inspired by PackPoint's activity-based template system, SiapJalan lets you **combine multiple activity templates** (e.g. Hiking + Swimming + Flight) to generate a complete, deduplicated packing list — then further refines it with AI and real weather data. Available as a **Home Assistant addon** (sidebar panel, multi-user) or **standalone app** (Docker Compose).
+SiapJalan is an AI-powered travel packing assistant that helps you pack the right things based on your destination, trip duration, activities, and live weather forecast. It lets you **combine multiple activity templates** (e.g. Hiking + Swimming + Flight) to generate a complete, deduplicated packing list — then further refines it with AI and real weather data. Available as a **Home Assistant addon** (sidebar panel, multi-user) or **standalone app** (Docker Compose).
 
 ---
 
 ## Key Design Principle — Activity-Driven Packing
 
-Like PackPoint, the core UX is built around **activities, not generic lists**:
+The core UX is built around **activities, not generic lists**:
 
 1. User creates a trip and selects one or more activities (e.g. ✈️ Flight + 🏕️ Camping + 🏊 Swimming)
 2. The system merges the item lists from all selected activity templates into a single, **deduplicated** packing list
@@ -334,7 +334,7 @@ After adding an ad-hoc item the UI offers **"Also add to Hiking template?"**. Ac
 - [ ] **Per-activity AI context**: prompt includes which activities were chosen so AI doesn't re-suggest already-templated items
 
 ### Phase 3 — Personalisation & UX (v0.3.0)
-- [ ] **Gender / traveller profile** filter (like PackPoint): hide gender-irrelevant items (e.g. women's clothing items, baby items)
+- [ ] **Gender / traveller profile** filter: hide gender-irrelevant items (e.g. women's clothing items, baby items)
 - [ ] **Traveller count**: scale quantities for group/family trips (e.g. sunscreen ×3 for 3 people)
 - [ ] **Custom activity templates**: create, edit, clone built-in activities
 - [ ] Save a completed trip as a **user template** for future reuse

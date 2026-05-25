@@ -76,7 +76,6 @@ export function TripDetail() {
     if (!newItemName.trim()) return
     const item = await api.addItem(listId, {
       name: newItemName.trim(),
-      category: 'Other',
       quantity: 1,
       is_essential: false,
       source_activity: activitySlug,
