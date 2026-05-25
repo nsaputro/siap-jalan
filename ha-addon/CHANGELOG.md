@@ -1,6 +1,6 @@
-## 0.1.4
+## 0.1.5
 
-- Fixed: all packing category labels are now in English (Clothing, Toiletries & Hygiene, Documents, Electronics, Medications, Shoes & Accessories, Food & Drinks, Sports & Fitness, Baby & Kids, Other)
+- Changed: UI redesigned for simplicity — flat item list, circle checkboxes, inline "Type to add new item" (no category grouping, no modal to add items)
 
 ---
 

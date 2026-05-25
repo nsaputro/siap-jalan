@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.5] - 2026-05-25
+
+### Changed
+- HA addon UI redesigned to match PackPoint's simplicity: flat item list with no category grouping, circle checkboxes, and an inline "Type to add new item" field — no modal required to add items
+- Category field removed from the UI entirely (still stored in backend for AI suggestions; all manually added items use a silent default)
+
 ## [0.1.4] - 2026-05-25
 
 ### Fixed
@@ -73,7 +79,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Backend-tests and frontend-tests CI jobs run on every PR
 - `PackingItemBulkCreate` schema with `list_id` field for `/items/bulk` endpoint
 
-[Unreleased]: https://github.com/nsaputro/siap-jalan/compare/v0.1.4...HEAD
+[Unreleased]: https://github.com/nsaputro/siap-jalan/compare/v0.1.5...HEAD
+[0.1.5]: https://github.com/nsaputro/siap-jalan/compare/v0.1.4...v0.1.5
 [0.1.4]: https://github.com/nsaputro/siap-jalan/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/nsaputro/siap-jalan/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/nsaputro/siap-jalan/compare/v0.1.1...v0.1.2
