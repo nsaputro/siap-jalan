@@ -1,6 +1,10 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
+# Port the uvicorn server listens on (overridden to 8100 for the dev addon)
+ARG PORT=8099
+ENV PORT=${PORT}
+
 WORKDIR /app
 
 # Install Python deps first (better layer caching)

@@ -86,6 +86,7 @@ jobs:
           push: true
           build-args: |
             BUILD_FROM=${{ matrix.base }}
+            PORT=8100
           tags: |
             ghcr.io/nsaputro/siap-jalan/${{ matrix.arch }}-siap_jalan_dev:${{ needs.check-version.outputs.version }}
           labels: |
