@@ -3,25 +3,9 @@ export type BagType = 'carry_on' | 'checked' | 'personal'
 export type AddedBy = 'activity' | 'adhoc' | 'ai' | 'user'
 export type GenderFilter = 'all' | 'male' | 'female'
 
-export const CATEGORIES = [
-  'Clothing',
-  'Toiletries & Hygiene',
-  'Documents',
-  'Electronics',
-  'Medications',
-  'Shoes & Accessories',
-  'Food & Drinks',
-  'Sports & Fitness',
-  'Baby & Kids',
-  'Other',
-] as const
-
-export type Category = (typeof CATEGORIES)[number]
-
 export interface PackingItem {
   id: number
   list_id: number
-  category: string
   name: string
   quantity: number
   unit: string | null
@@ -68,7 +52,6 @@ export interface Trip {
 export interface ActivityTemplateItem {
   id: number
   activity_template_id: number
-  category: string
   name: string
   quantity: number
   unit: string | null
@@ -91,7 +74,6 @@ export interface ActivityTemplate {
 
 export interface MergedItem {
   name: string
-  category: string
   quantity: number
   unit: string | null
   is_essential: boolean
@@ -121,7 +103,6 @@ export interface TripFormValues {
 
 export interface PackingItemFormValues {
   name: string
-  category: string
   quantity: number
   unit?: string
   is_essential: boolean

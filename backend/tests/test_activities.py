@@ -9,8 +9,8 @@ CUSTOM_ACTIVITY = {
     "description": "Yoga retreat",
     "climate_types": ["tropical"],
     "items": [
-        {"category": "Clothing", "name": "Yoga mat", "quantity": 1, "is_essential": True, "priority": 8, "gender_filter": "all"},
-        {"category": "Clothing", "name": "Yoga pants", "quantity": 2, "is_essential": False, "priority": 5, "gender_filter": "all"},
+        {"name": "Yoga mat", "quantity": 1, "is_essential": True, "priority": 8, "gender_filter": "all"},
+        {"name": "Yoga pants", "quantity": 2, "is_essential": False, "priority": 5, "gender_filter": "all"},
     ],
 }
 
@@ -89,7 +89,7 @@ async def test_cannot_delete_builtin_activity(client):
 async def test_add_item_to_custom_activity(client):
     activity = (await client.post("/activities", json=CUSTOM_ACTIVITY)).json()
     r = await client.post(f"/activities/{activity['id']}/items", json={
-        "category": "Other", "name": "Foam roller", "quantity": 1,
+        "name": "Foam roller", "quantity": 1,
         "is_essential": False, "priority": 3, "gender_filter": "all",
     })
     assert r.status_code == 201

@@ -13,7 +13,7 @@ async def _create_trip(client, **kwargs):
 
 async def test_add_item_to_list(client):
     _, list_id = await _create_trip(client)
-    r = await client.post(f"/lists/{list_id}/items", json={"name": "Passport", "category": "Documents", "quantity": 1, "is_essential": True})
+    r = await client.post(f"/lists/{list_id}/items", json={"name": "Passport", "quantity": 1, "is_essential": True})
     assert r.status_code == 201
     item = r.json()
     assert item["name"] == "Passport"
@@ -24,7 +24,7 @@ async def test_add_item_to_list(client):
 async def test_add_adhoc_item_with_source_activity(client):
     _, list_id = await _create_trip(client)
     r = await client.post(f"/lists/{list_id}/items", json={
-        "name": "Blister kit", "category": "Medications", "quantity": 1,
+        "name": "Blister kit", "quantity": 1,
         "is_essential": False, "source_activity": "hiking",
     })
     assert r.status_code == 201
@@ -35,7 +35,7 @@ async def test_add_adhoc_item_with_source_activity(client):
 
 async def test_toggle_item_unpacked_to_packed(client):
     _, list_id = await _create_trip(client)
-    item = (await client.post(f"/lists/{list_id}/items", json={"name": "Sunscreen", "category": "Other", "quantity": 1, "is_essential": False})).json()
+    item = (await client.post(f"/lists/{list_id}/items", json={"name": "Sunscreen", "quantity": 1, "is_essential": False})).json()
     assert item["is_packed"] is False
     toggled = (await client.post(f"/items/{item['id']}/toggle")).json()
     assert toggled["is_packed"] is True
@@ -43,7 +43,7 @@ async def test_toggle_item_unpacked_to_packed(client):
 
 async def test_toggle_item_packed_to_unpacked(client):
     _, list_id = await _create_trip(client)
-    item = (await client.post(f"/lists/{list_id}/items", json={"name": "Hat", "category": "Clothing", "quantity": 1, "is_essential": False})).json()
+    item = (await client.post(f"/lists/{list_id}/items", json={"name": "Hat", "quantity": 1, "is_essential": False})).json()
     await client.post(f"/items/{item['id']}/toggle")
     toggled = (await client.post(f"/items/{item['id']}/toggle")).json()
     assert toggled["is_packed"] is False
@@ -51,7 +51,7 @@ async def test_toggle_item_packed_to_unpacked(client):
 
 async def test_update_item_fields(client):
     _, list_id = await _create_trip(client)
-    item = (await client.post(f"/lists/{list_id}/items", json={"name": "Old name", "category": "Other", "quantity": 1, "is_essential": False})).json()
+    item = (await client.post(f"/lists/{list_id}/items", json={"name": "Old name", "quantity": 1, "is_essential": False})).json()
     r = await client.put(f"/items/{item['id']}", json={"name": "New name", "quantity": 3})
     assert r.status_code == 200
     assert r.json()["name"] == "New name"
@@ -80,7 +80,7 @@ async def test_update_is_packed_does_not_set_customised(client):
 
 async def test_delete_item(client):
     _, list_id = await _create_trip(client)
-    item = (await client.post(f"/lists/{list_id}/items", json={"name": "Toothbrush", "category": "Toiletries & Hygiene", "quantity": 1, "is_essential": False})).json()
+    item = (await client.post(f"/lists/{list_id}/items", json={"name": "Toothbrush", "quantity": 1, "is_essential": False})).json()
     r = await client.delete(f"/items/{item['id']}")
     assert r.status_code == 204
     items = (await client.get(f"/lists/{list_id}/items")).json()
@@ -90,9 +90,9 @@ async def test_delete_item(client):
 async def test_bulk_create_items(client):
     _, list_id = await _create_trip(client)
     payload = [
-        {"list_id": list_id, "name": "Item A", "category": "Other", "quantity": 1, "is_essential": False, "added_by": "user", "source_activities": []},
-        {"list_id": list_id, "name": "Item B", "category": "Other", "quantity": 2, "is_essential": True,  "added_by": "user", "source_activities": []},
-        {"list_id": list_id, "name": "Item C", "category": "Documents",  "quantity": 1, "is_essential": True,  "added_by": "user", "source_activities": []},
+        {"list_id": list_id, "name": "Item A", "quantity": 1, "is_essential": False, "added_by": "user", "source_activities": []},
+        {"list_id": list_id, "name": "Item B", "quantity": 2, "is_essential": True,  "added_by": "user", "source_activities": []},
+        {"list_id": list_id, "name": "Item C", "quantity": 1, "is_essential": True,  "added_by": "user", "source_activities": []},
     ]
     r = await client.post("/items/bulk", json=payload)
     assert r.status_code == 201

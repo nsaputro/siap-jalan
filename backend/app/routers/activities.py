@@ -230,7 +230,6 @@ async def merge_activity_items(
     return [
         MergedItemResponse(
             name=mi.name,
-            category=mi.category,
             quantity=mi.quantity,
             unit=mi.unit,
             is_essential=mi.is_essential,

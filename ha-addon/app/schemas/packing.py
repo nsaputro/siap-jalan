@@ -6,26 +6,11 @@ from typing import Optional
 from pydantic import BaseModel, ConfigDict, model_validator
 
 
-CATEGORIES = [
-    "Clothing",
-    "Toiletries & Hygiene",
-    "Documents",
-    "Electronics",
-    "Medications",
-    "Shoes & Accessories",
-    "Food & Drinks",
-    "Sports & Fitness",
-    "Baby & Kids",
-    "Other",
-]
-
-
 # ---------------------------------------------------------------------------
 # ActivityTemplateItem
 # ---------------------------------------------------------------------------
 
 class ActivityTemplateItemCreate(BaseModel):
-    category: str
     name: str
     quantity: int = 1
     unit: Optional[str] = None
@@ -36,7 +21,6 @@ class ActivityTemplateItemCreate(BaseModel):
 
 
 class ActivityTemplateItemUpdate(BaseModel):
-    category: Optional[str] = None
     name: Optional[str] = None
     quantity: Optional[int] = None
     unit: Optional[str] = None
@@ -51,7 +35,6 @@ class ActivityTemplateItemResponse(BaseModel):
 
     id: int
     activity_template_id: int
-    category: str
     name: str
     quantity: int
     unit: Optional[str]
@@ -103,7 +86,6 @@ class ActivityTemplateResponse(BaseModel):
 # ---------------------------------------------------------------------------
 
 class PackingItemCreate(BaseModel):
-    category: str
     name: str
     quantity: int = 1
     unit: Optional[str] = None
@@ -122,7 +104,6 @@ class PackingItemCreate(BaseModel):
 
 
 class PackingItemUpdate(BaseModel):
-    category: Optional[str] = None
     name: Optional[str] = None
     quantity: Optional[int] = None
     unit: Optional[str] = None
@@ -140,7 +121,6 @@ class PackingItemResponse(BaseModel):
 
     id: int
     list_id: int
-    category: str
     name: str
     quantity: int
     unit: Optional[str]
@@ -233,7 +213,6 @@ class TripResponse(BaseModel):
 # ---------------------------------------------------------------------------
 
 class UserTripTemplateItemCreate(BaseModel):
-    category: str
     name: str
     quantity: int = 1
     is_essential: bool = False
@@ -244,7 +223,6 @@ class UserTripTemplateItemResponse(BaseModel):
 
     id: int
     template_id: int
-    category: str
     name: str
     quantity: int
     is_essential: bool
@@ -287,7 +265,6 @@ class MergeActivitiesRequest(BaseModel):
 
 class MergedItemResponse(BaseModel):
     name: str
-    category: str
     quantity: int
     unit: Optional[str]
     is_essential: bool

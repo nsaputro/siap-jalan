@@ -76,7 +76,9 @@ class PackingItem(Base):
     list_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("packing_lists.id", ondelete="CASCADE"), nullable=False
     )
-    category: Mapped[str] = mapped_column(String, nullable=False)
+    # category kept for backward compat with existing DBs (NOT NULL constraint);
+    # hidden from API schemas — all new items use the silent default "Other".
+    category: Mapped[str] = mapped_column(String, nullable=False, default="Other")
     name: Mapped[str] = mapped_column(String, nullable=False)
     quantity: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
     unit: Mapped[Optional[str]] = mapped_column(String, nullable=True)
@@ -141,7 +143,8 @@ class ActivityTemplateItem(Base):
         ForeignKey("activity_templates.id", ondelete="CASCADE"),
         nullable=False,
     )
-    category: Mapped[str] = mapped_column(String, nullable=False)
+    # category kept for backward compat; hidden from API schemas.
+    category: Mapped[str] = mapped_column(String, nullable=False, default="Other")
     name: Mapped[str] = mapped_column(String, nullable=False)
     quantity: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
     unit: Mapped[Optional[str]] = mapped_column(String, nullable=True)
@@ -193,7 +196,8 @@ class UserTripTemplateItem(Base):
         ForeignKey("user_trip_templates.id", ondelete="CASCADE"),
         nullable=False,
     )
-    category: Mapped[str] = mapped_column(String, nullable=False)
+    # category kept for backward compat; hidden from API schemas.
+    category: Mapped[str] = mapped_column(String, nullable=False, default="Other")
     name: Mapped[str] = mapped_column(String, nullable=False)
     quantity: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
     is_essential: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)

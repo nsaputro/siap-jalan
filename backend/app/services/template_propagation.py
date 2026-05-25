@@ -85,7 +85,6 @@ async def propagate_template_change(
             if norm_name not in existing_by_name:
                 packing_item = PackingItem(
                     list_id=default_list.id,
-                    category=new_item.category,
                     name=new_item.name,
                     quantity=new_item.quantity,
                     unit=new_item.unit if hasattr(new_item, "unit") else None,
@@ -107,7 +106,6 @@ async def propagate_template_change(
             if existing.is_customised:
                 items_skipped_customised += 1
                 continue
-            existing.category = upd_item.category
             existing.name = upd_item.name
             existing.quantity = upd_item.quantity
             existing.unit = upd_item.unit if hasattr(upd_item, "unit") else existing.unit

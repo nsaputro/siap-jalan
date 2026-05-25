@@ -143,7 +143,6 @@ async def apply_template(
         if ti.name.lower().strip() not in existing_names:
             item = PackingItem(
                 list_id=default_list.id,
-                category=ti.category,
                 name=ti.name,
                 quantity=ti.quantity,
                 is_essential=ti.is_essential,

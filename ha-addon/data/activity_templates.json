@@ -4,21 +4,127 @@
     "name": "Flight",
     "icon_emoji": "✈️",
     "description": "Items essential for air travel comfort and compliance.",
-    "climate_types": ["all"],
+    "climate_types": [
+      "all"
+    ],
     "items": [
-      {"category": "Documents", "name": "Passport / KTP", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Check expiry date — must be valid for 6+ months"},
-      {"category": "Documents", "name": "Boarding pass", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Print or save to phone"},
-      {"category": "Documents", "name": "Travel insurance card", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 7, "gender_filter": "all", "notes": null},
-      {"category": "Electronics", "name": "Power bank", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": "Max 100 Wh for carry-on"},
-      {"category": "Electronics", "name": "Earphones / headphones", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 7, "gender_filter": "all", "notes": null},
-      {"category": "Electronics", "name": "Phone charger + adapter", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Check plug type for destination country"},
-      {"category": "Other", "name": "Neck pillow", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 5, "gender_filter": "all", "notes": null},
-      {"category": "Other", "name": "Eye mask", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 4, "gender_filter": "all", "notes": null},
-      {"category": "Other", "name": "Earplugs", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 4, "gender_filter": "all", "notes": null},
-      {"category": "Medications", "name": "Motion sickness pills", "quantity": 4, "unit": "tablets", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": null},
-      {"category": "Toiletries & Hygiene", "name": "Hand sanitizer (≤100 ml)", "quantity": 1, "unit": "bottle", "is_essential": true, "priority": 7, "gender_filter": "all", "notes": "Liquids rule: max 100 ml per container"},
-      {"category": "Clothing", "name": "Compression socks", "quantity": 1, "unit": "pair", "is_essential": false, "priority": 5, "gender_filter": "all", "notes": "Reduce DVT risk on long-haul flights"},
-      {"category": "Food & Drinks", "name": "Snacks (bar / nuts)", "quantity": 2, "unit": "pcs", "is_essential": false, "priority": 4, "gender_filter": "all", "notes": "Check customs rules at destination"}
+      {
+        "name": "Passport / KTP",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Check expiry date — must be valid for 6+ months"
+      },
+      {
+        "name": "Boarding pass",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Print or save to phone"
+      },
+      {
+        "name": "Travel insurance card",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Power bank",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": "Max 100 Wh for carry-on"
+      },
+      {
+        "name": "Earphones / headphones",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Phone charger + adapter",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Check plug type for destination country"
+      },
+      {
+        "name": "Neck pillow",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 5,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Eye mask",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 4,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Earplugs",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 4,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Motion sickness pills",
+        "quantity": 4,
+        "unit": "tablets",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Hand sanitizer (≤100 ml)",
+        "quantity": 1,
+        "unit": "bottle",
+        "is_essential": true,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": "Liquids rule: max 100 ml per container"
+      },
+      {
+        "name": "Compression socks",
+        "quantity": 1,
+        "unit": "pair",
+        "is_essential": false,
+        "priority": 5,
+        "gender_filter": "all",
+        "notes": "Reduce DVT risk on long-haul flights"
+      },
+      {
+        "name": "Snacks (bar / nuts)",
+        "quantity": 2,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 4,
+        "gender_filter": "all",
+        "notes": "Check customs rules at destination"
+      }
     ]
   },
   {
@@ -26,21 +132,129 @@
     "name": "Beach",
     "icon_emoji": "🏖️",
     "description": "Everything you need for a perfect beach day or coastal holiday.",
-    "climate_types": ["tropical", "mediterranean", "hot"],
+    "climate_types": [
+      "tropical",
+      "mediterranean",
+      "hot"
+    ],
     "items": [
-      {"category": "Clothing", "name": "Swimsuit / bikini", "quantity": 2, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Two so one can dry"},
-      {"category": "Clothing", "name": "Sarong / beach wrap", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": null},
-      {"category": "Clothing", "name": "Rash guard / UV shirt", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 7, "gender_filter": "all", "notes": "UPF 50+ recommended"},
-      {"category": "Toiletries & Hygiene", "name": "Sunscreen SPF 50+", "quantity": 1, "unit": "bottle", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Reef-safe if snorkelling"},
-      {"category": "Toiletries & Hygiene", "name": "After-sun lotion", "quantity": 1, "unit": "bottle", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": null},
-      {"category": "Shoes & Accessories", "name": "Flip-flops / sandals", "quantity": 1, "unit": "pair", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Shoes & Accessories", "name": "Sunglasses (UV400)", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": null},
-      {"category": "Other", "name": "Beach towel", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Other", "name": "Beach bag / tote", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": null},
-      {"category": "Other", "name": "Waterproof phone pouch", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": null},
-      {"category": "Clothing", "name": "Wide-brim hat", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": "Sun protection for face and neck"},
-      {"category": "Medications", "name": "Insect repellent", "quantity": 1, "unit": "bottle", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": "Especially for evenings on the beach"},
-      {"category": "Food & Drinks", "name": "Reusable water bottle", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": "Stay hydrated in the heat"}
+      {
+        "name": "Swimsuit / bikini",
+        "quantity": 2,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Two so one can dry"
+      },
+      {
+        "name": "Sarong / beach wrap",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Rash guard / UV shirt",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": "UPF 50+ recommended"
+      },
+      {
+        "name": "Sunscreen SPF 50+",
+        "quantity": 1,
+        "unit": "bottle",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Reef-safe if snorkelling"
+      },
+      {
+        "name": "After-sun lotion",
+        "quantity": 1,
+        "unit": "bottle",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Flip-flops / sandals",
+        "quantity": 1,
+        "unit": "pair",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Sunglasses (UV400)",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Beach towel",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Beach bag / tote",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Waterproof phone pouch",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Wide-brim hat",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": "Sun protection for face and neck"
+      },
+      {
+        "name": "Insect repellent",
+        "quantity": 1,
+        "unit": "bottle",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": "Especially for evenings on the beach"
+      },
+      {
+        "name": "Reusable water bottle",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": "Stay hydrated in the heat"
+      }
     ]
   },
   {
@@ -48,18 +262,100 @@
     "name": "Swimming",
     "icon_emoji": "🏊",
     "description": "Gear for pool or open-water swimming sessions.",
-    "climate_types": ["all"],
+    "climate_types": [
+      "all"
+    ],
     "items": [
-      {"category": "Clothing", "name": "Swimsuit", "quantity": 2, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": null},
-      {"category": "Sports & Fitness", "name": "Swimming goggles", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Anti-fog lenses preferred"},
-      {"category": "Sports & Fitness", "name": "Swim cap", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": "Required in many pools"},
-      {"category": "Toiletries & Hygiene", "name": "Waterproof shower bag", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 5, "gender_filter": "all", "notes": null},
-      {"category": "Toiletries & Hygiene", "name": "Shampoo (travel size)", "quantity": 1, "unit": "bottle", "is_essential": true, "priority": 7, "gender_filter": "all", "notes": "Rinse out chlorine"},
-      {"category": "Toiletries & Hygiene", "name": "Conditioner (travel size)", "quantity": 1, "unit": "bottle", "is_essential": false, "priority": 5, "gender_filter": "all", "notes": null},
-      {"category": "Other", "name": "Microfibre towel", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Dries quickly"},
-      {"category": "Shoes & Accessories", "name": "Pool slippers", "quantity": 1, "unit": "pair", "is_essential": true, "priority": 7, "gender_filter": "all", "notes": "Prevent foot infections on pool deck"},
-      {"category": "Sports & Fitness", "name": "Pull buoy", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 3, "gender_filter": "all", "notes": "Training aid"},
-      {"category": "Sports & Fitness", "name": "Kickboard", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 3, "gender_filter": "all", "notes": "Training aid"}
+      {
+        "name": "Swimsuit",
+        "quantity": 2,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Swimming goggles",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Anti-fog lenses preferred"
+      },
+      {
+        "name": "Swim cap",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": "Required in many pools"
+      },
+      {
+        "name": "Waterproof shower bag",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 5,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Shampoo (travel size)",
+        "quantity": 1,
+        "unit": "bottle",
+        "is_essential": true,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": "Rinse out chlorine"
+      },
+      {
+        "name": "Conditioner (travel size)",
+        "quantity": 1,
+        "unit": "bottle",
+        "is_essential": false,
+        "priority": 5,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Microfibre towel",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Dries quickly"
+      },
+      {
+        "name": "Pool slippers",
+        "quantity": 1,
+        "unit": "pair",
+        "is_essential": true,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": "Prevent foot infections on pool deck"
+      },
+      {
+        "name": "Pull buoy",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 3,
+        "gender_filter": "all",
+        "notes": "Training aid"
+      },
+      {
+        "name": "Kickboard",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 3,
+        "gender_filter": "all",
+        "notes": "Training aid"
+      }
     ]
   },
   {
@@ -67,23 +363,148 @@
     "name": "Hiking",
     "icon_emoji": "🥾",
     "description": "Day hike to multi-day trekking essentials.",
-    "climate_types": ["temperate", "mountain", "tropical", "cold"],
+    "climate_types": [
+      "temperate",
+      "mountain",
+      "tropical",
+      "cold"
+    ],
     "items": [
-      {"category": "Shoes & Accessories", "name": "Hiking boots / trail shoes", "quantity": 1, "unit": "pair", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Break them in before the trip"},
-      {"category": "Clothing", "name": "Moisture-wicking t-shirt", "quantity": 2, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Clothing", "name": "Hiking pants / convertible pants", "quantity": 2, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Clothing", "name": "Wool / synthetic hiking socks", "quantity": 3, "unit": "pair", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Avoid cotton"},
-      {"category": "Clothing", "name": "Rain jacket / windbreaker", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Clothing", "name": "Sun hat / beanie", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 7, "gender_filter": "all", "notes": "Depends on climate"},
-      {"category": "Sports & Fitness", "name": "Trekking poles", "quantity": 2, "unit": "pcs", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": "Helpful on steep terrain"},
-      {"category": "Sports & Fitness", "name": "Backpack (30–50 L)", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "With rain cover"},
-      {"category": "Medications", "name": "First aid kit", "quantity": 1, "unit": "kit", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Include blister treatment"},
-      {"category": "Food & Drinks", "name": "Hydration bladder / water bottle", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "At least 2 L capacity"},
-      {"category": "Food & Drinks", "name": "Energy bars / trail mix", "quantity": 5, "unit": "pcs", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": null},
-      {"category": "Toiletries & Hygiene", "name": "Sunscreen SPF 50+", "quantity": 1, "unit": "bottle", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Electronics", "name": "GPS device / offline maps app", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Download maps before you go"},
-      {"category": "Other", "name": "Headlamp + spare batteries", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Other", "name": "Emergency whistle", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": null}
+      {
+        "name": "Hiking boots / trail shoes",
+        "quantity": 1,
+        "unit": "pair",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Break them in before the trip"
+      },
+      {
+        "name": "Moisture-wicking t-shirt",
+        "quantity": 2,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Hiking pants / convertible pants",
+        "quantity": 2,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Wool / synthetic hiking socks",
+        "quantity": 3,
+        "unit": "pair",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Avoid cotton"
+      },
+      {
+        "name": "Rain jacket / windbreaker",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Sun hat / beanie",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": "Depends on climate"
+      },
+      {
+        "name": "Trekking poles",
+        "quantity": 2,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": "Helpful on steep terrain"
+      },
+      {
+        "name": "Backpack (30–50 L)",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "With rain cover"
+      },
+      {
+        "name": "First aid kit",
+        "quantity": 1,
+        "unit": "kit",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Include blister treatment"
+      },
+      {
+        "name": "Hydration bladder / water bottle",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "At least 2 L capacity"
+      },
+      {
+        "name": "Energy bars / trail mix",
+        "quantity": 5,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Sunscreen SPF 50+",
+        "quantity": 1,
+        "unit": "bottle",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "GPS device / offline maps app",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Download maps before you go"
+      },
+      {
+        "name": "Headlamp + spare batteries",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Emergency whistle",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": null
+      }
     ]
   },
   {
@@ -91,23 +512,147 @@
     "name": "Camping",
     "icon_emoji": "⛺",
     "description": "Overnight camping gear for wilderness or campsite stays.",
-    "climate_types": ["temperate", "mountain", "cold"],
+    "climate_types": [
+      "temperate",
+      "mountain",
+      "cold"
+    ],
     "items": [
-      {"category": "Other", "name": "Tent", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Check tent poles and pegs are included"},
-      {"category": "Other", "name": "Sleeping bag (rated for temp)", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Choose rating below expected low temp"},
-      {"category": "Other", "name": "Sleeping pad / mat", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Insulates from cold ground"},
-      {"category": "Food & Drinks", "name": "Camping stove + fuel canister", "quantity": 1, "unit": "set", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Food & Drinks", "name": "Cooking pot / mess kit", "quantity": 1, "unit": "set", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": null},
-      {"category": "Food & Drinks", "name": "Cutlery set (spork)", "quantity": 1, "unit": "set", "is_essential": true, "priority": 7, "gender_filter": "all", "notes": null},
-      {"category": "Food & Drinks", "name": "Freeze-dried / dehydrated meals", "quantity": 3, "unit": "pcs", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": "One per dinner"},
-      {"category": "Food & Drinks", "name": "Water filter / purification tablets", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": null},
-      {"category": "Other", "name": "Headlamp + spare batteries", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": null},
-      {"category": "Other", "name": "Multi-tool / knife", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": null},
-      {"category": "Clothing", "name": "Warm base layer (top + bottom)", "quantity": 1, "unit": "set", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Clothing", "name": "Fleece / down jacket", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Medications", "name": "Insect repellent", "quantity": 1, "unit": "bottle", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": null},
-      {"category": "Toiletries & Hygiene", "name": "Biodegradable soap", "quantity": 1, "unit": "bottle", "is_essential": true, "priority": 7, "gender_filter": "all", "notes": "Use 60 m away from water sources"},
-      {"category": "Other", "name": "Trowel (cat hole tool)", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 7, "gender_filter": "all", "notes": "Leave No Trace bathroom etiquette"}
+      {
+        "name": "Tent",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Check tent poles and pegs are included"
+      },
+      {
+        "name": "Sleeping bag (rated for temp)",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Choose rating below expected low temp"
+      },
+      {
+        "name": "Sleeping pad / mat",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Insulates from cold ground"
+      },
+      {
+        "name": "Camping stove + fuel canister",
+        "quantity": 1,
+        "unit": "set",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Cooking pot / mess kit",
+        "quantity": 1,
+        "unit": "set",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Cutlery set (spork)",
+        "quantity": 1,
+        "unit": "set",
+        "is_essential": true,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Freeze-dried / dehydrated meals",
+        "quantity": 3,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": "One per dinner"
+      },
+      {
+        "name": "Water filter / purification tablets",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Headlamp + spare batteries",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Multi-tool / knife",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Warm base layer (top + bottom)",
+        "quantity": 1,
+        "unit": "set",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Fleece / down jacket",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Insect repellent",
+        "quantity": 1,
+        "unit": "bottle",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Biodegradable soap",
+        "quantity": 1,
+        "unit": "bottle",
+        "is_essential": true,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": "Use 60 m away from water sources"
+      },
+      {
+        "name": "Trowel (cat hole tool)",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": "Leave No Trace bathroom etiquette"
+      }
     ]
   },
   {
@@ -115,22 +660,137 @@
     "name": "Skiing / Snowboarding",
     "icon_emoji": "⛷️",
     "description": "Snow sports gear for ski resorts and backcountry trips.",
-    "climate_types": ["cold", "mountain"],
+    "climate_types": [
+      "cold",
+      "mountain"
+    ],
     "items": [
-      {"category": "Clothing", "name": "Ski / snowboard jacket", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Waterproof, breathable"},
-      {"category": "Clothing", "name": "Ski / snowboard pants", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Waterproof"},
-      {"category": "Clothing", "name": "Thermal base layer top", "quantity": 2, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Merino or synthetic"},
-      {"category": "Clothing", "name": "Thermal base layer bottom", "quantity": 2, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Clothing", "name": "Fleece / mid-layer", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": null},
-      {"category": "Clothing", "name": "Ski socks (wool)", "quantity": 3, "unit": "pair", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Tall, no seams at ankle"},
-      {"category": "Shoes & Accessories", "name": "Ski helmet", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Non-negotiable safety item"},
-      {"category": "Shoes & Accessories", "name": "Ski goggles", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": null},
-      {"category": "Shoes & Accessories", "name": "Waterproof ski gloves", "quantity": 1, "unit": "pair", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": null},
-      {"category": "Shoes & Accessories", "name": "Neck gaiter / balaclava", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": null},
-      {"category": "Toiletries & Hygiene", "name": "Lip balm SPF 30", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 7, "gender_filter": "all", "notes": "UV reflection from snow is intense"},
-      {"category": "Toiletries & Hygiene", "name": "Face sunscreen SPF 50+", "quantity": 1, "unit": "bottle", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Medications", "name": "Ibuprofen / pain relief", "quantity": 10, "unit": "tablets", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": "Muscle soreness after first day"},
-      {"category": "Other", "name": "Ski pass / lift ticket", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Book ahead for discounts"}
+      {
+        "name": "Ski / snowboard jacket",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Waterproof, breathable"
+      },
+      {
+        "name": "Ski / snowboard pants",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Waterproof"
+      },
+      {
+        "name": "Thermal base layer top",
+        "quantity": 2,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Merino or synthetic"
+      },
+      {
+        "name": "Thermal base layer bottom",
+        "quantity": 2,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Fleece / mid-layer",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Ski socks (wool)",
+        "quantity": 3,
+        "unit": "pair",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Tall, no seams at ankle"
+      },
+      {
+        "name": "Ski helmet",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Non-negotiable safety item"
+      },
+      {
+        "name": "Ski goggles",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Waterproof ski gloves",
+        "quantity": 1,
+        "unit": "pair",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Neck gaiter / balaclava",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Lip balm SPF 30",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": "UV reflection from snow is intense"
+      },
+      {
+        "name": "Face sunscreen SPF 50+",
+        "quantity": 1,
+        "unit": "bottle",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Ibuprofen / pain relief",
+        "quantity": 10,
+        "unit": "tablets",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": "Muscle soreness after first day"
+      },
+      {
+        "name": "Ski pass / lift ticket",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Book ahead for discounts"
+      }
     ]
   },
   {
@@ -138,21 +798,127 @@
     "name": "Business Trip",
     "icon_emoji": "💼",
     "description": "Professional essentials for work conferences and client meetings.",
-    "climate_types": ["all"],
+    "climate_types": [
+      "all"
+    ],
     "items": [
-      {"category": "Documents", "name": "Business cards", "quantity": 20, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Documents", "name": "Laptop + power adapter", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": null},
-      {"category": "Documents", "name": "Presentation files (backed up)", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Cloud + USB"},
-      {"category": "Clothing", "name": "Formal shirt / blouse", "quantity": 3, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": null},
-      {"category": "Clothing", "name": "Formal trousers / skirt", "quantity": 2, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": null},
-      {"category": "Clothing", "name": "Blazer / suit jacket", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Wear on the plane to save bag space"},
-      {"category": "Clothing", "name": "Tie / formal accessories", "quantity": 1, "unit": "set", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": null},
-      {"category": "Shoes & Accessories", "name": "Formal shoes", "quantity": 1, "unit": "pair", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Electronics", "name": "Portable laptop stand", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 5, "gender_filter": "all", "notes": null},
-      {"category": "Electronics", "name": "HDMI / USB-C adapter", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": "For presentations"},
-      {"category": "Electronics", "name": "Portable charger / power bank", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": null},
-      {"category": "Other", "name": "Notebook + pen", "quantity": 1, "unit": "set", "is_essential": true, "priority": 7, "gender_filter": "all", "notes": null},
-      {"category": "Toiletries & Hygiene", "name": "Travel iron / wrinkle spray", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 5, "gender_filter": "all", "notes": "Or use hotel iron"}
+      {
+        "name": "Business cards",
+        "quantity": 20,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Laptop + power adapter",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Presentation files (backed up)",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Cloud + USB"
+      },
+      {
+        "name": "Formal shirt / blouse",
+        "quantity": 3,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Formal trousers / skirt",
+        "quantity": 2,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Blazer / suit jacket",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Wear on the plane to save bag space"
+      },
+      {
+        "name": "Tie / formal accessories",
+        "quantity": 1,
+        "unit": "set",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Formal shoes",
+        "quantity": 1,
+        "unit": "pair",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Portable laptop stand",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 5,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "HDMI / USB-C adapter",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": "For presentations"
+      },
+      {
+        "name": "Portable charger / power bank",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Notebook + pen",
+        "quantity": 1,
+        "unit": "set",
+        "is_essential": true,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Travel iron / wrinkle spray",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 5,
+        "gender_filter": "all",
+        "notes": "Or use hotel iron"
+      }
     ]
   },
   {
@@ -160,20 +926,118 @@
     "name": "City Break",
     "icon_emoji": "🏙️",
     "description": "Light packing for urban exploration, sightseeing, and dining.",
-    "climate_types": ["all"],
+    "climate_types": [
+      "all"
+    ],
     "items": [
-      {"category": "Documents", "name": "Passport / ID", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": null},
-      {"category": "Documents", "name": "Travel card / local SIM", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 7, "gender_filter": "all", "notes": "Or activate roaming before departure"},
-      {"category": "Clothing", "name": "Casual outfits", "quantity": 3, "unit": "sets", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Mix and match"},
-      {"category": "Clothing", "name": "Smart-casual outfit", "quantity": 1, "unit": "set", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": "For nicer restaurants or shows"},
-      {"category": "Clothing", "name": "Light jacket / cardigan", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": "For air-conditioned interiors"},
-      {"category": "Shoes & Accessories", "name": "Comfortable walking shoes", "quantity": 1, "unit": "pair", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Expect 10–20 k steps per day"},
-      {"category": "Electronics", "name": "Smartphone + charger", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": null},
-      {"category": "Electronics", "name": "Camera", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": null},
-      {"category": "Other", "name": "Reusable tote bag", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 5, "gender_filter": "all", "notes": "For shopping and markets"},
-      {"category": "Medications", "name": "Blister plasters", "quantity": 4, "unit": "pcs", "is_essential": true, "priority": 7, "gender_filter": "all", "notes": "Walking city miles in new shoes"},
-      {"category": "Toiletries & Hygiene", "name": "Deodorant", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": null},
-      {"category": "Food & Drinks", "name": "Reusable water bottle", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 7, "gender_filter": "all", "notes": null}
+      {
+        "name": "Passport / ID",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Travel card / local SIM",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": "Or activate roaming before departure"
+      },
+      {
+        "name": "Casual outfits",
+        "quantity": 3,
+        "unit": "sets",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Mix and match"
+      },
+      {
+        "name": "Smart-casual outfit",
+        "quantity": 1,
+        "unit": "set",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": "For nicer restaurants or shows"
+      },
+      {
+        "name": "Light jacket / cardigan",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": "For air-conditioned interiors"
+      },
+      {
+        "name": "Comfortable walking shoes",
+        "quantity": 1,
+        "unit": "pair",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Expect 10–20 k steps per day"
+      },
+      {
+        "name": "Smartphone + charger",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Camera",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Reusable tote bag",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 5,
+        "gender_filter": "all",
+        "notes": "For shopping and markets"
+      },
+      {
+        "name": "Blister plasters",
+        "quantity": 4,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": "Walking city miles in new shoes"
+      },
+      {
+        "name": "Deodorant",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Reusable water bottle",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": null
+      }
     ]
   },
   {
@@ -181,21 +1045,127 @@
     "name": "Road Trip",
     "icon_emoji": "🚗",
     "description": "Essentials for long drives and multi-stop road adventures.",
-    "climate_types": ["all"],
+    "climate_types": [
+      "all"
+    ],
     "items": [
-      {"category": "Documents", "name": "Driver's licence", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "International permit if driving abroad"},
-      {"category": "Documents", "name": "Vehicle insurance / rental agreement", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": null},
-      {"category": "Documents", "name": "Car registration / STNK", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": null},
-      {"category": "Electronics", "name": "GPS / phone mount", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Download offline maps"},
-      {"category": "Electronics", "name": "Car charger / USB adapter", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": null},
-      {"category": "Electronics", "name": "Dash cam", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 5, "gender_filter": "all", "notes": null},
-      {"category": "Other", "name": "Emergency roadside kit", "quantity": 1, "unit": "kit", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Jumper cables, warning triangle, torch"},
-      {"category": "Other", "name": "Spare tyre + jack", "quantity": 1, "unit": "set", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Verify before departure"},
-      {"category": "Food & Drinks", "name": "Cooler box / bag", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": null},
-      {"category": "Food & Drinks", "name": "Road trip snacks", "quantity": 5, "unit": "pcs", "is_essential": true, "priority": 7, "gender_filter": "all", "notes": null},
-      {"category": "Food & Drinks", "name": "Reusable water bottle", "quantity": 2, "unit": "pcs", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": null},
-      {"category": "Medications", "name": "Motion sickness pills", "quantity": 6, "unit": "tablets", "is_essential": false, "priority": 5, "gender_filter": "all", "notes": null},
-      {"category": "Other", "name": "Sunshade for windscreen", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 5, "gender_filter": "all", "notes": null}
+      {
+        "name": "Driver's licence",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "International permit if driving abroad"
+      },
+      {
+        "name": "Vehicle insurance / rental agreement",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Car registration / STNK",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "GPS / phone mount",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Download offline maps"
+      },
+      {
+        "name": "Car charger / USB adapter",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Dash cam",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 5,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Emergency roadside kit",
+        "quantity": 1,
+        "unit": "kit",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Jumper cables, warning triangle, torch"
+      },
+      {
+        "name": "Spare tyre + jack",
+        "quantity": 1,
+        "unit": "set",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Verify before departure"
+      },
+      {
+        "name": "Cooler box / bag",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Road trip snacks",
+        "quantity": 5,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Reusable water bottle",
+        "quantity": 2,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Motion sickness pills",
+        "quantity": 6,
+        "unit": "tablets",
+        "is_essential": false,
+        "priority": 5,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Sunshade for windscreen",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 5,
+        "gender_filter": "all",
+        "notes": null
+      }
     ]
   },
   {
@@ -203,20 +1173,120 @@
     "name": "Cycling",
     "icon_emoji": "🚴",
     "description": "Gear for road cycling, mountain biking, or cycle touring.",
-    "climate_types": ["temperate", "hot", "tropical"],
+    "climate_types": [
+      "temperate",
+      "hot",
+      "tropical"
+    ],
     "items": [
-      {"category": "Sports & Fitness", "name": "Cycling helmet", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Non-negotiable"},
-      {"category": "Sports & Fitness", "name": "Cycling shorts (padded)", "quantity": 2, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Chamois butter if touring"},
-      {"category": "Sports & Fitness", "name": "Cycling jersey", "quantity": 2, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Back pockets are handy"},
-      {"category": "Sports & Fitness", "name": "Cycling gloves", "quantity": 1, "unit": "pair", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": null},
-      {"category": "Shoes & Accessories", "name": "Cycling shoes / cleats", "quantity": 1, "unit": "pair", "is_essential": false, "priority": 7, "gender_filter": "all", "notes": "Match to pedal system"},
-      {"category": "Electronics", "name": "Cycling computer / GPS", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": null},
-      {"category": "Other", "name": "Puncture repair kit", "quantity": 1, "unit": "kit", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Tyre levers, patches, CO₂ inflator"},
-      {"category": "Other", "name": "Spare inner tube", "quantity": 2, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": null},
-      {"category": "Other", "name": "Mini pump / CO₂ inflator", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Toiletries & Hygiene", "name": "Sunscreen SPF 50+", "quantity": 1, "unit": "bottle", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Food & Drinks", "name": "Energy gels / bars", "quantity": 5, "unit": "pcs", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": null},
-      {"category": "Food & Drinks", "name": "Water bottle (BPA-free)", "quantity": 2, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null}
+      {
+        "name": "Cycling helmet",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Non-negotiable"
+      },
+      {
+        "name": "Cycling shorts (padded)",
+        "quantity": 2,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Chamois butter if touring"
+      },
+      {
+        "name": "Cycling jersey",
+        "quantity": 2,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Back pockets are handy"
+      },
+      {
+        "name": "Cycling gloves",
+        "quantity": 1,
+        "unit": "pair",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Cycling shoes / cleats",
+        "quantity": 1,
+        "unit": "pair",
+        "is_essential": false,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": "Match to pedal system"
+      },
+      {
+        "name": "Cycling computer / GPS",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Puncture repair kit",
+        "quantity": 1,
+        "unit": "kit",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Tyre levers, patches, CO₂ inflator"
+      },
+      {
+        "name": "Spare inner tube",
+        "quantity": 2,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Mini pump / CO₂ inflator",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Sunscreen SPF 50+",
+        "quantity": 1,
+        "unit": "bottle",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Energy gels / bars",
+        "quantity": 5,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Water bottle (BPA-free)",
+        "quantity": 2,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      }
     ]
   },
   {
@@ -224,19 +1294,109 @@
     "name": "Running",
     "icon_emoji": "🏃",
     "description": "Kit for training runs or destination races.",
-    "climate_types": ["all"],
+    "climate_types": [
+      "all"
+    ],
     "items": [
-      {"category": "Sports & Fitness", "name": "Running shoes", "quantity": 1, "unit": "pair", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Broken in, not brand new"},
-      {"category": "Clothing", "name": "Running shorts / tights", "quantity": 2, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": null},
-      {"category": "Clothing", "name": "Moisture-wicking running top", "quantity": 2, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": null},
-      {"category": "Clothing", "name": "Running socks (no-show)", "quantity": 3, "unit": "pair", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Blister-prevention seam-free"},
-      {"category": "Clothing", "name": "Sports bra", "quantity": 2, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "female", "notes": null},
-      {"category": "Electronics", "name": "GPS running watch / fitness tracker", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": null},
-      {"category": "Sports & Fitness", "name": "Running belt / vest", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": "For keys, phone, gels on long runs"},
-      {"category": "Food & Drinks", "name": "Energy gels", "quantity": 4, "unit": "pcs", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": "For runs over 1 hour"},
-      {"category": "Medications", "name": "Anti-chafe balm", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": "Prevents skin irritation on long runs"},
-      {"category": "Medications", "name": "Blister plasters", "quantity": 4, "unit": "pcs", "is_essential": true, "priority": 7, "gender_filter": "all", "notes": null},
-      {"category": "Toiletries & Hygiene", "name": "Sunscreen SPF 50+", "quantity": 1, "unit": "bottle", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": "Sweat-resistant formula"}
+      {
+        "name": "Running shoes",
+        "quantity": 1,
+        "unit": "pair",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Broken in, not brand new"
+      },
+      {
+        "name": "Running shorts / tights",
+        "quantity": 2,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Moisture-wicking running top",
+        "quantity": 2,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Running socks (no-show)",
+        "quantity": 3,
+        "unit": "pair",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Blister-prevention seam-free"
+      },
+      {
+        "name": "Sports bra",
+        "quantity": 2,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "female",
+        "notes": null
+      },
+      {
+        "name": "GPS running watch / fitness tracker",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Running belt / vest",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": "For keys, phone, gels on long runs"
+      },
+      {
+        "name": "Energy gels",
+        "quantity": 4,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": "For runs over 1 hour"
+      },
+      {
+        "name": "Anti-chafe balm",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": "Prevents skin irritation on long runs"
+      },
+      {
+        "name": "Blister plasters",
+        "quantity": 4,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Sunscreen SPF 50+",
+        "quantity": 1,
+        "unit": "bottle",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": "Sweat-resistant formula"
+      }
     ]
   },
   {
@@ -244,19 +1404,110 @@
     "name": "Scuba Diving",
     "icon_emoji": "🤿",
     "description": "Dive trip packing list — certifications and personal gear.",
-    "climate_types": ["tropical", "mediterranean"],
+    "climate_types": [
+      "tropical",
+      "mediterranean"
+    ],
     "items": [
-      {"category": "Documents", "name": "Dive certification card (PADI / SSI)", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Physical or digital — operators will check"},
-      {"category": "Documents", "name": "Dive log book", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": null},
-      {"category": "Sports & Fitness", "name": "Dive mask", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Personal mask for best fit"},
-      {"category": "Sports & Fitness", "name": "Fins", "quantity": 1, "unit": "pair", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Or rent at dive shop"},
-      {"category": "Sports & Fitness", "name": "Wetsuit / exposure suit", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Thickness depends on water temp"},
-      {"category": "Sports & Fitness", "name": "Dive computer", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Or rent — never dive without one"},
-      {"category": "Sports & Fitness", "name": "Surface marker buoy (SMB)", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Safety item"},
-      {"category": "Toiletries & Hygiene", "name": "Reef-safe sunscreen", "quantity": 1, "unit": "bottle", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Protect coral ecosystems"},
-      {"category": "Medications", "name": "Seasickness patches / pills", "quantity": 4, "unit": "pcs", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": null},
-      {"category": "Other", "name": "Underwater camera / GoPro", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 5, "gender_filter": "all", "notes": null},
-      {"category": "Clothing", "name": "Rash guard", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 7, "gender_filter": "all", "notes": "Extra sun and jellyfish protection"}
+      {
+        "name": "Dive certification card (PADI / SSI)",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Physical or digital — operators will check"
+      },
+      {
+        "name": "Dive log book",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Dive mask",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Personal mask for best fit"
+      },
+      {
+        "name": "Fins",
+        "quantity": 1,
+        "unit": "pair",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Or rent at dive shop"
+      },
+      {
+        "name": "Wetsuit / exposure suit",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Thickness depends on water temp"
+      },
+      {
+        "name": "Dive computer",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Or rent — never dive without one"
+      },
+      {
+        "name": "Surface marker buoy (SMB)",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Safety item"
+      },
+      {
+        "name": "Reef-safe sunscreen",
+        "quantity": 1,
+        "unit": "bottle",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Protect coral ecosystems"
+      },
+      {
+        "name": "Seasickness patches / pills",
+        "quantity": 4,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Underwater camera / GoPro",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 5,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Rash guard",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": "Extra sun and jellyfish protection"
+      }
     ]
   },
   {
@@ -264,18 +1515,102 @@
     "name": "Surfing",
     "icon_emoji": "🏄",
     "description": "Surfing sessions from tropical point breaks to cold water reef breaks.",
-    "climate_types": ["tropical", "mediterranean", "cold"],
+    "climate_types": [
+      "tropical",
+      "mediterranean",
+      "cold"
+    ],
     "items": [
-      {"category": "Sports & Fitness", "name": "Surfboard + bag", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Or rent locally"},
-      {"category": "Sports & Fitness", "name": "Surfboard leash", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Match length to board size"},
-      {"category": "Sports & Fitness", "name": "Wax + wax comb", "quantity": 1, "unit": "set", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Temperature-appropriate wax"},
-      {"category": "Clothing", "name": "Wetsuit (if needed)", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 8, "gender_filter": "all", "notes": "Not needed in warm tropics"},
-      {"category": "Clothing", "name": "Board shorts / bikini", "quantity": 2, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Clothing", "name": "Rash guard / UV shirt", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": null},
-      {"category": "Toiletries & Hygiene", "name": "Reef-safe sunscreen SPF 50+", "quantity": 1, "unit": "bottle", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": null},
-      {"category": "Medications", "name": "Ear drops (swimmer's ear prevention)", "quantity": 1, "unit": "bottle", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": null},
-      {"category": "Other", "name": "Surf wax coolant / travel wax", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 4, "gender_filter": "all", "notes": null},
-      {"category": "Shoes & Accessories", "name": "Reef boots / booties", "quantity": 1, "unit": "pair", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": "For reef or cold-water breaks"}
+      {
+        "name": "Surfboard + bag",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Or rent locally"
+      },
+      {
+        "name": "Surfboard leash",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Match length to board size"
+      },
+      {
+        "name": "Wax + wax comb",
+        "quantity": 1,
+        "unit": "set",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Temperature-appropriate wax"
+      },
+      {
+        "name": "Wetsuit (if needed)",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": "Not needed in warm tropics"
+      },
+      {
+        "name": "Board shorts / bikini",
+        "quantity": 2,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Rash guard / UV shirt",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Reef-safe sunscreen SPF 50+",
+        "quantity": 1,
+        "unit": "bottle",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Ear drops (swimmer's ear prevention)",
+        "quantity": 1,
+        "unit": "bottle",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Surf wax coolant / travel wax",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 4,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Reef boots / booties",
+        "quantity": 1,
+        "unit": "pair",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": "For reef or cold-water breaks"
+      }
     ]
   },
   {
@@ -283,20 +1618,118 @@
     "name": "Photography / Videography",
     "icon_emoji": "📷",
     "description": "Camera gear for travel photography and content creation.",
-    "climate_types": ["all"],
+    "climate_types": [
+      "all"
+    ],
     "items": [
-      {"category": "Electronics", "name": "Camera body", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": null},
-      {"category": "Electronics", "name": "Primary lens", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": null},
-      {"category": "Electronics", "name": "Secondary lens / zoom", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": null},
-      {"category": "Electronics", "name": "Extra camera batteries", "quantity": 2, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "At least two spares"},
-      {"category": "Electronics", "name": "Battery charger + cable", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Electronics", "name": "Memory cards (64+ GB)", "quantity": 3, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "More than you think you need"},
-      {"category": "Electronics", "name": "Portable hard drive / SSD", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": "Backup cards daily"},
-      {"category": "Electronics", "name": "Tripod / gorilla pod", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 7, "gender_filter": "all", "notes": null},
-      {"category": "Electronics", "name": "ND filter set", "quantity": 1, "unit": "set", "is_essential": false, "priority": 5, "gender_filter": "all", "notes": "For long-exposure landscape shots"},
-      {"category": "Electronics", "name": "Drone + batteries", "quantity": 1, "unit": "set", "is_essential": false, "priority": 5, "gender_filter": "all", "notes": "Check local regulations"},
-      {"category": "Other", "name": "Camera bag / backpack", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Padded with rain cover"},
-      {"category": "Other", "name": "Lens cleaning kit", "quantity": 1, "unit": "kit", "is_essential": true, "priority": 7, "gender_filter": "all", "notes": "Blower + microfibre cloth"}
+      {
+        "name": "Camera body",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Primary lens",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Secondary lens / zoom",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Extra camera batteries",
+        "quantity": 2,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "At least two spares"
+      },
+      {
+        "name": "Battery charger + cable",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Memory cards (64+ GB)",
+        "quantity": 3,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "More than you think you need"
+      },
+      {
+        "name": "Portable hard drive / SSD",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": "Backup cards daily"
+      },
+      {
+        "name": "Tripod / gorilla pod",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "ND filter set",
+        "quantity": 1,
+        "unit": "set",
+        "is_essential": false,
+        "priority": 5,
+        "gender_filter": "all",
+        "notes": "For long-exposure landscape shots"
+      },
+      {
+        "name": "Drone + batteries",
+        "quantity": 1,
+        "unit": "set",
+        "is_essential": false,
+        "priority": 5,
+        "gender_filter": "all",
+        "notes": "Check local regulations"
+      },
+      {
+        "name": "Camera bag / backpack",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Padded with rain cover"
+      },
+      {
+        "name": "Lens cleaning kit",
+        "quantity": 1,
+        "unit": "kit",
+        "is_essential": true,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": "Blower + microfibre cloth"
+      }
     ]
   },
   {
@@ -304,23 +1737,145 @@
     "name": "Backpacking",
     "icon_emoji": "🎒",
     "description": "Long-term budget travel — living out of one bag for weeks or months.",
-    "climate_types": ["all"],
+    "climate_types": [
+      "all"
+    ],
     "items": [
-      {"category": "Other", "name": "Backpack (40–65 L)", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Pack it and walk a mile before buying"},
-      {"category": "Other", "name": "Day pack (20 L)", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": "Foldable is best"},
-      {"category": "Documents", "name": "Passport + copies", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Keep a digital copy in the cloud too"},
-      {"category": "Documents", "name": "Travel insurance documents", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Clothing", "name": "Quick-dry t-shirts", "quantity": 3, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Rotate and wash frequently"},
-      {"category": "Clothing", "name": "Lightweight trousers / convertibles", "quantity": 2, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Clothing", "name": "Underwear (merino or quick-dry)", "quantity": 4, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Clothing", "name": "Packable down jacket", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": "Layer for cold nights or AC buses"},
-      {"category": "Shoes & Accessories", "name": "Versatile walking shoes / trail runners", "quantity": 1, "unit": "pair", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": null},
-      {"category": "Shoes & Accessories", "name": "Sandals / flip-flops", "quantity": 1, "unit": "pair", "is_essential": true, "priority": 7, "gender_filter": "all", "notes": "Also for hostel showers"},
-      {"category": "Toiletries & Hygiene", "name": "Microfibre towel", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Hostels rarely provide towels"},
-      {"category": "Medications", "name": "Full travel first aid kit", "quantity": 1, "unit": "kit", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Include diarrhoea tablets, oral rehydration salts"},
-      {"category": "Other", "name": "Padlock (for hostel lockers)", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": null},
-      {"category": "Other", "name": "Universal travel adapter", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Other", "name": "Money belt / neck wallet", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": "Keep passport and cards here"}
+      {
+        "name": "Backpack (40–65 L)",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Pack it and walk a mile before buying"
+      },
+      {
+        "name": "Day pack (20 L)",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": "Foldable is best"
+      },
+      {
+        "name": "Passport + copies",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Keep a digital copy in the cloud too"
+      },
+      {
+        "name": "Travel insurance documents",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Quick-dry t-shirts",
+        "quantity": 3,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Rotate and wash frequently"
+      },
+      {
+        "name": "Lightweight trousers / convertibles",
+        "quantity": 2,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Underwear (merino or quick-dry)",
+        "quantity": 4,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Packable down jacket",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": "Layer for cold nights or AC buses"
+      },
+      {
+        "name": "Versatile walking shoes / trail runners",
+        "quantity": 1,
+        "unit": "pair",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Sandals / flip-flops",
+        "quantity": 1,
+        "unit": "pair",
+        "is_essential": true,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": "Also for hostel showers"
+      },
+      {
+        "name": "Microfibre towel",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Hostels rarely provide towels"
+      },
+      {
+        "name": "Full travel first aid kit",
+        "quantity": 1,
+        "unit": "kit",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Include diarrhoea tablets, oral rehydration salts"
+      },
+      {
+        "name": "Padlock (for hostel lockers)",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Universal travel adapter",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Money belt / neck wallet",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": "Keep passport and cards here"
+      }
     ]
   },
   {
@@ -328,23 +1883,145 @@
     "name": "Family / Kids",
     "icon_emoji": "👨‍👩‍👧‍👦",
     "description": "Extra items needed when travelling with babies, toddlers, or children.",
-    "climate_types": ["all"],
+    "climate_types": [
+      "all"
+    ],
     "items": [
-      {"category": "Baby & Kids", "name": "Diapers / nappies", "quantity": 30, "unit": "pcs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Pack extra for travel days"},
-      {"category": "Baby & Kids", "name": "Baby wipes", "quantity": 3, "unit": "packs", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": null},
-      {"category": "Baby & Kids", "name": "Changing mat (portable)", "quantity": 1, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Baby & Kids", "name": "Baby food / formula", "quantity": 3, "unit": "days supply", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Bring extra in case of delays"},
-      {"category": "Baby & Kids", "name": "Baby carrier / sling", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 7, "gender_filter": "all", "notes": "Useful for sightseeing"},
-      {"category": "Baby & Kids", "name": "Collapsible stroller", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 7, "gender_filter": "all", "notes": null},
-      {"category": "Baby & Kids", "name": "Children's sunscreen SPF 50+", "quantity": 1, "unit": "bottle", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Mineral formula for sensitive skin"},
-      {"category": "Baby & Kids", "name": "Kids' favourite toys / comfort item", "quantity": 2, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Keeps them calm on flights"},
-      {"category": "Baby & Kids", "name": "Children's books / colouring set", "quantity": 1, "unit": "set", "is_essential": false, "priority": 6, "gender_filter": "all", "notes": null},
-      {"category": "Baby & Kids", "name": "Tablet + headphones (loaded with shows)", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 7, "gender_filter": "all", "notes": "Download content for offline viewing"},
-      {"category": "Medications", "name": "Children's pain/fever medicine", "quantity": 1, "unit": "bottle", "is_essential": true, "priority": 10, "gender_filter": "all", "notes": "Paracetamol syrup — check age/weight dosing"},
-      {"category": "Medications", "name": "Oral rehydration sachets (kids)", "quantity": 5, "unit": "pcs", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": null},
-      {"category": "Medications", "name": "Insect repellent (kids formula)", "quantity": 1, "unit": "bottle", "is_essential": true, "priority": 8, "gender_filter": "all", "notes": "DEET-free for young children"},
-      {"category": "Clothing", "name": "Change of clothes (kids) x3 per day", "quantity": 3, "unit": "sets", "is_essential": true, "priority": 9, "gender_filter": "all", "notes": "Kids get messy fast"},
-      {"category": "Other", "name": "Portable baby monitor", "quantity": 1, "unit": "pcs", "is_essential": false, "priority": 5, "gender_filter": "all", "notes": "Useful in hotel rooms"}
+      {
+        "name": "Diapers / nappies",
+        "quantity": 30,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Pack extra for travel days"
+      },
+      {
+        "name": "Baby wipes",
+        "quantity": 3,
+        "unit": "packs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Changing mat (portable)",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Baby food / formula",
+        "quantity": 3,
+        "unit": "days supply",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Bring extra in case of delays"
+      },
+      {
+        "name": "Baby carrier / sling",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": "Useful for sightseeing"
+      },
+      {
+        "name": "Collapsible stroller",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Children's sunscreen SPF 50+",
+        "quantity": 1,
+        "unit": "bottle",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Mineral formula for sensitive skin"
+      },
+      {
+        "name": "Kids' favourite toys / comfort item",
+        "quantity": 2,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Keeps them calm on flights"
+      },
+      {
+        "name": "Children's books / colouring set",
+        "quantity": 1,
+        "unit": "set",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Tablet + headphones (loaded with shows)",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": "Download content for offline viewing"
+      },
+      {
+        "name": "Children's pain/fever medicine",
+        "quantity": 1,
+        "unit": "bottle",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Paracetamol syrup — check age/weight dosing"
+      },
+      {
+        "name": "Oral rehydration sachets (kids)",
+        "quantity": 5,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Insect repellent (kids formula)",
+        "quantity": 1,
+        "unit": "bottle",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": "DEET-free for young children"
+      },
+      {
+        "name": "Change of clothes (kids) x3 per day",
+        "quantity": 3,
+        "unit": "sets",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Kids get messy fast"
+      },
+      {
+        "name": "Portable baby monitor",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 5,
+        "gender_filter": "all",
+        "notes": "Useful in hotel rooms"
+      }
     ]
   }
 ]

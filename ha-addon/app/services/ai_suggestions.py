@@ -60,7 +60,6 @@ Items already packed (do NOT suggest these again): {existing_list_str}
 
 Return ONLY a JSON array of suggested items. Each item must have:
 - "name": string (the item name)
-- "category": one of ["Clothing", "Toiletries & Hygiene", "Documents", "Electronics", "Medications", "Shoes & Accessories", "Food & Drinks", "Sports & Fitness", "Baby & Kids", "Other"]
 - "quantity": integer
 - "is_essential": boolean
 
@@ -95,7 +94,6 @@ Suggest 10-20 relevant items that are NOT already in the packed list. Return onl
                 filtered.append(
                     {
                         "name": name,
-                        "category": item.get("category", "Other"),
                         "quantity": int(item.get("quantity", 1)),
                         "is_essential": bool(item.get("is_essential", False)),
                     }

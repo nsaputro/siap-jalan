@@ -59,7 +59,6 @@ async def create_trip(
         for mi in merged:
             item = PackingItem(
                 list_id=default_list.id,
-                category=mi.category,
                 name=mi.name,
                 quantity=mi.quantity,
                 unit=mi.unit,

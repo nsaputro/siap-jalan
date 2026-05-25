@@ -13,7 +13,6 @@ from ..models.packing import ActivityTemplate
 @dataclass
 class MergedItem:
     name: str
-    category: str
     quantity: int
     unit: Optional[str]
     is_essential: bool
@@ -55,7 +54,6 @@ async def merge_activities(
         if key not in merged:
             merged[key] = MergedItem(
                 name=item.name,
-                category=item.category,
                 quantity=item.quantity,
                 unit=item.unit,
                 is_essential=item.is_essential,
@@ -79,10 +77,7 @@ async def merge_activities(
                 existing.priority = item.priority
                 existing.template_item_id = item.id
                 existing.name = item.name  # keep winner's name casing
-                existing.category = item.category
                 existing.unit = item.unit
 
-    result_list = sorted(
-        merged.values(), key=lambda x: (x.category, x.name)
-    )
+    result_list = sorted(merged.values(), key=lambda x: x.name)
     return result_list
