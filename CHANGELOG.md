@@ -7,7 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.5] - 2026-05-25
+## [0.1.3] - 2026-05-25
+
+### Added
+- `ha-addon/CHANGELOG.md`: per-addon changelog HA Supervisor reads to show "What's new" in the addon store
 
 ### Removed
 - `category` removed from the entire data model: API schemas (Create/Update/Response), activity merger, AI suggestion prompt and response, JSON seed templates, frontend TypeScript types, and HA addon UI
@@ -17,24 +20,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - HA addon UI redesigned for simplicity: flat item list with no category grouping, circle checkboxes, and an inline "Type to add new item" field — no modal required to add items
 - AI suggestions no longer include or request category information; items use a silent backend default
 - `MergedItemResponse` and `MergedItem` dataclass no longer expose `category`; sorted by name only
-
-## [0.1.4] - 2026-05-25
-
-### Fixed
-- All packing category names changed from Indonesian to English: Pakaian→Clothing, Toilet & Kebersihan→Toiletries & Hygiene, Dokumen→Documents, Elektronik→Electronics, Obat-obatan→Medications, Sepatu & Aksesoris→Shoes & Accessories, Makanan & Minuman→Food & Drinks, Olahraga→Sports & Fitness, Bayi & Anak→Baby & Kids, Lainnya→Other
-
-## [0.1.3] - 2026-05-25
-
-### Added
-- `ha-addon/CHANGELOG.md`: per-addon changelog HA Supervisor reads to show "What's new" in the addon store
-
-### Changed
 - Pre-release version (`ha-addon-dev/config.yaml`) now tracks the upcoming stable version with a `bX` suffix (e.g. `0.1.3b1`) so testers always run a build that matches what will ship
 
 ### Fixed
+- All packing item category names updated to English
 - HA Supervisor no longer shows "No changelog found" when checking addon updates
-- CLAUDE.md: added rule to always verify PR exists via MCP before announcing the link, and to check PR state before pushing additional commits
-- CLAUDE.md: added rule to keep `ha-addon-dev/config.yaml` version in sync with the target stable version on every PR
+- CLAUDE.md: versioning rule — only bump version when the current one is already released
 
 ## [0.1.2] - 2026-05-24
 
@@ -84,9 +75,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Backend-tests and frontend-tests CI jobs run on every PR
 - `PackingItemBulkCreate` schema with `list_id` field for `/items/bulk` endpoint
 
-[Unreleased]: https://github.com/nsaputro/siap-jalan/compare/v0.1.5...HEAD
-[0.1.5]: https://github.com/nsaputro/siap-jalan/compare/v0.1.4...v0.1.5
-[0.1.4]: https://github.com/nsaputro/siap-jalan/compare/v0.1.3...v0.1.4
+[Unreleased]: https://github.com/nsaputro/siap-jalan/compare/v0.1.3...HEAD
 [0.1.3]: https://github.com/nsaputro/siap-jalan/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/nsaputro/siap-jalan/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/nsaputro/siap-jalan/compare/v0.1.0...v0.1.1
