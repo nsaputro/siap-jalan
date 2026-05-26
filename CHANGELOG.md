@@ -36,6 +36,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - HA Supervisor no longer shows "No changelog found" when checking addon updates
 - CLAUDE.md: versioning rule updated — use `NEXT_VERSION` file; never bump `config.yaml` in PRs
 - Dev addon 502 Bad Gateway: `ha-addon/run.sh` now uses `${PORT:-8099}`; `ha-addon/Dockerfile` accepts a `PORT` build arg; pre-release workflow passes `PORT=8100`
+- HA addon UI trip card: activity badges now show the activity name and emoji instead of the internal slug code
+- Trip card and trip detail: duration now calculated from dates when `duration_days` is not stored (e.g. trips created before the auto-calculate fix)
+- Trip `duration_days` is now automatically calculated from `start_date`/`end_date` at creation time and recalculated when either date is updated (both backends)
+- Updating a trip's activity list now correctly adds packing items for newly added activities and removes non-customised items that belonged exclusively to deselected activities (both backends)
+
+### Added
+- HA addon UI trip detail: activity chips are now editable — tap ✕ to remove an activity (clears its auto-added items) or tap **+ Activity** to add a new one from an inline picker; changes propagate immediately to the packing list
 
 ## [0.1.2] - 2026-05-24
 
