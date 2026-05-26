@@ -34,7 +34,7 @@ Follow these steps in order every time a feature or bug fix is requested:
 | File | Who sets it | Rule |
 |------|-------------|------|
 | `ha-addon/NEXT_VERSION` | **PRs** | Next version to release (plain `X.Y.Z`). The only version file PRs should edit. |
-| `ha-addon/config.yaml` `version` | **Post-release PR** | Always the last *released* version. Updated in the post-release PR (after the release workflow has already built the image). **Never edit in feature PRs.** |
+| `ha-addon/config.yaml` `version` | **Auto post-release PR** | Always the last *released* version. The release workflow opens a `chore/post-release-X.Y.Z` PR that sets this. **Never edit in feature PRs.** |
 | `ha-addon-dev/config.yaml` `version` | **PRs** | Tracks `{NEXT_VERSION}b{N}` (pre-release suffix). |
 
 **Why keep `config.yaml` at the last released version?**
@@ -200,35 +200,21 @@ There are **three pipelines**. CI never publishes images — that is exclusively
 **Release** (`.github/workflows/release.yml`) — `workflow_dispatch` only:
 
 1. Reads `ha-addon/NEXT_VERSION`, validates it is a pure `X.Y.Z` semver.
-2. Creates and pushes the `vX.Y.Z` tag (no direct commit to `main` — avoids branch-protection conflicts).
+2. Creates and pushes the `vX.Y.Z` tag (no direct push to `main` — avoids branch-protection conflicts).
 3. Builds and pushes `{arch}-siap_jalan:{version}` + `:latest` to GHCR for amd64 + aarch64.
 4. Creates a GitHub release with install instructions.
+5. **Automatically opens a post-release PR** (`chore/post-release-X.Y.Z`) containing:
+   - `ha-addon/config.yaml` bumped to the released version
+   - `CHANGELOG.md` — `[Unreleased]` entries moved to `[X.Y.Z] - YYYY-MM-DD`; comparison links updated
+   - `ha-addon/CHANGELOG.md` — auto-generated user-facing bullet points (review before merging)
+   - `ha-addon/NEXT_VERSION` → next patch version
+   - `ha-addon-dev/config.yaml` → `{NEXT_VERSION}b1`
 
 **To ship a stable release:**
 
 1. Go to **Actions → Release → Run workflow** (no inputs needed).
-2. The workflow:
-   - Reads `ha-addon/NEXT_VERSION`
-   - Creates and pushes the `vX.Y.Z` tag
-   - Builds and pushes images to GHCR
-   - Creates a GitHub release
-   - **Does NOT modify `ha-addon/config.yaml`** — that happens in step 4 below.
-3. After the workflow completes, open a post-release PR that contains:
-   - `ha-addon/config.yaml` `version` bumped to the released version (e.g. `0.2.0`)
-   - `CHANGELOG.md`: move `## [Unreleased]` entries to `## [x.y.z] - YYYY-MM-DD`; update comparison links
-   - `ha-addon/CHANGELOG.md`: replace with only the new version's bullet points + full-changelog link:
-     ```markdown
-     ## x.y.z
-
-     - Added/Fixed/Changed: …
-
-     ---
-
-     [Full changelog](https://github.com/nsaputro/siap-jalan/blob/main/CHANGELOG.md)
-     ```
-   - `ha-addon/NEXT_VERSION` bumped to the next planned version
-   - `ha-addon-dev/config.yaml` bumped to `{NEXT_VERSION}b1`
-4. Merge the post-release PR. HA Supervisor will now see the new version in `config.yaml` and the image already exists on GHCR.
+2. Wait for the workflow to complete — it creates the tag, builds images, opens the GitHub release, and opens the post-release PR automatically.
+3. Review and merge the auto-created `chore/post-release-X.Y.Z` PR. Check `ha-addon/CHANGELOG.md` in particular — bullets are auto-extracted and may benefit from light editing. Once merged, HA Supervisor will see the new version and the image is already on GHCR.
 
 **To ship a pre-release:**
 

@@ -4,8 +4,9 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write   # push tag, create GitHub release
-  packages: write   # push to ghcr.io
+  contents: write      # push tag, create GitHub release
+  packages: write      # push to ghcr.io
+  pull-requests: write # open post-release PR
 
 jobs:
   # ── Validate NEXT_VERSION, create tag ────────────────────────────────────────
@@ -157,3 +158,134 @@ jobs:
           docker compose up --build
           # Frontend: http://localhost:5173  ·  API docs: http://localhost:8000/docs
           \`\`\`"
+
+  # ── Create post-release PR ────────────────────────────────────────────────────
+  create-post-release-pr:
+    name: Create post-release PR
+    runs-on: ubuntu-latest
+    needs: [prepare-release, github-release]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Create branch, update files, open PR
+        env:
+          VERSION: ${{ needs.prepare-release.outputs.version }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          # ── Compute versions ────────────────────────────────────────────────
+          MAJOR=$(echo "$VERSION" | cut -d. -f1)
+          MINOR=$(echo "$VERSION" | cut -d. -f2)
+          PATCH=$(echo "$VERSION" | cut -d. -f3)
+          NEXT_VERSION="${MAJOR}.${MINOR}.$((PATCH + 1))"
+          TODAY=$(date +%Y-%m-%d)
+          BRANCH="chore/post-release-${VERSION}"
+
+          # Previous stable tag for CHANGELOG comparison link
+          OLD_TAG=$(git tag --sort=-version:refname \
+            | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' \
+            | grep -v "^v${VERSION}$" \
+            | head -n1)
+          # Fallback to initial commit if this is the first stable release
+          if [ -z "$OLD_TAG" ]; then
+            OLD_TAG=$(git rev-list --max-parents=0 HEAD | head -c 8)
+          fi
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "${BRANCH}"
+
+          # ── Bump config files ────────────────────────────────────────────────
+          # ha-addon/config.yaml — released version so HA Supervisor offers the
+          # update (image is already live on GHCR before this PR is created)
+          sed -i "s/^version:.*/version: \"${VERSION}\"/" ha-addon/config.yaml
+
+          # ha-addon/NEXT_VERSION — advance to next patch
+          echo "${NEXT_VERSION}" > ha-addon/NEXT_VERSION
+
+          # ha-addon-dev/config.yaml — track new NEXT_VERSION
+          sed -i "s/^version:.*/version: \"${NEXT_VERSION}b1\"/" ha-addon-dev/config.yaml
+
+          # ── Write changelog update script ────────────────────────────────────
+          cat > /tmp/update_changelogs.py << 'PYEOF'
+import re, pathlib, os
+
+VERSION      = os.environ["VERSION"]
+NEXT_VERSION = os.environ["NEXT_VERSION"]
+TODAY        = os.environ["TODAY"]
+OLD_TAG      = os.environ["OLD_TAG"]
+REPO         = os.environ["REPO"]
+
+changelog = pathlib.Path("CHANGELOG.md").read_text()
+
+# Replace any [Unreleased] heading with the released section + fresh [Unreleased]
+changelog = re.sub(
+    r"## \[Unreleased\][^\n]*",
+    f"## [Unreleased] — next: {NEXT_VERSION}\n\n## [{VERSION}] - {TODAY}",
+    changelog, count=1,
+)
+
+# Update comparison links at the bottom
+changelog = re.sub(
+    r"\[Unreleased\]: https://[^\n]+",
+    (
+        f"[Unreleased]: https://github.com/{REPO}/compare/v{VERSION}...HEAD\n"
+        f"[{VERSION}]: https://github.com/{REPO}/compare/{OLD_TAG}...v{VERSION}"
+    ),
+    changelog,
+)
+pathlib.Path("CHANGELOG.md").write_text(changelog)
+
+# ── Build ha-addon/CHANGELOG.md from the newly-created VERSION section ──────
+m = re.search(
+    rf"## \[{re.escape(VERSION)}\] - {re.escape(TODAY)}\n(.*?)(?=\n## \[)",
+    changelog, re.DOTALL,
+)
+entries_raw = m.group(1).strip() if m else ""
+
+# Convert Keep-a-Changelog sections into compact "- Category: item" bullets
+lines, category = [], None
+for line in entries_raw.splitlines():
+    if line.startswith("### "):
+        category = line[4:].strip()
+    elif line.startswith("- ") and category:
+        lines.append(f"- {category}: {line[2:]}")
+
+ha = f"## {VERSION}\n\n" + "\n".join(lines)
+ha += (
+    f"\n\n---\n\n"
+    f"[Full changelog](https://github.com/{REPO}/blob/main/CHANGELOG.md)\n"
+)
+pathlib.Path("ha-addon/CHANGELOG.md").write_text(ha)
+PYEOF
+
+          # ── Run the script ───────────────────────────────────────────────────
+          VERSION="$VERSION" NEXT_VERSION="$NEXT_VERSION" TODAY="$TODAY" \
+          OLD_TAG="$OLD_TAG" REPO="$REPO" \
+          python3 /tmp/update_changelogs.py
+
+          # ── Commit & push ────────────────────────────────────────────────────
+          git add ha-addon/config.yaml ha-addon/NEXT_VERSION ha-addon-dev/config.yaml \
+                  CHANGELOG.md ha-addon/CHANGELOG.md
+          git commit -m "chore: post-release ${VERSION} — config.yaml, changelogs, NEXT_VERSION → ${NEXT_VERSION}"
+          git push origin "${BRANCH}"
+
+          # ── Open PR ──────────────────────────────────────────────────────────
+          gh pr create \
+            --title "chore: post-release ${VERSION} — config, changelogs, NEXT_VERSION → ${NEXT_VERSION}" \
+            --body "Automated post-release PR created by the Release workflow.
+
+          ## Changes
+
+          - \`ha-addon/config.yaml\` → \`${VERSION}\` — HA Supervisor will now offer the update; image is already live on GHCR
+          - \`CHANGELOG.md\` — \`[Unreleased]\` entries moved to \`[${VERSION}] - ${TODAY}\`; comparison links updated
+          - \`ha-addon/CHANGELOG.md\` — ${VERSION} user-facing notes (auto-extracted; review before merging)
+          - \`ha-addon/NEXT_VERSION\` → \`${NEXT_VERSION}\`
+          - \`ha-addon-dev/config.yaml\` → \`${NEXT_VERSION}b1\`
+
+          > **Review \`ha-addon/CHANGELOG.md\`** — bullets are auto-generated from the main changelog and may benefit from a light edit for readability before merging." \
+            --base main \
+            --head "${BRANCH}"
