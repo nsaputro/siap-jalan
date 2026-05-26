@@ -10,36 +10,57 @@ export function TemplateDetail() {
 
   const [tmpl, setTmpl] = useState<ActivityTemplate | null>(null)
   const [loading, setLoading] = useState(true)
+  const [cloning, setCloning] = useState(false)
   const [saveStatus, setSaveStatus] = useState<string>('')
   const [newItemName, setNewItemName] = useState('')
   const [addingItem, setAddingItem] = useState(false)
 
-  // Editable name / emoji (controlled fields, auto-save on blur)
   const [editName, setEditName] = useState('')
   const [editEmoji, setEditEmoji] = useState('')
 
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // Fetch all activities and find by numeric id
-  // (The per-slug endpoint isn't convenient here; list is small enough)
   useEffect(() => {
     if (!id) return
     api
       .getActivities()
-      .then((list) => {
+      .then(async (list) => {
         const found = list.find((a) => a.id === Number(id))
         if (!found) { navigate('/templates'); return }
+
+        if (found.is_builtin) {
+          // If the user already has a personal copy with the same name, redirect there.
+          const existing = list.find((a) => !a.is_builtin && a.name === found.name)
+          if (existing) {
+            navigate(`/templates/${existing.id}`, { replace: true })
+            return
+          }
+          // Auto-clone the built-in as a personal copy (same name + emoji).
+          setCloning(true)
+          try {
+            const clone = await api.cloneActivity(found.slug, { name: found.name })
+            navigate(`/templates/${clone.id}`, { replace: true })
+          } catch {
+            navigate('/templates')
+          }
+          return
+        }
+
         setTmpl(found)
         setEditName(found.name)
         setEditEmoji(found.icon_emoji)
       })
       .catch(() => navigate('/templates'))
-      .finally(() => setLoading(false))
+      .finally(() => { setLoading(false); setCloning(false) })
   }, [id, navigate])
 
   const showSaveStatus = (summary: PropagationSummary) => {
     const updated = summary.trips_updated ?? 0
-    setSaveStatus(updated > 0 ? `Saved — propagated to ${updated} trip${updated !== 1 ? 's' : ''}` : 'Saved')
+    setSaveStatus(
+      updated > 0
+        ? `Saved — propagated to ${updated} trip${updated !== 1 ? 's' : ''}`
+        : 'Saved',
+    )
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
     saveTimerRef.current = setTimeout(() => setSaveStatus(''), 3000)
   }
@@ -75,7 +96,7 @@ export function TemplateDetail() {
     if (!tmpl) return
     try {
       await api.deleteActivityItem(tmpl.id, itemId)
-      setTmpl((t) => t ? { ...t, items: t.items.filter((i) => i.id !== itemId) } : t)
+      setTmpl((t) => (t ? { ...t, items: t.items.filter((i) => i.id !== itemId) } : t))
     } catch { /* silent */ }
   }
 
@@ -91,17 +112,19 @@ export function TemplateDetail() {
         priority: 0,
         gender_filter: 'all',
       })
-      setTmpl((t) => t ? { ...t, items: [...t.items, item] } : t)
+      setTmpl((t) => (t ? { ...t, items: [...t.items, item] } : t))
       setNewItemName('')
     } catch { /* silent */ }
     finally { setAddingItem(false) }
   }
 
-  if (loading || !tmpl) {
-    return <div className="flex h-64 items-center justify-center text-gray-400">Loading…</div>
+  if (loading || cloning || !tmpl) {
+    return (
+      <div className="flex h-64 flex-col items-center justify-center gap-2 text-gray-400">
+        <div>{cloning ? 'Creating your personal copy…' : 'Loading…'}</div>
+      </div>
+    )
   }
-
-  const isOwned = !tmpl.is_builtin
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
@@ -122,50 +145,40 @@ export function TemplateDetail() {
 
       {/* ── Template info card ── */}
       <div className="mb-5 rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-        <div className="border-b border-gray-100 bg-gray-50 px-4 py-3">
+        <div className="flex items-center gap-2 border-b border-gray-100 bg-gray-50 px-4 py-3">
           <span className="text-xs font-semibold uppercase tracking-widest text-gray-400">
             Template Info
           </span>
-          {!isOwned && (
-            <span className="ml-2 rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-600">
-              Built-in (read-only)
-            </span>
-          )}
+          <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-700">
+            personal copy
+          </span>
+          <span className="ml-auto text-xs text-gray-400">changes only affect your trips</span>
         </div>
 
         <div className="divide-y divide-gray-100">
           <div className="flex items-center gap-3 px-4 py-3">
             <label className="w-16 flex-shrink-0 text-xs text-gray-400">Name</label>
-            {isOwned ? (
-              <input
-                className="flex-1 bg-transparent text-sm text-gray-900 outline-none focus:border-b focus:border-blue-400"
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-                onBlur={saveInfo}
-                onKeyDown={(e) => e.key === 'Enter' && (e.currentTarget as HTMLInputElement).blur()}
-              />
-            ) : (
-              <span className="flex-1 text-sm text-gray-900">{tmpl.name}</span>
-            )}
+            <input
+              className="flex-1 bg-transparent text-sm text-gray-900 outline-none focus:border-b focus:border-blue-400"
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
+              onBlur={saveInfo}
+              onKeyDown={(e) => e.key === 'Enter' && (e.currentTarget as HTMLInputElement).blur()}
+            />
           </div>
           <div className="flex items-center gap-3 px-4 py-3">
             <label className="w-16 flex-shrink-0 text-xs text-gray-400">Emoji</label>
-            {isOwned ? (
-              <input
-                className="w-16 bg-transparent text-sm text-gray-900 outline-none focus:border-b focus:border-blue-400"
-                value={editEmoji}
-                onChange={(e) => setEditEmoji(e.target.value)}
-                onBlur={saveInfo}
-                onKeyDown={(e) => e.key === 'Enter' && (e.currentTarget as HTMLInputElement).blur()}
-              />
-            ) : (
-              <span className="text-lg">{tmpl.icon_emoji}</span>
-            )}
+            <input
+              className="w-16 bg-transparent text-sm text-gray-900 outline-none focus:border-b focus:border-blue-400"
+              value={editEmoji}
+              onChange={(e) => setEditEmoji(e.target.value)}
+              onBlur={saveInfo}
+              onKeyDown={(e) => e.key === 'Enter' && (e.currentTarget as HTMLInputElement).blur()}
+            />
           </div>
         </div>
       </div>
 
-      {/* Save status */}
       {saveStatus && (
         <p className="mb-3 text-center text-xs text-gray-400">{saveStatus}</p>
       )}
@@ -180,19 +193,20 @@ export function TemplateDetail() {
         </div>
 
         {tmpl.items.length === 0 && (
-          <p className="px-4 py-6 text-center text-sm text-gray-400">No items yet — add one below.</p>
+          <p className="px-4 py-6 text-center text-sm text-gray-400">
+            No items yet — add one below.
+          </p>
         )}
 
         <div className="divide-y divide-gray-100">
           {tmpl.items.map((item) => (
             <div key={item.id} className="flex items-center gap-3 px-4 py-3">
-              {/* Essential toggle */}
               <button
-                onClick={() => isOwned && toggleEssential(item)}
+                onClick={() => toggleEssential(item)}
                 title={item.is_essential ? 'Essential' : 'Mark essential'}
-                className={`flex-shrink-0 text-lg transition-opacity ${
+                className={`flex-shrink-0 text-lg transition-opacity hover:opacity-70 ${
                   item.is_essential ? 'opacity-100' : 'opacity-25'
-                } ${isOwned ? 'cursor-pointer hover:opacity-70' : 'cursor-default'}`}
+                }`}
               >
                 ★
               </button>
@@ -203,34 +217,29 @@ export function TemplateDetail() {
                 <span className="text-xs text-gray-400">×{item.quantity}</span>
               )}
 
-              {isOwned && (
-                <button
-                  onClick={() => deleteItem(item.id)}
-                  className="flex-shrink-0 rounded p-1 text-gray-300 hover:text-red-400"
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                </button>
-              )}
+              <button
+                onClick={() => deleteItem(item.id)}
+                className="flex-shrink-0 rounded p-1 text-gray-300 hover:text-red-400"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
             </div>
           ))}
         </div>
 
-        {/* Add item row */}
-        {isOwned && (
-          <div className="flex items-center gap-2 border-t border-gray-100 px-4 py-3">
-            <Plus className="h-4 w-4 flex-shrink-0 text-gray-400" />
-            <input
-              className="flex-1 bg-transparent text-sm text-gray-700 outline-none placeholder-gray-300"
-              placeholder="Add item (Enter to save)…"
-              value={newItemName}
-              onChange={(e) => setNewItemName(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !addingItem) addItem()
-              }}
-              disabled={addingItem}
-            />
-          </div>
-        )}
+        <div className="flex items-center gap-2 border-t border-gray-100 px-4 py-3">
+          <Plus className="h-4 w-4 flex-shrink-0 text-gray-400" />
+          <input
+            className="flex-1 bg-transparent text-sm text-gray-700 outline-none placeholder-gray-300"
+            placeholder="Add item (Enter to save)…"
+            value={newItemName}
+            onChange={(e) => setNewItemName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !addingItem) addItem()
+            }}
+            disabled={addingItem}
+          />
+        </div>
       </div>
     </div>
   )

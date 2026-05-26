@@ -137,15 +137,24 @@ export function Templates() {
             <span className="text-2xl">{tmpl.icon_emoji}</span>
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-gray-900">{tmpl.name}</p>
-              <p className="text-xs text-gray-400">{tmpl.items.length} items</p>
+              <p className="text-xs text-gray-400">{tmpl.items.length} items · built-in</p>
             </div>
-            <button
-              onClick={() => openClone(tmpl)}
-              className="flex items-center gap-1 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50"
-            >
-              <Copy className="h-3.5 w-3.5" />
-              Clone
-            </button>
+            <div className="flex items-center gap-2">
+              <Link
+                to={`/templates/${tmpl.id}`}
+                className="flex items-center gap-1 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50"
+              >
+                <Pencil className="h-3.5 w-3.5" />
+                Edit
+              </Link>
+              <button
+                onClick={() => openClone(tmpl)}
+                className="flex items-center gap-1 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50"
+              >
+                <Copy className="h-3.5 w-3.5" />
+                Clone
+              </button>
+            </div>
           </div>
         ))}
       </div>
@@ -157,7 +166,7 @@ export function Templates() {
       {mine.length === 0 ? (
         <div className="rounded-xl border-2 border-dashed border-gray-200 px-8 py-10 text-center">
           <p className="mb-1 text-sm text-gray-400">No custom activities yet</p>
-          <p className="text-xs text-gray-400">Clone a built-in or create one from scratch.</p>
+          <p className="text-xs text-gray-400">Edit a built-in to personalise it, or create a new one from scratch.</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -169,7 +178,7 @@ export function Templates() {
               <span className="text-2xl">{tmpl.icon_emoji}</span>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-gray-900">{tmpl.name}</p>
-                <p className="text-xs text-gray-400">{tmpl.items.length} items</p>
+                <p className="text-xs text-gray-400">{tmpl.items.length} items · custom</p>
               </div>
               <div className="flex items-center gap-2">
                 <Link
