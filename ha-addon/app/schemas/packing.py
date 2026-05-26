@@ -25,6 +25,7 @@ class ActivityTemplateItemUpdate(BaseModel):
     quantity: Optional[int] = None
     unit: Optional[str] = None
     is_essential: Optional[bool] = None
+    is_hidden: Optional[bool] = None
     priority: Optional[int] = None
     notes: Optional[str] = None
     gender_filter: Optional[str] = None
@@ -39,6 +40,8 @@ class ActivityTemplateItemResponse(BaseModel):
     quantity: int
     unit: Optional[str]
     is_essential: bool
+    is_hidden: bool
+    is_user_added: bool
     priority: int
     notes: Optional[str]
     gender_filter: str

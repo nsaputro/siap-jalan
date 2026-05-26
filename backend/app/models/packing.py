@@ -152,6 +152,11 @@ class ActivityTemplateItem(Base):
     priority: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     notes: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     gender_filter: Mapped[str] = mapped_column(String, default="all", nullable=False)
+    # is_hidden: user hid this item from their packing list (only on cloned templates)
+    is_hidden: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    # is_user_added: True = user added this item themselves (deletable);
+    #                False = inherited via clone from built-in (hide/show only)
+    is_user_added: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime, server_default=func.now(), nullable=False
     )

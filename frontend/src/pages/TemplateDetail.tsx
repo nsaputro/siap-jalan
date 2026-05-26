@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { ChevronLeft, Trash2, Plus } from 'lucide-react'
+import { ChevronLeft, Trash2, Plus, Eye, EyeOff } from 'lucide-react'
 import { api } from '@/api/client'
 import type { ActivityTemplate, ActivityTemplateItem, PropagationSummary } from '@/types'
 
@@ -80,17 +80,21 @@ export function TemplateDetail() {
     }
   }
 
-  const toggleEssential = async (item: ActivityTemplateItem) => {
+  const updateItem = async (item: ActivityTemplateItem, patch: Partial<ActivityTemplateItem>) => {
     if (!tmpl) return
     try {
-      const updated = await api.updateActivityItem(tmpl.id, item.id, {
-        is_essential: !item.is_essential,
-      })
+      const updated = await api.updateActivityItem(tmpl.id, item.id, patch)
       setTmpl((t) =>
         t ? { ...t, items: t.items.map((i) => (i.id === updated.id ? updated : i)) } : t,
       )
     } catch { /* silent */ }
   }
+
+  const toggleEssential = (item: ActivityTemplateItem) =>
+    updateItem(item, { is_essential: !item.is_essential })
+
+  const toggleHidden = (item: ActivityTemplateItem) =>
+    updateItem(item, { is_hidden: !item.is_hidden })
 
   const deleteItem = async (itemId: number) => {
     if (!tmpl) return
@@ -200,29 +204,58 @@ export function TemplateDetail() {
 
         <div className="divide-y divide-gray-100">
           {tmpl.items.map((item) => (
-            <div key={item.id} className="flex items-center gap-3 px-4 py-3">
-              <button
-                onClick={() => toggleEssential(item)}
-                title={item.is_essential ? 'Essential' : 'Mark essential'}
-                className={`flex-shrink-0 text-lg transition-opacity hover:opacity-70 ${
-                  item.is_essential ? 'opacity-100' : 'opacity-25'
-                }`}
-              >
-                ★
-              </button>
+            <div
+              key={item.id}
+              className={`flex items-center gap-3 px-4 py-3 ${item.is_hidden ? 'opacity-40' : ''}`}
+            >
+              {/* Essential star — only visible when item is not hidden */}
+              {!item.is_hidden && (
+                <button
+                  onClick={() => toggleEssential(item)}
+                  title={item.is_essential ? 'Essential' : 'Mark essential'}
+                  className={`flex-shrink-0 text-lg transition-opacity hover:opacity-70 ${
+                    item.is_essential ? 'opacity-100' : 'opacity-25'
+                  }`}
+                >
+                  ★
+                </button>
+              )}
+              {item.is_hidden && (
+                <span className="flex-shrink-0 w-7" />
+              )}
 
-              <span className="flex-1 text-sm text-gray-900">{item.name}</span>
+              <span className="flex-1 text-sm text-gray-900">
+                {item.name}
+                {item.is_hidden && (
+                  <span className="ml-2 text-xs text-gray-400">(hidden)</span>
+                )}
+              </span>
 
-              {item.quantity > 1 && (
+              {item.quantity > 1 && !item.is_hidden && (
                 <span className="text-xs text-gray-400">×{item.quantity}</span>
               )}
 
+              {/* Hide/show toggle — available for all items */}
               <button
-                onClick={() => deleteItem(item.id)}
-                className="flex-shrink-0 rounded p-1 text-gray-300 hover:text-red-400"
+                onClick={() => toggleHidden(item)}
+                title={item.is_hidden ? 'Show in packing list' : 'Hide from packing list'}
+                className="flex-shrink-0 rounded p-1 text-gray-300 hover:text-gray-600"
               >
-                <Trash2 className="h-3.5 w-3.5" />
+                {item.is_hidden
+                  ? <Eye className="h-3.5 w-3.5" />
+                  : <EyeOff className="h-3.5 w-3.5" />
+                }
               </button>
+
+              {/* Delete — only for user-added items */}
+              {item.is_user_added && (
+                <button
+                  onClick={() => deleteItem(item.id)}
+                  className="flex-shrink-0 rounded p-1 text-gray-300 hover:text-red-400"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+              )}
             </div>
           ))}
         </div>

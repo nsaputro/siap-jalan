@@ -37,13 +37,14 @@ async def merge_activities(
     # Build a map slug -> template for source tracking
     slug_map: dict[str, ActivityTemplate] = {t.slug: t for t in templates}
 
-    # Collect all raw items with their source slug
+    # Collect all raw items with their source slug (skip hidden items)
     raw_items: list[tuple[str, object]] = []
     for slug in slugs:
         template = slug_map.get(slug)
         if template:
             for item in template.items:
-                raw_items.append((slug, item))
+                if not item.is_hidden:
+                    raw_items.append((slug, item))
 
     # Deduplicate by normalised name
     # key: normalised_name -> MergedItem

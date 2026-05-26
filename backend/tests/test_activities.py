@@ -302,3 +302,113 @@ async def test_owner_can_delete_own_template(client, as_user):
         activity = (await client.post("/activities", json=CUSTOM_ACTIVITY)).json()
         r = await client.delete(f"/activities/{activity['id']}")
     assert r.status_code == 204
+
+
+# ---------------------------------------------------------------------------
+# Item hide/show — is_hidden flag
+# ---------------------------------------------------------------------------
+
+async def test_cloned_items_are_not_user_added(client, as_user):
+    """Items inherited via clone have is_user_added=False."""
+    with as_user("user_a"):
+        r = await client.post("/activities/hiking/clone", json={"name": "My Hiking"})
+    items = r.json()["items"]
+    assert len(items) > 0
+    assert all(not item["is_user_added"] for item in items)
+
+
+async def test_user_added_items_are_marked(client, as_user):
+    """Items added explicitly by the user have is_user_added=True."""
+    with as_user("user_a"):
+        activity = (await client.post("/activities", json=CUSTOM_ACTIVITY)).json()
+        r = await client.post(f"/activities/{activity['id']}/items", json={
+            "name": "New item", "quantity": 1, "is_essential": False,
+            "priority": 0, "gender_filter": "all",
+        })
+    assert r.json()["is_user_added"] is True
+
+
+async def test_items_created_with_activity_are_user_added(client, as_user):
+    """Items provided in POST /activities body are user-defined (deletable)."""
+    with as_user("user_a"):
+        r = await client.post("/activities", json=CUSTOM_ACTIVITY)
+    items = r.json()["items"]
+    assert all(item["is_user_added"] for item in items)
+
+
+async def test_hide_cloned_item(client, as_user):
+    """User can hide a cloned item (is_hidden toggled to True)."""
+    with as_user("user_a"):
+        clone = (await client.post("/activities/hiking/clone", json={"name": "My Hiking"})).json()
+        item_id = clone["items"][0]["id"]
+        r = await client.put(
+            f"/activities/{clone['id']}/items/{item_id}",
+            json={"is_hidden": True},
+        )
+    assert r.status_code == 200
+    assert r.json()["is_hidden"] is True
+
+
+async def test_show_hidden_item(client, as_user):
+    """User can unhide a previously hidden item."""
+    with as_user("user_a"):
+        clone = (await client.post("/activities/hiking/clone", json={"name": "My Hiking"})).json()
+        item_id = clone["items"][0]["id"]
+        await client.put(
+            f"/activities/{clone['id']}/items/{item_id}",
+            json={"is_hidden": True},
+        )
+        r = await client.put(
+            f"/activities/{clone['id']}/items/{item_id}",
+            json={"is_hidden": False},
+        )
+    assert r.status_code == 200
+    assert r.json()["is_hidden"] is False
+
+
+async def test_cannot_delete_inherited_item(client, as_user):
+    """Deleting a cloned (non-user-added) item returns 403."""
+    with as_user("user_a"):
+        clone = (await client.post("/activities/hiking/clone", json={"name": "My Hiking"})).json()
+        item_id = clone["items"][0]["id"]
+        r = await client.delete(f"/activities/{clone['id']}/items/{item_id}")
+    assert r.status_code == 403
+
+
+async def test_can_delete_user_added_item(client, as_user):
+    """User-added items can be deleted normally."""
+    with as_user("user_a"):
+        clone = (await client.post("/activities/hiking/clone", json={"name": "My Hiking"})).json()
+        r = await client.post(f"/activities/{clone['id']}/items", json={
+            "name": "Extra item", "quantity": 1, "is_essential": False,
+            "priority": 0, "gender_filter": "all",
+        })
+        item_id = r.json()["id"]
+        r_del = await client.delete(f"/activities/{clone['id']}/items/{item_id}")
+    assert r_del.status_code == 204
+
+
+async def test_hidden_items_excluded_from_merge(client, as_user):
+    """Hidden items on a personal template are not included in merge output."""
+    with as_user("user_a"):
+        clone = (await client.post("/activities/hiking/clone", json={"name": "My Hiking"})).json()
+        # Hide the first item
+        item_id = clone["items"][0]["id"]
+        hidden_name = clone["items"][0]["name"]
+        await client.put(
+            f"/activities/{clone['id']}/items/{item_id}",
+            json={"is_hidden": True},
+        )
+        # Merge using the clone's slug
+        r = await client.post("/activities/merge", json={"activity_slugs": [clone["slug"]]})
+    merged_names = [i["name"] for i in r.json()]
+    assert hidden_name not in merged_names
+
+
+async def test_all_items_in_merge_when_none_hidden(client, as_user):
+    """All visible items appear in merge output."""
+    with as_user("user_a"):
+        clone = (await client.post("/activities/hiking/clone", json={"name": "My Hiking"})).json()
+        total = len(clone["items"])
+        r = await client.post("/activities/merge", json={"activity_slugs": [clone["slug"]]})
+    assert len(r.json()) == total
