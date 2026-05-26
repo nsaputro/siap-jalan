@@ -6,6 +6,7 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 from sqlalchemy.future import select
 
 from .database import AsyncSessionLocal, Base, engine
@@ -48,10 +49,25 @@ async def _seed_activities() -> None:
         await db.commit()
 
 
+async def _run_migrations() -> None:
+    """Apply additive schema migrations for columns added after initial release."""
+    migrations = [
+        "ALTER TABLE activity_template_items ADD COLUMN is_hidden BOOLEAN NOT NULL DEFAULT 0",
+        "ALTER TABLE activity_template_items ADD COLUMN is_user_added BOOLEAN NOT NULL DEFAULT 0",
+    ]
+    async with engine.begin() as conn:
+        for stmt in migrations:
+            try:
+                await conn.execute(text(stmt))
+            except Exception:
+                pass  # column already exists — safe to ignore
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):  # type: ignore[type-arg]
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+    await _run_migrations()
     await _seed_activities()
     yield
 

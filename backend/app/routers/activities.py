@@ -138,6 +138,7 @@ async def create_activity(
     for item_data in body.items:
         item = ActivityTemplateItem(
             activity_template_id=tmpl.id,
+            is_user_added=True,  # items supplied at creation time are user-defined
             **item_data.model_dump(),
         )
         db.add(item)
@@ -194,6 +195,8 @@ async def clone_activity(
             priority=src_item.priority,
             notes=src_item.notes,
             gender_filter=src_item.gender_filter,
+            is_hidden=False,
+            is_user_added=False,  # inherited from source — can only be hidden/shown
         ))
 
     await db.commit()
@@ -264,6 +267,7 @@ async def add_template_item(
 
     item = ActivityTemplateItem(
         activity_template_id=template_id,
+        is_user_added=True,  # user explicitly added this item — they can delete it later
         **body.model_dump(),
     )
     db.add(item)
@@ -297,12 +301,27 @@ async def update_template_item(
     if not item:
         raise HTTPException(status_code=404, detail="Template item not found")
 
-    for field, value in body.model_dump(exclude_unset=True).items():
+    updates = body.model_dump(exclude_unset=True)
+    old_hidden = item.is_hidden
+    new_hidden = updates.get("is_hidden", old_hidden)
+
+    for field, value in updates.items():
         setattr(item, field, value)
 
     await db.flush()
     today = datetime.date.today()
-    await propagate_template_change(db, template_id, [], [item], [], today)
+
+    if new_hidden != old_hidden:
+        if new_hidden:
+            # Item was just hidden — remove it from active trip packing lists
+            await propagate_template_change(db, template_id, [], [], [item_id], today)
+        else:
+            # Item was just unhidden — add it back to active trip packing lists
+            await propagate_template_change(db, template_id, [item], [], [], today)
+    else:
+        # No visibility change — propagate field updates to existing packing items
+        await propagate_template_change(db, template_id, [], [item], [], today)
+
     await db.commit()
     await db.refresh(item)
     return item
@@ -327,6 +346,12 @@ async def delete_template_item(
     item = result.scalar_one_or_none()
     if not item:
         raise HTTPException(status_code=404, detail="Template item not found")
+
+    if not item.is_user_added:
+        raise HTTPException(
+            status_code=403,
+            detail="Cannot delete an inherited item — use hide/show instead.",
+        )
 
     today = datetime.date.today()
     await propagate_template_change(db, template_id, [], [], [item_id], today)

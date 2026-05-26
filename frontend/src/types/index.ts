@@ -56,6 +56,8 @@ export interface ActivityTemplateItem {
   quantity: number
   unit: string | null
   is_essential: boolean
+  is_hidden: boolean
+  is_user_added: boolean
   priority: number
   notes: string | null
   gender_filter: GenderFilter
@@ -99,6 +101,7 @@ export interface ActivityTemplateItemUpdatePayload {
   name?: string
   quantity?: number
   is_essential?: boolean
+  is_hidden?: boolean
   priority?: number
 }
 

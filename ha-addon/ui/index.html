@@ -223,6 +223,7 @@
       display: flex; align-items: center; gap: .5rem;
       padding: .45rem 1rem; border-bottom: 1px solid color-mix(in srgb, var(--div) 60%, transparent);
     }
+    .tmpl-item-hidden { opacity: .45; }
     .ess-btn {
       background: transparent; border: none; cursor: pointer; font-size: .9rem;
       padding: .1rem; line-height: 1; opacity: .4; transition: opacity .15s;
@@ -666,12 +667,28 @@ function renderTemplateEdit() {
   if (!tmpl) { view = 'activities'; render(); return; }
 
   const itemsHTML = (tmpl.items || []).map(item => `
-    <div class="tmpl-item-row" data-item-id="${item.id}">
-      <button class="ess-btn ${item.is_essential ? 'on' : ''} ess-toggle"
-              data-item-id="${item.id}" title="Toggle essential">★</button>
-      <span class="item-name" style="flex:1;font-size:.88rem">${esc(item.name)}</span>
-      <span style="font-size:.78rem;color:var(--text2);margin-right:.5rem">×${item.quantity}</span>
-      <button class="btn-icon del-tmpl-item" data-item-id="${item.id}">✕</button>
+    <div class="tmpl-item-row ${item.is_hidden ? 'tmpl-item-hidden' : ''}" data-item-id="${item.id}">
+      ${item.is_hidden
+        ? '<span style="width:1.4rem;flex-shrink:0"></span>'
+        : `<button class="ess-btn ${item.is_essential ? 'on' : ''} ess-toggle"
+                   data-item-id="${item.id}" title="Toggle essential">★</button>`
+      }
+      <span class="item-name" style="flex:1;font-size:.88rem;${item.is_hidden ? 'color:var(--muted)' : ''}">
+        ${esc(item.name)}${item.is_hidden ? ' <span style="font-size:.72rem">(hidden)</span>' : ''}
+      </span>
+      ${!item.is_hidden && item.quantity > 1
+        ? `<span style="font-size:.78rem;color:var(--text2);margin-right:.25rem">×${item.quantity}</span>`
+        : ''
+      }
+      <button class="btn-icon vis-toggle" data-item-id="${item.id}"
+              title="${item.is_hidden ? 'Show in packing list' : 'Hide from packing list'}"
+              style="opacity:.5;font-size:.82rem">
+        ${item.is_hidden ? '👁' : '🙈'}
+      </button>
+      ${item.is_user_added
+        ? `<button class="btn-icon del-tmpl-item" data-item-id="${item.id}">✕</button>`
+        : ''
+      }
     </div>
   `).join('');
 
@@ -760,7 +777,24 @@ function renderTemplateEdit() {
     })
   );
 
-  // Delete item
+  // Visibility toggle (hide/show)
+  root.querySelectorAll('.vis-toggle').forEach(btn =>
+    btn.addEventListener('click', async () => {
+      const itemId = +btn.dataset.itemId;
+      const item   = (currentTemplate.items || []).find(i => i.id === itemId);
+      if (!item) return;
+      try {
+        const updated = await PUT(`activities/${tmpl.id}/items/${itemId}`, {
+          is_hidden: !item.is_hidden,
+        });
+        item.is_hidden = updated.is_hidden;
+        renderTemplateEdit();
+        showToast(updated.is_hidden ? 'Item hidden from packing list' : 'Item shown in packing list');
+      } catch (e) { showToast('Update failed'); }
+    })
+  );
+
+  // Delete item (user-added items only)
   root.querySelectorAll('.del-tmpl-item').forEach(btn =>
     btn.addEventListener('click', async () => {
       const itemId = +btn.dataset.itemId;

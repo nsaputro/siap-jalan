@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - React frontend: `/templates` page (built-ins with Clone, custom with Edit / Delete / New Activity) and `/templates/:id` edit page; **Activities** nav link on the Dashboard
 - `ha-addon/CHANGELOG.md`: per-addon changelog HA Supervisor reads to show "What's new" in the addon store
 - `ha-addon/NEXT_VERSION`: plain-text file holding the next unreleased version; PRs update this, never `config.yaml`
+- **Item hide/show on personal templates**: built-in-derived items (cloned) cannot be deleted but can be hidden per user; hidden items are excluded from trip packing lists and the merge endpoint; user-added items (via the editor or inline add row) remain fully deletable; `is_hidden` and `is_user_added` flags added to `ActivityTemplateItem` with a startup migration for existing databases
+- HA addon UI and React frontend template editor: eye/hide toggle button shown for every item; delete button shown only for user-added items; hidden items render dimmed with a "(hidden)" label
 
 ### Removed
 - `category` removed from the entire data model: API schemas (Create/Update/Response), activity merger, AI suggestion prompt and response, JSON seed templates, frontend TypeScript types, and HA addon UI
