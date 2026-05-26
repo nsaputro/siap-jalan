@@ -6,7 +6,11 @@ SiapJalan ("Ready to Go" in Indonesian) is a smart travel packing assistant that
 
 ---
 
-![Screenshot placeholder](docs/screenshot.png)
+<p align="center">
+  <img src="docs/screenshots/trip-detail.png" width="280" alt="Trip detail — packing list grouped by activity" />
+  &nbsp;&nbsp;&nbsp;
+  <img src="docs/screenshots/activity-template.png" width="280" alt="Activity template editor — Beach" />
+</p>
 
 ---
 
