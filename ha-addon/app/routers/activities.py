@@ -10,7 +10,7 @@ from sqlalchemy.orm import selectinload
 
 from ..database import get_db
 from ..dependencies import get_ha_user
-from ..models.packing import ActivityTemplate, ActivityTemplateItem
+from ..models.packing import ActivityTemplate, ActivityTemplateItem, PackingItem, PackingList, Trip
 from ..schemas.packing import (
     ActivityTemplateClone,
     ActivityTemplateCreate,
@@ -185,8 +185,10 @@ async def clone_activity(
     db.add(clone)
     await db.flush()
 
+    # Create cloned items and build source_id → new_item mapping for trip migration
+    item_copies: list[tuple[int, ActivityTemplateItem]] = []
     for src_item in source.items:
-        db.add(ActivityTemplateItem(
+        new_item = ActivityTemplateItem(
             activity_template_id=clone.id,
             name=src_item.name,
             quantity=src_item.quantity,
@@ -197,7 +199,38 @@ async def clone_activity(
             gender_filter=src_item.gender_filter,
             is_hidden=False,
             is_user_added=False,  # inherited from source — can only be hidden/shown
-        ))
+        )
+        db.add(new_item)
+        item_copies.append((src_item.id, new_item))
+
+    await db.flush()  # assigns IDs to all new items
+
+    # Migrate active trips: replace source slug with new slug so propagation
+    # from the personal copy reaches existing trips immediately.
+    if body.replace_source_in_trips:
+        item_id_map = {src_id: new_item.id for src_id, new_item in item_copies}
+        today = datetime.date.today()
+        trips_result = await db.execute(
+            select(Trip)
+            .where(Trip.end_date >= today)
+            .where(Trip.ha_user_id == ha_user)
+            .options(selectinload(Trip.packing_lists).selectinload(PackingList.items))
+        )
+        for trip in trips_result.scalars().all():
+            activities = list(trip.activities or [])
+            if slug not in activities:
+                continue
+            trip.activities = [new_slug if a == slug else a for a in activities]
+            for pl in trip.packing_lists:
+                for pi in pl.items:
+                    # Repoint template_item_id to the cloned item
+                    if pi.template_item_id in item_id_map:
+                        pi.template_item_id = item_id_map[pi.template_item_id]
+                    # Update source_activities display label
+                    if slug in (pi.source_activities or []):
+                        pi.source_activities = [
+                            new_slug if a == slug else a for a in pi.source_activities
+                        ]
 
     await db.commit()
 

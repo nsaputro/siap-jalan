@@ -80,6 +80,7 @@ export interface ActivityTemplate {
 export interface ActivityTemplateClone {
   name: string
   icon_emoji?: string
+  replace_source_in_trips?: boolean
 }
 
 export interface ActivityTemplateItemCreate {

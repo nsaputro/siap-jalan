@@ -64,6 +64,11 @@ class ActivityTemplateCreate(BaseModel):
 class ActivityTemplateClone(BaseModel):
     name: str
     icon_emoji: Optional[str] = None  # defaults to source template's emoji
+    # When True (auto-clone / Edit flow): update the user's active trips that
+    # still reference the source slug to use the new personal copy's slug, and
+    # repoint their packing-item template_item_id references accordingly so
+    # future propagation works through the personal copy.
+    replace_source_in_trips: bool = False
 
 
 class ActivityTemplateUpdate(BaseModel):

@@ -643,7 +643,7 @@ async function openTemplateEdit(id) {
     }
     // Auto-clone the built-in into a personal copy (same name, same emoji).
     try {
-      const clone = await POST(`activities/${tmpl.slug}/clone`, { name: tmpl.name });
+      const clone = await POST(`activities/${tmpl.slug}/clone`, { name: tmpl.name, replace_source_in_trips: true });
       activities.push(clone);
       currentTemplate = clone;
       view = 'tmpl-edit';
@@ -668,23 +668,19 @@ function renderTemplateEdit() {
 
   const itemsHTML = (tmpl.items || []).map(item => `
     <div class="tmpl-item-row ${item.is_hidden ? 'tmpl-item-hidden' : ''}" data-item-id="${item.id}">
-      ${item.is_hidden
-        ? '<span style="width:1.4rem;flex-shrink:0"></span>'
-        : `<button class="ess-btn ${item.is_essential ? 'on' : ''} ess-toggle"
-                   data-item-id="${item.id}" title="Toggle essential">★</button>`
-      }
+      <input type="checkbox" class="item-check vis-check" data-item-id="${item.id}"
+             ${!item.is_hidden ? 'checked' : ''}
+             title="${item.is_hidden ? 'Show in packing list' : 'Hide from packing list'}" />
+      <button class="ess-btn ${item.is_essential && !item.is_hidden ? 'on' : ''} ess-toggle"
+              data-item-id="${item.id}" title="Toggle essential"
+              ${item.is_hidden ? 'style="visibility:hidden"' : ''}>★</button>
       <span class="item-name" style="flex:1;font-size:.88rem;${item.is_hidden ? 'color:var(--muted)' : ''}">
-        ${esc(item.name)}${item.is_hidden ? ' <span style="font-size:.72rem">(hidden)</span>' : ''}
+        ${esc(item.name)}
       </span>
       ${!item.is_hidden && item.quantity > 1
         ? `<span style="font-size:.78rem;color:var(--text2);margin-right:.25rem">×${item.quantity}</span>`
         : ''
       }
-      <button class="btn-icon vis-toggle" data-item-id="${item.id}"
-              title="${item.is_hidden ? 'Show in packing list' : 'Hide from packing list'}"
-              style="opacity:.5;font-size:.82rem">
-        ${item.is_hidden ? '👁' : '🙈'}
-      </button>
       ${item.is_user_added
         ? `<button class="btn-icon del-tmpl-item" data-item-id="${item.id}">✕</button>`
         : ''
@@ -777,20 +773,21 @@ function renderTemplateEdit() {
     })
   );
 
-  // Visibility toggle (hide/show)
-  root.querySelectorAll('.vis-toggle').forEach(btn =>
-    btn.addEventListener('click', async () => {
-      const itemId = +btn.dataset.itemId;
+  // Visibility checkbox — checked = visible, unchecked = hidden
+  root.querySelectorAll('.vis-check').forEach(chk =>
+    chk.addEventListener('change', async () => {
+      const itemId = +chk.dataset.itemId;
       const item   = (currentTemplate.items || []).find(i => i.id === itemId);
       if (!item) return;
+      const newHidden = !chk.checked;
       try {
         const updated = await PUT(`activities/${tmpl.id}/items/${itemId}`, {
-          is_hidden: !item.is_hidden,
+          is_hidden: newHidden,
         });
         item.is_hidden = updated.is_hidden;
         renderTemplateEdit();
         showToast(updated.is_hidden ? 'Item hidden from packing list' : 'Item shown in packing list');
-      } catch (e) { showToast('Update failed'); }
+      } catch (e) { chk.checked = !newHidden; showToast('Update failed'); }
     })
   );
 

@@ -412,3 +412,67 @@ async def test_all_items_in_merge_when_none_hidden(client, as_user):
         total = len(clone["items"])
         r = await client.post("/activities/merge", json={"activity_slugs": [clone["slug"]]})
     assert len(r.json()) == total
+
+
+# ---------------------------------------------------------------------------
+# Clone with replace_source_in_trips — propagation to existing trips
+# ---------------------------------------------------------------------------
+
+async def test_clone_replace_source_updates_trip_activities(client, as_user):
+    """Auto-clone with replace_source_in_trips=True swaps the slug in active trips.
+
+    The standalone backend trips router hardcodes ha_user_id='default', so the
+    clone must also run as 'default' for the migration query to match.
+    """
+    import datetime
+    future = (datetime.date.today() + datetime.timedelta(days=30)).isoformat()
+    end = (datetime.date.today() + datetime.timedelta(days=37)).isoformat()
+    # Trip is always created with ha_user_id='default' in the standalone backend
+    trip = (await client.post("/trips", json={
+        "destination": "Bali", "start_date": future, "end_date": end,
+        "traveller_count": 1, "activities": ["hiking"],
+    })).json()
+    with as_user("default"):
+        clone = (await client.post("/activities/hiking/clone", json={
+            "name": "Hiking", "replace_source_in_trips": True,
+        })).json()
+    updated_trip = (await client.get(f"/trips/{trip['id']}")).json()
+    assert clone["slug"] in updated_trip["activities"]
+    assert "hiking" not in updated_trip["activities"]
+
+
+async def test_clone_replace_source_new_item_propagates(client, as_user):
+    """Items added to the personal template propagate to trips migrated via replace_source_in_trips."""
+    import datetime
+    future = (datetime.date.today() + datetime.timedelta(days=30)).isoformat()
+    end = (datetime.date.today() + datetime.timedelta(days=37)).isoformat()
+    trip = (await client.post("/trips", json={
+        "destination": "Bali", "start_date": future, "end_date": end,
+        "traveller_count": 1, "activities": ["hiking"],
+    })).json()
+    with as_user("default"):
+        clone = (await client.post("/activities/hiking/clone", json={
+            "name": "Hiking", "replace_source_in_trips": True,
+        })).json()
+        await client.post(f"/activities/{clone['id']}/items", json={
+            "name": "My Custom Tent", "quantity": 1,
+            "is_essential": False, "priority": 0, "gender_filter": "all",
+        })
+    updated_trip = (await client.get(f"/trips/{trip['id']}")).json()
+    item_names = [i["name"] for i in updated_trip["packing_lists"][0]["items"]]
+    assert "My Custom Tent" in item_names
+
+
+async def test_clone_without_replace_does_not_affect_trip(client, as_user):
+    """Explicit clone (replace_source_in_trips=False) leaves existing trips unchanged."""
+    import datetime
+    future = (datetime.date.today() + datetime.timedelta(days=30)).isoformat()
+    end = (datetime.date.today() + datetime.timedelta(days=37)).isoformat()
+    trip = (await client.post("/trips", json={
+        "destination": "Bali", "start_date": future, "end_date": end,
+        "traveller_count": 1, "activities": ["hiking"],
+    })).json()
+    with as_user("default"):
+        await client.post("/activities/hiking/clone", json={"name": "My Special Hiking"})
+    updated_trip = (await client.get(f"/trips/{trip['id']}")).json()
+    assert "hiking" in updated_trip["activities"]
