@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { ChevronLeft, Trash2, Plus, Eye, EyeOff } from 'lucide-react'
+import { ChevronLeft, Trash2, Plus } from 'lucide-react'
 import { api } from '@/api/client'
 import type { ActivityTemplate, ActivityTemplateItem, PropagationSummary } from '@/types'
 
@@ -38,7 +38,7 @@ export function TemplateDetail() {
           // Auto-clone the built-in as a personal copy (same name + emoji).
           setCloning(true)
           try {
-            const clone = await api.cloneActivity(found.slug, { name: found.name })
+            const clone = await api.cloneActivity(found.slug, { name: found.name, replace_source_in_trips: true })
             navigate(`/templates/${clone.id}`, { replace: true })
           } catch {
             navigate('/templates')
@@ -208,21 +208,16 @@ export function TemplateDetail() {
               key={item.id}
               className={`flex items-center gap-3 px-4 py-3 ${item.is_hidden ? 'opacity-40' : ''}`}
             >
-              {/* Essential star — only visible when item is not hidden */}
-              {!item.is_hidden && (
-                <button
-                  onClick={() => toggleEssential(item)}
-                  title={item.is_essential ? 'Essential' : 'Mark essential'}
-                  className={`flex-shrink-0 text-lg transition-opacity hover:opacity-70 ${
-                    item.is_essential ? 'opacity-100' : 'opacity-25'
-                  }`}
-                >
-                  ★
-                </button>
-              )}
-              {item.is_hidden && (
-                <span className="flex-shrink-0 w-7" />
-              )}
+              {/* Essential star — only visible when item is shown */}
+              <button
+                onClick={() => !item.is_hidden && toggleEssential(item)}
+                title={item.is_essential ? 'Essential' : 'Mark essential'}
+                className={`flex-shrink-0 text-lg transition-opacity ${
+                  item.is_hidden ? 'invisible' : item.is_essential ? 'opacity-100 hover:opacity-70' : 'opacity-25 hover:opacity-70'
+                }`}
+              >
+                ★
+              </button>
 
               <span className="flex-1 text-sm text-gray-900">
                 {item.name}
@@ -235,17 +230,14 @@ export function TemplateDetail() {
                 <span className="text-xs text-gray-400">×{item.quantity}</span>
               )}
 
-              {/* Hide/show toggle — available for all items */}
-              <button
-                onClick={() => toggleHidden(item)}
+              {/* Visibility checkbox — checked = visible, unchecked = hidden */}
+              <input
+                type="checkbox"
+                checked={!item.is_hidden}
+                onChange={() => toggleHidden(item)}
                 title={item.is_hidden ? 'Show in packing list' : 'Hide from packing list'}
-                className="flex-shrink-0 rounded p-1 text-gray-300 hover:text-gray-600"
-              >
-                {item.is_hidden
-                  ? <Eye className="h-3.5 w-3.5" />
-                  : <EyeOff className="h-3.5 w-3.5" />
-                }
-              </button>
+                className="flex-shrink-0 h-5 w-5 cursor-pointer appearance-none rounded-full border-2 border-gray-300 bg-transparent transition-all checked:border-blue-500 checked:bg-blue-500"
+              />
 
               {/* Delete — only for user-added items */}
               {item.is_user_added && (
