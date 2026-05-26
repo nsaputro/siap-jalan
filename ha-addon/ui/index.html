@@ -224,6 +224,31 @@
       padding: .45rem 1rem; border-bottom: 1px solid color-mix(in srgb, var(--div) 60%, transparent);
     }
     .tmpl-item-hidden { opacity: .45; }
+
+    /* ── Trip activity chips (detail view) ── */
+    .trip-acts-bar {
+      display: flex; align-items: center; gap: .35rem; flex-wrap: wrap;
+      margin-bottom: .5rem;
+    }
+    .trip-act-chip {
+      display: inline-flex; align-items: center; gap: .25rem;
+      padding: .2rem .55rem; border-radius: 999px; font-size: .78rem; font-weight: 500;
+      background: color-mix(in srgb, var(--accent) 15%, transparent); color: var(--accent);
+      border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+      cursor: pointer; transition: background .15s;
+    }
+    .trip-act-chip:hover { background: color-mix(in srgb, var(--accent) 25%, transparent); }
+    .chip-x { font-size: .7rem; opacity: .65; }
+    .trip-act-add-btn {
+      padding: .2rem .55rem; border-radius: 999px; font-size: .78rem; font-weight: 500;
+      border: 1px dashed var(--div); background: transparent; color: var(--text2);
+      cursor: pointer; transition: all .15s;
+    }
+    .trip-act-add-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .act-picker-panel {
+      background: var(--card); border-radius: 8px; border: 1px solid var(--div);
+      padding: .5rem; margin-bottom: .5rem; display: flex; flex-wrap: wrap; gap: .3rem;
+    }
     .ess-btn {
       background: transparent; border: none; cursor: pointer; font-size: .9rem;
       padding: .1rem; line-height: 1; opacity: .4; transition: opacity .15s;
@@ -420,18 +445,26 @@ function renderTrips() {
     root.innerHTML = '<div class="empty">No trips yet — create one to start packing ✈️</div>';
     return;
   }
+  // Build slug → activity lookup for badge labels
+  const actMap = {};
+  activities.forEach(a => { actMap[a.slug] = a; });
+
   root.innerHTML = trips.map(t => {
     const items  = t.packing_lists?.[0]?.items || [];
     const packed = items.filter(i => i.is_packed).length;
     const total  = items.length;
     const pct    = total ? Math.round(packed / total * 100) : 0;
-    const acts   = (t.activities || []).map(a => `<span class="badge">${esc(a)}</span>`).join('');
+    const days   = t.duration_days ?? Math.round((new Date(t.end_date) - new Date(t.start_date)) / 86400000);
+    const acts   = (t.activities || []).map(a => {
+      const act = actMap[a];
+      return `<span class="badge">${act ? `${act.icon_emoji} ${esc(act.name)}` : esc(a)}</span>`;
+    }).join('');
     return `
       <div class="trip-card" data-id="${t.id}">
         <div class="trip-card-top">
           <div>
             <div class="trip-dest">📍 ${esc(t.destination)}</div>
-            <div class="trip-dates">${t.start_date} → ${t.end_date} · ${t.duration_days ?? '?'} days</div>
+            <div class="trip-dates">${t.start_date} → ${t.end_date} · ${days} days</div>
           </div>
           <button class="btn-icon del-trip" data-id="${t.id}">✕</button>
         </div>
@@ -536,14 +569,28 @@ function renderTrip() {
     sectionsHTML = items.map(renderItemRow).join('') + addRowHTML('', 'Type to add new item…');
   }
 
+  const days = t.duration_days ?? Math.round((new Date(t.end_date) - new Date(t.start_date)) / 86400000);
+
+  // Activity chips for the detail view (editable)
+  const actChipsHTML = tripActSlugs.map(slug => {
+    const act = actMap[slug];
+    const label = act ? `${act.icon_emoji} ${esc(act.name)}` : esc(slug);
+    return `<button class="trip-act-chip remove-act" data-slug="${esc(slug)}">${label} <span class="chip-x">✕</span></button>`;
+  }).join('');
+
   root.innerHTML = `
     <div class="detail-header">
       <button class="btn btn-ghost btn-sm" id="btn-back">← Back</button>
       <span class="detail-title">📍 ${esc(t.destination)}</span>
     </div>
     <div class="detail-meta">
-      ${t.start_date} → ${t.end_date} · ${t.duration_days ?? '?'} days
+      ${t.start_date} → ${t.end_date} · ${days} days
     </div>
+    <div class="trip-acts-bar" id="trip-acts-bar">
+      ${actChipsHTML}
+      <button class="trip-act-add-btn" id="btn-trip-add-act">+ Activity</button>
+    </div>
+    <div id="trip-act-picker" class="act-picker-panel" style="display:none"></div>
     <div class="pack-card">
       <div class="pack-card-header">
         <span class="pack-card-title">Packing List</span>
@@ -572,6 +619,52 @@ function renderTrip() {
       await addItem(name, slug);
     })
   );
+
+  // Remove activity chip
+  root.querySelectorAll('.remove-act').forEach(btn =>
+    btn.addEventListener('click', async () => {
+      const slug = btn.dataset.slug;
+      const newSlugs = (currentTrip.activities || []).filter(s => s !== slug);
+      await updateTripActivities(newSlugs);
+    })
+  );
+
+  // Add activity inline picker
+  document.getElementById('btn-trip-add-act').addEventListener('click', () => {
+    const panel = document.getElementById('trip-act-picker');
+    if (panel.style.display !== 'none') { panel.style.display = 'none'; return; }
+    const currentSlugs = currentTrip.activities || [];
+    const available = activities.filter(a => !currentSlugs.includes(a.slug));
+    if (!available.length) { showToast('All activities already added'); return; }
+    panel.innerHTML = available.map(a =>
+      `<button class="activity-btn add-act-btn" data-slug="${esc(a.slug)}">${a.icon_emoji} ${esc(a.name)}</button>`
+    ).join('');
+    panel.querySelectorAll('.add-act-btn').forEach(btn =>
+      btn.addEventListener('click', async () => {
+        const slug = btn.dataset.slug;
+        const newSlugs = [...(currentTrip.activities || []), slug];
+        await updateTripActivities(newSlugs);
+      })
+    );
+    panel.style.display = 'flex';
+  });
+}
+
+// ── Update trip activities (add / remove) ────────────────────────────────────
+async function updateTripActivities(newSlugs) {
+  try {
+    const updated = await PUT(`trips/${currentTrip.id}`, { activities: newSlugs });
+    currentTrip = updated;
+    // Update in trips array
+    const idx = trips.findIndex(t => t.id === updated.id);
+    if (idx !== -1) trips[idx] = updated;
+    // Use packing list from the response (already includes updated items)
+    currentList = updated.packing_lists?.[0] || null;
+    renderTrip();
+    showToast('Activities updated');
+  } catch (e) {
+    showToast('Update failed: ' + e.message);
+  }
 }
 
 // ── Activities tab ────────────────────────────────────────────────────────────
