@@ -68,10 +68,11 @@ Use semantic versioning (`MAJOR.MINOR.PATCH`) when bumping NEXT_VERSION:
    ```
    Filter for tags like `v0.1.4b*`. Find the highest `b` number; `X = highest + 1`. If none exist, `X = 1`.
 3. Set `ha-addon-dev/config.yaml` `version` to `{NEXT_VERSION}b{X}` (e.g. `0.1.4b1`).
-4. **If already set to the correct value**, leave it unchanged.
+4. **Every PR that adds new code must bump this value** — even when NEXT_VERSION itself did not change. The correct value is always strictly greater than every existing tag. If the current `ha-addon-dev/config.yaml` matches an existing tag, bump it.
 
 **Example:** NEXT_VERSION=`0.1.4`, tags include `v0.1.4b2` → dev becomes `0.1.4b3`.
 **Example:** NEXT_VERSION bumped from `0.1.4` → `0.1.5`, no `v0.1.5b*` tags → dev becomes `0.1.5b1`.
+**Example:** NEXT_VERSION=`0.1.3`, current dev is `0.1.3b4`, tag `v0.1.3b4` already exists → dev becomes `0.1.3b5`.
 
 ## Changelog
 
