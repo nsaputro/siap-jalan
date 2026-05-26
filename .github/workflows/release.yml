@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write   # push commit + tag to main, create GitHub release
+  contents: write   # push tag, create GitHub release
   packages: write   # push to ghcr.io
 
 jobs:
-  # ── Read NEXT_VERSION, write config.yaml, commit & tag ───────────────────────
+  # ── Validate NEXT_VERSION, create tag ────────────────────────────────────────
   prepare-release:
-    name: Prepare release commit
+    name: Create release tag
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.ver.outputs.version }}
@@ -20,7 +20,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Read NEXT_VERSION, update config.yaml, commit & tag
+      - name: Read NEXT_VERSION and create tag
         id: ver
         run: |
           VERSION=$(cat ha-addon/NEXT_VERSION | tr -d '[:space:]')
@@ -38,16 +38,7 @@ jobs:
             exit 1
           fi
 
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          # Write version into config.yaml (was kept at last released version)
-          sed -i "s/^version:.*/version: \"${VERSION}\"/" ha-addon/config.yaml
-
-          git add ha-addon/config.yaml
-          git commit -m "chore: release v${VERSION} — update ha-addon/config.yaml [skip ci]"
           git tag "v${VERSION}"
-          git push origin HEAD:main
           git push origin "v${VERSION}"
 
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
