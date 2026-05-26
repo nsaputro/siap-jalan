@@ -658,8 +658,11 @@ async function updateTripActivities(newSlugs) {
     // Update in trips array
     const idx = trips.findIndex(t => t.id === updated.id);
     if (idx !== -1) trips[idx] = updated;
-    // Use packing list from the response (already includes updated items)
-    currentList = updated.packing_lists?.[0] || null;
+    // Reload packing list items via the dedicated endpoint so we always
+    // get a fresh DB read (avoids stale inline data from the PUT response).
+    const lists = await GET(`trips/${currentTrip.id}/lists`);
+    currentList = lists[0] || null;
+    if (currentList) currentList.items = await GET(`lists/${currentList.id}/items`);
     renderTrip();
     showToast('Activities updated');
   } catch (e) {
