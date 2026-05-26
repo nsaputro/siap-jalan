@@ -9,7 +9,7 @@
     ],
     "items": [
       {
-        "name": "Passport / KTP",
+        "name": "Passport / ID Card",
         "quantity": 1,
         "unit": "pcs",
         "is_essential": true,
@@ -1068,7 +1068,7 @@
         "notes": null
       },
       {
-        "name": "Car registration / STNK",
+        "name": "Car registration documents",
         "quantity": 1,
         "unit": "pcs",
         "is_essential": true,
