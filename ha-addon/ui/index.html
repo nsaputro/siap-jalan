@@ -251,9 +251,10 @@
     }
     .ess-btn {
       background: transparent; border: none; cursor: pointer; font-size: .9rem;
-      padding: .1rem; line-height: 1; opacity: .4; transition: opacity .15s;
+      padding: .1rem; line-height: 1; opacity: .35; color: var(--text2);
+      transition: opacity .15s, color .15s;
     }
-    .ess-btn.on { opacity: 1; }
+    .ess-btn.on { opacity: 1; color: #f59e0b; }
 
     /* ── Toast ── */
     .toast {
@@ -863,7 +864,8 @@ function renderTemplateEdit() {
           is_essential: !item.is_essential,
         });
         item.is_essential = updated.is_essential;
-        btn.classList.toggle('on', updated.is_essential);
+        if (updated.is_essential) btn.classList.add('on');
+        else btn.classList.remove('on');
         showToast('Item updated');
       } catch (e) { showToast('Update failed'); }
     })
