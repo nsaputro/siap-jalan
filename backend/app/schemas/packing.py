@@ -50,12 +50,17 @@ class ActivityTemplateItemResponse(BaseModel):
 # ---------------------------------------------------------------------------
 
 class ActivityTemplateCreate(BaseModel):
-    slug: str
+    slug: Optional[str] = None  # auto-generated from name when omitted
     name: str
-    icon_emoji: str
+    icon_emoji: str = "🎒"
     description: Optional[str] = None
     climate_types: list[str] = []
     items: list[ActivityTemplateItemCreate] = []
+
+
+class ActivityTemplateClone(BaseModel):
+    name: str
+    icon_emoji: Optional[str] = None  # defaults to source template's emoji
 
 
 class ActivityTemplateUpdate(BaseModel):

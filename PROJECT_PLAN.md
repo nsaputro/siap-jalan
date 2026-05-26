@@ -336,7 +336,7 @@ After adding an ad-hoc item the UI offers **"Also add to Hiking template?"**. Ac
 ### Phase 3 — Personalisation & UX (v0.3.0)
 - [ ] **Gender / traveller profile** filter: hide gender-irrelevant items (e.g. women's clothing items, baby items)
 - [ ] **Traveller count**: scale quantities for group/family trips (e.g. sunscreen ×3 for 3 people)
-- [ ] **Custom activity templates**: create, edit, clone built-in activities
+- [x] **Custom activity templates**: create, edit, clone built-in activities
 - [ ] Save a completed trip as a **user template** for future reuse
 - [ ] Copy items between trips
 - [ ] Packing weight estimator (grams per item)

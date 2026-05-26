@@ -15,7 +15,9 @@ before the ASGI lifespan starts:
 from __future__ import annotations
 
 import json
+from contextlib import contextmanager
 from pathlib import Path
+from typing import Generator
 
 import pytest
 from httpx import ASGITransport, AsyncClient
@@ -24,6 +26,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 import app.database as db_module
 import app.main as main_module
 from app.database import Base, get_db
+from app.dependencies import get_ha_user
 from app.main import app as fastapi_app
 from app.models.packing import ActivityTemplate, ActivityTemplateItem
 
@@ -99,6 +102,29 @@ async def client():
     main_module.engine = orig["main_engine"]
     main_module.AsyncSessionLocal = orig["main_factory"]
     await test_engine.dispose()
+
+
+@pytest.fixture
+def as_user(client: AsyncClient):  # noqa: F811
+    """Context manager that temporarily overrides the active HA user.
+
+    Usage::
+
+        async def test_foo(client, as_user):
+            with as_user("user_a"):
+                r = await client.post("/activities", json=...)
+            with as_user("user_b"):
+                r2 = await client.put(...)
+    """
+    @contextmanager
+    def _set_user(user_id: str) -> Generator[None, None, None]:
+        fastapi_app.dependency_overrides[get_ha_user] = lambda: user_id
+        try:
+            yield
+        finally:
+            fastapi_app.dependency_overrides.pop(get_ha_user, None)
+
+    return _set_user
 
 
 @pytest.fixture
