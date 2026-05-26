@@ -584,9 +584,10 @@ function renderActivitiesTab() {
       <span class="tmpl-icon">${a.icon_emoji}</span>
       <div class="tmpl-info">
         <div class="tmpl-name">${esc(a.name)}</div>
-        <div class="tmpl-meta">${a.items.length} items</div>
+        <div class="tmpl-meta">${a.items.length} items · built-in</div>
       </div>
       <div class="tmpl-actions">
+        <button class="btn btn-ghost btn-sm edit-tmpl" data-id="${a.id}">Edit</button>
         <button class="btn btn-ghost btn-sm clone-tmpl"
                 data-slug="${esc(a.slug)}" data-name="${esc(a.name)}"
                 data-emoji="${esc(a.icon_emoji)}">Clone</button>
@@ -599,7 +600,7 @@ function renderActivitiesTab() {
       <span class="tmpl-icon">${a.icon_emoji}</span>
       <div class="tmpl-info">
         <div class="tmpl-name">${esc(a.name)}</div>
-        <div class="tmpl-meta">${a.items.length} items</div>
+        <div class="tmpl-meta">${a.items.length} items · custom</div>
       </div>
       <div class="tmpl-actions">
         <button class="btn btn-ghost btn-sm edit-tmpl" data-id="${a.id}">Edit</button>
@@ -607,7 +608,7 @@ function renderActivitiesTab() {
                 onclick="deleteTemplate(${a.id})">Delete</button>
       </div>
     </div>
-  `).join('') : '<div class="empty" style="padding:1rem 0">No custom activities yet — clone a built-in or create one from scratch.</div>';
+  `).join('') : '<div class="empty" style="padding:1rem 0">No custom activities yet — edit a built-in to create a personal copy, or use the + New Activity button.</div>';
 
   root.innerHTML = `
     <div class="section-label">Built-in</div>
@@ -627,11 +628,33 @@ function renderActivitiesTab() {
 }
 
 async function openTemplateEdit(id) {
-  currentTemplate = activities.find(a => a.id === id) || null;
-  if (!currentTemplate) {
-    // fetch fresh if not in cache
-    currentTemplate = await GET(`activities/${id}`);
+  const tmpl = activities.find(a => a.id === id) || null;
+  if (!tmpl) return;
+
+  if (tmpl.is_builtin) {
+    // If the user already has a personal copy with the same name, open that.
+    const existing = activities.find(a => !a.is_builtin && a.name === tmpl.name);
+    if (existing) {
+      currentTemplate = existing;
+      view = 'tmpl-edit';
+      render();
+      return;
+    }
+    // Auto-clone the built-in into a personal copy (same name, same emoji).
+    try {
+      const clone = await POST(`activities/${tmpl.slug}/clone`, { name: tmpl.name });
+      activities.push(clone);
+      currentTemplate = clone;
+      view = 'tmpl-edit';
+      render();
+      showToast(`Personal copy of "${tmpl.name}" created — only affects your trips`);
+    } catch (e) {
+      showToast('Could not create personal copy: ' + e.message);
+    }
+    return;
   }
+
+  currentTemplate = tmpl;
   view = 'tmpl-edit';
   render();
 }
