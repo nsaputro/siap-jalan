@@ -212,8 +212,12 @@ export function TemplateDetail() {
               <button
                 onClick={() => !item.is_hidden && toggleEssential(item)}
                 title={item.is_essential ? 'Essential' : 'Mark essential'}
-                className={`flex-shrink-0 text-lg transition-opacity ${
-                  item.is_hidden ? 'invisible' : item.is_essential ? 'opacity-100 hover:opacity-70' : 'opacity-25 hover:opacity-70'
+                className={`flex-shrink-0 text-lg transition-all ${
+                  item.is_hidden
+                    ? 'invisible'
+                    : item.is_essential
+                    ? 'text-amber-400 opacity-100 hover:opacity-70'
+                    : 'opacity-30 hover:opacity-70 hover:text-amber-400'
                 }`}
               >
                 ★
