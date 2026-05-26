@@ -63,6 +63,17 @@
     }
     .btn-icon:hover { color: var(--err); }
 
+    /* ── Tab bar ── */
+    .tab-bar {
+      display: flex; border-bottom: 1px solid var(--div); margin-bottom: .75rem; gap: 0;
+    }
+    .tab-btn {
+      flex: 1; padding: .5rem; border: none; background: transparent;
+      color: var(--text2); font-size: .875rem; font-weight: 500; cursor: pointer;
+      border-bottom: 2px solid transparent; transition: all .15s;
+    }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
     /* ── Trip card ── */
     .trip-card {
       background: var(--card); border-radius: 10px; box-shadow: var(--shadow);
@@ -162,7 +173,7 @@
     }
     .activity-btn.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
 
-    /* ── Activity section headers ── */
+    /* ── Activity section headers (packing list) ── */
     .section-header {
       display: flex; align-items: center; justify-content: space-between;
       padding: .5rem 1rem .3rem;
@@ -174,6 +185,58 @@
     /* Avoid double border when section follows pack-card-header */
     .pack-card-header + .section-header { border-top: none; }
     .section-count { font-weight: 400; font-size: .75rem; }
+
+    /* ── Template cards (Activities tab) ── */
+    .tmpl-card {
+      background: var(--card); border-radius: 10px; box-shadow: var(--shadow);
+      padding: .75rem 1rem; margin-bottom: .5rem;
+      display: flex; align-items: center; gap: .65rem;
+    }
+    .tmpl-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .tmpl-info { flex: 1; min-width: 0; }
+    .tmpl-name { font-weight: 600; font-size: .95rem; }
+    .tmpl-meta { font-size: .75rem; color: var(--text2); }
+    .tmpl-actions { display: flex; gap: .35rem; flex-shrink: 0; }
+
+    /* ── Section label (Activities tab) ── */
+    .section-label {
+      font-size: .72rem; font-weight: 600; letter-spacing: .07em;
+      color: var(--text2); text-transform: uppercase;
+      padding: .5rem 0 .25rem; margin-top: .4rem;
+    }
+
+    /* ── Template edit screen ── */
+    .edit-field {
+      display: flex; align-items: center; gap: .5rem;
+      padding: .6rem 1rem; border-bottom: 1px solid var(--div);
+    }
+    .edit-field label {
+      font-size: .8rem; color: var(--text2);
+      width: 4.5rem; flex-shrink: 0;
+    }
+    .edit-field input {
+      flex: 1; background: transparent; border: none; outline: none;
+      font-size: .9rem; color: var(--text); font-family: inherit;
+    }
+    .edit-field input:focus { border-bottom: 1px solid var(--accent); }
+    .tmpl-item-row {
+      display: flex; align-items: center; gap: .5rem;
+      padding: .45rem 1rem; border-bottom: 1px solid color-mix(in srgb, var(--div) 60%, transparent);
+    }
+    .ess-btn {
+      background: transparent; border: none; cursor: pointer; font-size: .9rem;
+      padding: .1rem; line-height: 1; opacity: .4; transition: opacity .15s;
+    }
+    .ess-btn.on { opacity: 1; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+      background: var(--text); color: var(--bg); border-radius: 8px;
+      padding: .5rem 1.1rem; font-size: .83rem; z-index: 200;
+      opacity: 0; transition: opacity .25s; pointer-events: none; white-space: nowrap;
+    }
+    .toast.show { opacity: 1; }
 
     /* ── Misc ── */
     .empty  { text-align: center; color: var(--muted); padding: 2.5rem 0; font-size: .88rem; }
@@ -189,10 +252,20 @@
 <div id="app">
   <header>
     <h1>🧳 Siap <span>Jalan</span></h1>
-    <button class="btn btn-primary btn-sm" id="btn-new-trip">+ New Trip</button>
+    <button class="btn btn-primary btn-sm" id="btn-header-action">+ New Trip</button>
   </header>
+
+  <!-- Tab bar -->
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-trips">🧳 Trips</button>
+    <button class="tab-btn" id="tab-activities">🎒 Activities</button>
+  </div>
+
   <div id="root"></div>
 </div>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
 
 <!-- New Trip Modal -->
 <div id="modal-trip" class="modal-bg" style="display:none">
@@ -236,6 +309,49 @@
   </div>
 </div>
 
+<!-- Clone Activity Modal -->
+<div id="modal-clone" class="modal-bg" style="display:none">
+  <div class="modal">
+    <h2>Clone Activity</h2>
+    <div id="clone-err"></div>
+    <div class="form-group">
+      <label>New Name *</label>
+      <input id="f-clone-name" type="text" placeholder="My custom activity name" />
+    </div>
+    <div class="form-group">
+      <label>Emoji (optional)</label>
+      <input id="f-clone-emoji" type="text" placeholder="Leave blank to inherit" style="max-width:80px" />
+    </div>
+    <input type="hidden" id="f-clone-slug" />
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" id="btn-cancel-clone">Cancel</button>
+      <button class="btn btn-primary btn-sm" id="btn-save-clone">Clone</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Activity Modal -->
+<div id="modal-new-activity" class="modal-bg" style="display:none">
+  <div class="modal">
+    <h2>New Activity Template</h2>
+    <div id="new-act-err"></div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Name *</label>
+        <input id="f-act-name" type="text" placeholder="e.g. Yoga Retreat" />
+      </div>
+      <div class="form-group" style="max-width:80px">
+        <label>Emoji</label>
+        <input id="f-act-emoji" type="text" placeholder="🎒" />
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" id="btn-cancel-new-act">Cancel</button>
+      <button class="btn btn-primary btn-sm" id="btn-save-new-act">Create</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ── API (relative paths — HA ingress safe) ────────────────────────────────────
 async function api(method, path, body) {
@@ -251,18 +367,50 @@ async function api(method, path, body) {
 }
 const GET    = p      => api('GET',    p);
 const POST   = (p, b) => api('POST',   p, b);
+const PUT    = (p, b) => api('PUT',    p, b);
 const DELETE = p      => api('DELETE', p);
 
 // ── State ─────────────────────────────────────────────────────────────────────
-let trips        = [];
-let activities   = [];
-let selectedActs = [];
-let view         = 'trips';
-let currentTrip  = null;
-let currentList  = null;
+let trips           = [];
+let activities      = [];
+let selectedActs    = [];
+let view            = 'trips';   // 'trips' | 'trip' | 'activities' | 'tmpl-edit'
+let activeTab       = 'trips';   // 'trips' | 'activities'
+let currentTrip     = null;
+let currentList     = null;
+let currentTemplate = null;      // ActivityTemplate being edited
 
-// ── Render ────────────────────────────────────────────────────────────────────
-function render() { view === 'trips' ? renderTrips() : renderTrip(); }
+// ── Toast ─────────────────────────────────────────────────────────────────────
+let _toastTimer = null;
+function showToast(msg, duration = 2500) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => el.classList.remove('show'), duration);
+}
+
+// ── Render dispatcher ─────────────────────────────────────────────────────────
+function render() {
+  if (view === 'trips')       return renderTrips();
+  if (view === 'trip')        return renderTrip();
+  if (view === 'activities')  return renderActivitiesTab();
+  if (view === 'tmpl-edit')   return renderTemplateEdit();
+}
+
+function setTab(tab) {
+  activeTab = tab;
+  document.getElementById('tab-trips').classList.toggle('active', tab === 'trips');
+  document.getElementById('tab-activities').classList.toggle('active', tab === 'activities');
+  const actionBtn = document.getElementById('btn-header-action');
+  if (tab === 'trips') {
+    actionBtn.textContent = '+ New Trip';
+    actionBtn.onclick = openNewTripModal;
+  } else {
+    actionBtn.textContent = '+ New Activity';
+    actionBtn.onclick = openNewActivityModal;
+  }
+}
 
 // ── Trip list ─────────────────────────────────────────────────────────────────
 function renderTrips() {
@@ -425,6 +573,278 @@ function renderTrip() {
   );
 }
 
+// ── Activities tab ────────────────────────────────────────────────────────────
+function renderActivitiesTab() {
+  const root     = document.getElementById('root');
+  const builtins = activities.filter(a => a.is_builtin);
+  const mine     = activities.filter(a => !a.is_builtin);
+
+  const builtinCards = builtins.map(a => `
+    <div class="tmpl-card">
+      <span class="tmpl-icon">${a.icon_emoji}</span>
+      <div class="tmpl-info">
+        <div class="tmpl-name">${esc(a.name)}</div>
+        <div class="tmpl-meta">${a.items.length} items</div>
+      </div>
+      <div class="tmpl-actions">
+        <button class="btn btn-ghost btn-sm clone-tmpl"
+                data-slug="${esc(a.slug)}" data-name="${esc(a.name)}"
+                data-emoji="${esc(a.icon_emoji)}">Clone</button>
+      </div>
+    </div>
+  `).join('');
+
+  const myCards = mine.length ? mine.map(a => `
+    <div class="tmpl-card">
+      <span class="tmpl-icon">${a.icon_emoji}</span>
+      <div class="tmpl-info">
+        <div class="tmpl-name">${esc(a.name)}</div>
+        <div class="tmpl-meta">${a.items.length} items</div>
+      </div>
+      <div class="tmpl-actions">
+        <button class="btn btn-ghost btn-sm edit-tmpl" data-id="${a.id}">Edit</button>
+        <button class="btn btn-ghost btn-sm" style="color:var(--err);border-color:var(--err)"
+                onclick="deleteTemplate(${a.id})">Delete</button>
+      </div>
+    </div>
+  `).join('') : '<div class="empty" style="padding:1rem 0">No custom activities yet — clone a built-in or create one from scratch.</div>';
+
+  root.innerHTML = `
+    <div class="section-label">Built-in</div>
+    ${builtinCards}
+    <div class="section-label" style="margin-top:.75rem">My Activities</div>
+    ${myCards}
+  `;
+
+  root.querySelectorAll('.clone-tmpl').forEach(btn =>
+    btn.addEventListener('click', () =>
+      openCloneModal(btn.dataset.slug, btn.dataset.name, btn.dataset.emoji)
+    )
+  );
+  root.querySelectorAll('.edit-tmpl').forEach(btn =>
+    btn.addEventListener('click', () => openTemplateEdit(+btn.dataset.id))
+  );
+}
+
+async function openTemplateEdit(id) {
+  currentTemplate = activities.find(a => a.id === id) || null;
+  if (!currentTemplate) {
+    // fetch fresh if not in cache
+    currentTemplate = await GET(`activities/${id}`);
+  }
+  view = 'tmpl-edit';
+  render();
+}
+
+// ── Template edit screen ──────────────────────────────────────────────────────
+function renderTemplateEdit() {
+  const root = document.getElementById('root');
+  const tmpl = currentTemplate;
+  if (!tmpl) { view = 'activities'; render(); return; }
+
+  const itemsHTML = (tmpl.items || []).map(item => `
+    <div class="tmpl-item-row" data-item-id="${item.id}">
+      <button class="ess-btn ${item.is_essential ? 'on' : ''} ess-toggle"
+              data-item-id="${item.id}" title="Toggle essential">★</button>
+      <span class="item-name" style="flex:1;font-size:.88rem">${esc(item.name)}</span>
+      <span style="font-size:.78rem;color:var(--text2);margin-right:.5rem">×${item.quantity}</span>
+      <button class="btn-icon del-tmpl-item" data-item-id="${item.id}">✕</button>
+    </div>
+  `).join('');
+
+  root.innerHTML = `
+    <div class="detail-header">
+      <button class="btn btn-ghost btn-sm" id="btn-back-tmpl">← Activities</button>
+      <span class="detail-title">${tmpl.icon_emoji} ${esc(tmpl.name)}</span>
+    </div>
+    <div class="pack-card" style="margin-bottom:.75rem">
+      <div class="pack-card-header">
+        <span class="pack-card-title">Template Info</span>
+      </div>
+      <div class="edit-field">
+        <label>Name</label>
+        <input id="tmpl-name-inp" type="text" value="${esc(tmpl.name)}" placeholder="Activity name" />
+      </div>
+      <div class="edit-field" style="border-bottom:none">
+        <label>Emoji</label>
+        <input id="tmpl-emoji-inp" type="text" value="${esc(tmpl.icon_emoji)}"
+               placeholder="🎒" style="max-width:60px" />
+      </div>
+    </div>
+    <div class="pack-card">
+      <div class="pack-card-header">
+        <span class="pack-card-title">Items</span>
+        <span class="pack-count">${(tmpl.items || []).length}</span>
+      </div>
+      ${itemsHTML}
+      <div class="add-row">
+        <span class="add-icon">+</span>
+        <input id="tmpl-add-item" class="add-input" type="text"
+               placeholder="Add item (Enter to save)…" />
+      </div>
+    </div>
+    <div id="tmpl-prop-msg" style="font-size:.75rem;color:var(--text2);text-align:center;margin-top:.4rem;min-height:1.2em"></div>
+  `;
+
+  document.getElementById('btn-back-tmpl').onclick = () => {
+    view = 'activities'; currentTemplate = null; loadActivities();
+  };
+
+  // Auto-save name + emoji on blur
+  const nameInp  = document.getElementById('tmpl-name-inp');
+  const emojiInp = document.getElementById('tmpl-emoji-inp');
+  async function saveTemplateInfo() {
+    const newName  = nameInp.value.trim();
+    const newEmoji = emojiInp.value.trim() || tmpl.icon_emoji;
+    if (!newName) return;
+    if (newName === tmpl.name && newEmoji === tmpl.icon_emoji) return;
+    try {
+      const result = await PUT(`activities/${tmpl.id}`, { name: newName, icon_emoji: newEmoji });
+      currentTemplate = result.template;
+      const summary = result.propagation_summary;
+      const propMsg = document.getElementById('tmpl-prop-msg');
+      if (propMsg) {
+        const updated = summary?.trips_updated ?? 0;
+        propMsg.textContent = updated
+          ? `Saved — propagated to ${updated} trip${updated !== 1 ? 's' : ''}`
+          : 'Saved';
+      }
+      showToast('Template saved');
+      // Update in activities cache
+      const idx = activities.findIndex(a => a.id === tmpl.id);
+      if (idx !== -1) activities[idx] = currentTemplate;
+    } catch (e) {
+      showToast('Save failed: ' + e.message);
+    }
+  }
+  nameInp.addEventListener('blur', saveTemplateInfo);
+  emojiInp.addEventListener('blur', saveTemplateInfo);
+
+  // Essential toggle
+  root.querySelectorAll('.ess-toggle').forEach(btn =>
+    btn.addEventListener('click', async () => {
+      const itemId = +btn.dataset.itemId;
+      const item   = (currentTemplate.items || []).find(i => i.id === itemId);
+      if (!item) return;
+      try {
+        const updated = await PUT(`activities/${tmpl.id}/items/${itemId}`, {
+          is_essential: !item.is_essential,
+        });
+        item.is_essential = updated.is_essential;
+        btn.classList.toggle('on', updated.is_essential);
+        showToast('Item updated');
+      } catch (e) { showToast('Update failed'); }
+    })
+  );
+
+  // Delete item
+  root.querySelectorAll('.del-tmpl-item').forEach(btn =>
+    btn.addEventListener('click', async () => {
+      const itemId = +btn.dataset.itemId;
+      try {
+        await DELETE(`activities/${tmpl.id}/items/${itemId}`);
+        currentTemplate.items = (currentTemplate.items || []).filter(i => i.id !== itemId);
+        renderTemplateEdit();
+        showToast('Item removed');
+      } catch (e) { showToast('Delete failed'); }
+    })
+  );
+
+  // Add item
+  document.getElementById('tmpl-add-item').addEventListener('keydown', async e => {
+    if (e.key !== 'Enter') return;
+    const name = e.target.value.trim();
+    if (!name) return;
+    e.target.value = '';
+    try {
+      const item = await POST(`activities/${tmpl.id}/items`, {
+        name, quantity: 1, is_essential: false, priority: 0, gender_filter: 'all',
+      });
+      if (!currentTemplate.items) currentTemplate.items = [];
+      currentTemplate.items.push(item);
+      renderTemplateEdit();
+      showToast('Item added');
+      // Re-focus add input
+      const inp = document.getElementById('tmpl-add-item');
+      if (inp) inp.focus();
+    } catch (e) { showToast('Add failed: ' + e.message); }
+  });
+}
+
+// ── Template CRUD ─────────────────────────────────────────────────────────────
+async function deleteTemplate(id) {
+  if (!confirm('Delete this custom activity template?')) return;
+  try {
+    await DELETE(`activities/${id}`);
+    activities = activities.filter(a => a.id !== id);
+    renderActivitiesTab();
+    showToast('Template deleted');
+  } catch (e) {
+    showToast('Delete failed: ' + e.message);
+  }
+}
+
+// ── Clone modal ───────────────────────────────────────────────────────────────
+function openCloneModal(slug, defaultName, defaultEmoji) {
+  document.getElementById('f-clone-name').value  = 'My ' + defaultName;
+  document.getElementById('f-clone-emoji').value = '';
+  document.getElementById('f-clone-slug').value  = slug;
+  document.getElementById('clone-err').innerHTML = '';
+  openModal('modal-clone');
+}
+
+async function saveClone() {
+  const name  = document.getElementById('f-clone-name').value.trim();
+  const emoji = document.getElementById('f-clone-emoji').value.trim() || null;
+  const slug  = document.getElementById('f-clone-slug').value;
+  const errEl = document.getElementById('clone-err');
+  errEl.innerHTML = '';
+  if (!name) {
+    errEl.innerHTML = '<div class="err-banner">Please enter a name.</div>';
+    return;
+  }
+  try {
+    const tmpl = await POST(`activities/${slug}/clone`, { name, icon_emoji: emoji });
+    activities.push(tmpl);
+    closeModal('modal-clone');
+    renderActivitiesTab();
+    showToast(`"${tmpl.name}" created`);
+  } catch (e) {
+    errEl.innerHTML = `<div class="err-banner">${esc(e.message)}</div>`;
+  }
+}
+
+// ── New Activity modal ────────────────────────────────────────────────────────
+function openNewActivityModal() {
+  document.getElementById('f-act-name').value  = '';
+  document.getElementById('f-act-emoji').value = '';
+  document.getElementById('new-act-err').innerHTML = '';
+  openModal('modal-new-activity');
+}
+
+async function saveNewActivity() {
+  const name  = document.getElementById('f-act-name').value.trim();
+  const emoji = document.getElementById('f-act-emoji').value.trim() || '🎒';
+  const errEl = document.getElementById('new-act-err');
+  errEl.innerHTML = '';
+  if (!name) {
+    errEl.innerHTML = '<div class="err-banner">Please enter a name.</div>';
+    return;
+  }
+  try {
+    const tmpl = await POST('activities', { name, icon_emoji: emoji, items: [] });
+    activities.push(tmpl);
+    closeModal('modal-new-activity');
+    // Open edit screen for the new template
+    currentTemplate = tmpl;
+    view = 'tmpl-edit';
+    render();
+    showToast(`"${tmpl.name}" created — add items below`);
+  } catch (e) {
+    errEl.innerHTML = `<div class="err-banner">${esc(e.message)}</div>`;
+  }
+}
+
 // ── Trip CRUD ─────────────────────────────────────────────────────────────────
 async function loadTrips() {
   document.getElementById('root').innerHTML = '<div class="loading">Loading…</div>';
@@ -446,6 +866,15 @@ async function deleteTrip(id) {
   await DELETE(`trips/${id}`);
   trips = trips.filter(t => t.id !== id);
   render();
+}
+
+function openNewTripModal() {
+  selectedActs = [];
+  ['f-dest','f-start','f-end','f-notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-travellers').value = '1';
+  document.getElementById('trip-err').innerHTML = '';
+  renderActivityPicker();
+  openModal('modal-trip');
 }
 
 async function createTrip() {
@@ -504,10 +933,11 @@ async function deleteItem(itemId) {
   renderTrip();
 }
 
-// ── Activities picker ─────────────────────────────────────────────────────────
+// ── Activities loader + picker ────────────────────────────────────────────────
 async function loadActivities() {
   activities = await GET('activities');
-  renderActivityPicker();
+  if (view === 'activities') renderActivitiesTab();
+  else renderActivityPicker();
 }
 
 function renderActivityPicker() {
@@ -527,7 +957,7 @@ function renderActivityPicker() {
   );
 }
 
-// ── Modal ─────────────────────────────────────────────────────────────────────
+// ── Modal helpers ─────────────────────────────────────────────────────────────
 function openModal(id)  { document.getElementById(id).style.display = 'flex'; }
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
@@ -537,16 +967,36 @@ function esc(s) {
 }
 
 // ── Wire up ───────────────────────────────────────────────────────────────────
-document.getElementById('btn-new-trip').onclick = () => {
-  selectedActs = [];
-  ['f-dest','f-start','f-end','f-notes'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('f-travellers').value = '1';
-  document.getElementById('trip-err').innerHTML = '';
-  renderActivityPicker();
-  openModal('modal-trip');
-};
+// Tab switching
+document.getElementById('tab-trips').addEventListener('click', () => {
+  if (activeTab === 'trips' && view === 'trips') return;
+  setTab('trips');
+  view = 'trips';
+  loadTrips();
+});
+document.getElementById('tab-activities').addEventListener('click', () => {
+  if (activeTab === 'activities' && view === 'activities') return;
+  setTab('activities');
+  view = 'activities';
+  loadActivities();
+});
+
+// Header action button (default: new trip)
+document.getElementById('btn-header-action').onclick = openNewTripModal;
+
+// New trip modal
 document.getElementById('btn-cancel-trip').onclick = () => closeModal('modal-trip');
 document.getElementById('btn-save-trip').onclick   = createTrip;
+
+// Clone modal
+document.getElementById('btn-cancel-clone').onclick = () => closeModal('modal-clone');
+document.getElementById('btn-save-clone').onclick   = saveClone;
+
+// New activity modal
+document.getElementById('btn-cancel-new-act').onclick = () => closeModal('modal-new-activity');
+document.getElementById('btn-save-new-act').onclick   = saveNewActivity;
+
+// Close modals on backdrop click
 document.querySelectorAll('.modal-bg').forEach(bg =>
   bg.addEventListener('click', e => { if (e.target === bg) bg.style.display = 'none'; })
 );

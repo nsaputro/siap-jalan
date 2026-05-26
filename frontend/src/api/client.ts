@@ -52,6 +52,35 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ activity_slugs: slugs }),
     }),
+  createActivity: (data: import('@/types').ActivityTemplateUpdatePayload & { items?: import('@/types').ActivityTemplateItemCreate[] }) =>
+    request<import('@/types').ActivityTemplate>('/activities', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  updateActivity: (id: number, data: import('@/types').ActivityTemplateUpdatePayload) =>
+    request<import('@/types').UpdateActivityResult>(`/activities/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+  deleteActivity: (id: number) =>
+    request<void>(`/activities/${id}`, { method: 'DELETE' }),
+  cloneActivity: (slug: string, data: import('@/types').ActivityTemplateClone) =>
+    request<import('@/types').ActivityTemplate>(`/activities/${slug}/clone`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  addActivityItem: (templateId: number, data: import('@/types').ActivityTemplateItemCreate) =>
+    request<import('@/types').ActivityTemplateItem>(`/activities/${templateId}/items`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  updateActivityItem: (templateId: number, itemId: number, data: import('@/types').ActivityTemplateItemUpdatePayload) =>
+    request<import('@/types').ActivityTemplateItem>(`/activities/${templateId}/items/${itemId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+  deleteActivityItem: (templateId: number, itemId: number) =>
+    request<void>(`/activities/${templateId}/items/${itemId}`, { method: 'DELETE' }),
 
   // AI suggestions
   getSuggestions: (tripId: number) =>

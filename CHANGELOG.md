@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased] — next: 0.1.3
 
 ### Added
+- Custom activity templates: users can create new activity templates from scratch, clone any built-in template to personalise it, and edit or delete their own templates — customisations are isolated by `ha_user_id` and propagate to all active and future trips
+- `POST /activities/{slug}/clone` endpoint — creates a user-scoped copy of any template with all its items; slug is auto-generated and de-duplicated from the new name
+- `ActivityTemplateCreate.slug` is now optional — auto-generated from the activity name when omitted
+- HA addon UI: **Activities** tab with Clone (built-ins) and Edit / Delete (custom templates); inline template editor with auto-save, item management, and essential toggle; **+ New Activity** header button when the Activities tab is active
+- React frontend: `/templates` page (built-ins with Clone, custom with Edit / Delete / New Activity) and `/templates/:id` edit page; **Activities** nav link on the Dashboard
 - `ha-addon/CHANGELOG.md`: per-addon changelog HA Supervisor reads to show "What's new" in the addon store
 - `ha-addon/NEXT_VERSION`: plain-text file holding the next unreleased version; PRs update this, never `config.yaml`
 
@@ -24,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release workflow now writes version from `NEXT_VERSION` into `config.yaml`, commits to main, and tags — `config.yaml` on main always matches a published image
 
 ### Fixed
+- Activity template mutating endpoints (`PUT`, `DELETE`, and item sub-endpoints) now enforce ownership: built-in templates return 403 on any mutation; custom templates return 403 if accessed by a different user
 - All packing item category names updated to English
 - HA Supervisor no longer shows "No changelog found" when checking addon updates
 - CLAUDE.md: versioning rule updated — use `NEXT_VERSION` file; never bump `config.yaml` in PRs

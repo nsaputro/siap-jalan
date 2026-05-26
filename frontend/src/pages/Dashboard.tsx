@@ -30,13 +30,21 @@ export function Dashboard() {
           <Luggage className="h-7 w-7 text-blue-500" />
           <h1 className="text-2xl font-bold text-gray-900">My Trips</h1>
         </div>
-        <Link
-          to="/trips/new"
-          className="flex items-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600"
-        >
-          <Plus className="h-4 w-4" />
-          New Trip
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            to="/templates"
+            className="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50"
+          >
+            🎒 Activities
+          </Link>
+          <Link
+            to="/trips/new"
+            className="flex items-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600"
+          >
+            <Plus className="h-4 w-4" />
+            New Trip
+          </Link>
+        </div>
       </div>
 
       {trips.length === 0 ? (

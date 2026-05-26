@@ -68,8 +68,43 @@ export interface ActivityTemplate {
   icon_emoji: string
   description: string | null
   is_builtin: boolean
+  ha_user_id: string | null
   climate_types: string[]
   items: ActivityTemplateItem[]
+  created_at: string
+  updated_at: string
+}
+
+export interface ActivityTemplateClone {
+  name: string
+  icon_emoji?: string
+}
+
+export interface ActivityTemplateItemCreate {
+  name: string
+  quantity?: number
+  is_essential?: boolean
+  priority?: number
+  gender_filter?: string
+}
+
+export interface ActivityTemplateUpdatePayload {
+  name?: string
+  icon_emoji?: string
+  description?: string
+  climate_types?: string[]
+}
+
+export interface ActivityTemplateItemUpdatePayload {
+  name?: string
+  quantity?: number
+  is_essential?: boolean
+  priority?: number
+}
+
+export interface UpdateActivityResult {
+  template: ActivityTemplate
+  propagation_summary: PropagationSummary
 }
 
 export interface MergedItem {
