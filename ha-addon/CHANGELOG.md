@@ -1,11 +1,11 @@
-## 0.1.3
+## 0.2.0
 
-- Changed: Packing list items now grouped by activity — each activity gets its own section with emoji, name, packed count, and its own "Add to …" row
-- Removed: Category field removed from items entirely — no more category grouping, no category dropdown when adding items
-- Changed: UI redesigned for simplicity — circle checkboxes, inline add rows per section (no modal to add items)
-- Changed: AI suggestions no longer ask for or return a category
-- Fixed: HA Supervisor now shows release notes ("No changelog found" resolved)
-- Fixed: Dev addon 502 Bad Gateway resolved — dev image now correctly listens on port 8100
+- Added: **Custom activity templates** — create your own templates from scratch, clone and personalise any built-in, edit items (hide/show or delete), and delete templates you no longer need; all changes propagate to your active trips automatically
+- Added: **Activities tab** in the app UI — browse built-in templates with a Clone button; manage your personal templates with Edit and Delete
+- Added: **Editable activities on trips** — tap ✕ on an activity chip in the trip detail to remove it (its auto-added items are cleared); tap + Activity to add a new one and merge its items in immediately
+- Fixed: Activity badges on trip cards now show the activity name and emoji instead of the internal code
+- Fixed: Trip duration now always shows the correct number of days (calculated from dates when not stored)
+- Removed: Item category field removed entirely — items are now grouped by activity instead
 
 ---
 

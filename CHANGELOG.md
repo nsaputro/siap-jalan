@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — next: 0.2.0
+## [Unreleased] — next: 0.2.1
+
+## [0.2.0] - 2026-05-26
 
 ### Added
 - Custom activity templates: users can create new activity templates from scratch, clone any built-in template to personalise it, and edit or delete their own templates — customisations are isolated by `ha_user_id` and propagate to all active and future trips
@@ -16,7 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ha-addon/CHANGELOG.md`: per-addon changelog HA Supervisor reads to show "What's new" in the addon store
 - `ha-addon/NEXT_VERSION`: plain-text file holding the next unreleased version; PRs update this, never `config.yaml`
 - **Item hide/show on personal templates**: built-in-derived items (cloned) cannot be deleted but can be hidden per user; hidden items are excluded from trip packing lists and the merge endpoint; user-added items (via the editor or inline add row) remain fully deletable; `is_hidden` and `is_user_added` flags added to `ActivityTemplateItem` with a startup migration for existing databases
-- HA addon UI and React frontend template editor: eye/hide toggle button shown for every item; delete button shown only for user-added items; hidden items render dimmed with a "(hidden)" label
+- HA addon UI and React frontend template editor: visibility checkbox per item (checked = visible, unchecked = hidden); delete button shown only for user-added items; hidden items render dimmed
+- HA addon UI trip detail: activity chips are now editable — tap ✕ to remove an activity (clears its auto-added items) or tap **+ Activity** to add a new one from an inline picker; changes propagate immediately to the packing list
 
 ### Removed
 - `category` removed from the entire data model: API schemas (Create/Update/Response), activity merger, AI suggestion prompt and response, JSON seed templates, frontend TypeScript types, and HA addon UI
@@ -40,9 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Trip card and trip detail: duration now calculated from dates when `duration_days` is not stored (e.g. trips created before the auto-calculate fix)
 - Trip `duration_days` is now automatically calculated from `start_date`/`end_date` at creation time and recalculated when either date is updated (both backends)
 - Updating a trip's activity list now correctly adds packing items for newly added activities and removes non-customised items that belonged exclusively to deselected activities (both backends)
-
-### Added
-- HA addon UI trip detail: activity chips are now editable — tap ✕ to remove an activity (clears its auto-added items) or tap **+ Activity** to add a new one from an inline picker; changes propagate immediately to the packing list
+- After removing or adding an activity from a trip, the packing list now reloads via a fresh GET to avoid stale ORM identity-map data showing items in the wrong section
 
 ## [0.1.2] - 2026-05-24
 
@@ -92,7 +93,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Backend-tests and frontend-tests CI jobs run on every PR
 - `PackingItemBulkCreate` schema with `list_id` field for `/items/bulk` endpoint
 
-[Unreleased]: https://github.com/nsaputro/siap-jalan/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/nsaputro/siap-jalan/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/nsaputro/siap-jalan/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/nsaputro/siap-jalan/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/nsaputro/siap-jalan/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/nsaputro/siap-jalan/releases/tag/v0.1.0
