@@ -7,8 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] — next: 0.2.2
 
-## [0.2.1] - 2026-05-27
-
 ### Added
 - Two new built-in activity templates: **Essentials** (👕) with 14 clothing and personal items (t-shirts, underwear, socks, trousers, wallet, phone, medication, etc.) and **Toiletries** (🧴) with 15 hygiene items (toothbrush, toothpaste, shampoo, soap, deodorant, face wash, etc.); both appear at the top of the template list as universal trip additions
 - Essentials and Toiletries are pre-selected by default when creating a new trip (both HA addon and React frontend)
