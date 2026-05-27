@@ -1,11 +1,7 @@
-## 0.2.0
+## 0.2.1
 
-- Added: **Custom activity templates** — create your own templates from scratch, clone and personalise any built-in, edit items (hide/show or delete), and delete templates you no longer need; all changes propagate to your active trips automatically
-- Added: **Activities tab** in the app UI — browse built-in templates with a Clone button; manage your personal templates with Edit and Delete
-- Added: **Editable activities on trips** — tap ✕ on an activity chip in the trip detail to remove it (its auto-added items are cleared); tap + Activity to add a new one and merge its items in immediately
-- Fixed: Activity badges on trip cards now show the activity name and emoji instead of the internal code
-- Fixed: Trip duration now always shows the correct number of days (calculated from dates when not stored)
-- Removed: Item category field removed entirely — items are now grouped by activity instead
+- Fixed: Built-in activity templates: replaced locale-specific abbreviations with generic English equivalents — "Passport / KTP" → "Passport / ID Card" (Flight template), "Car registration / STNK" → "Car registration documents" (Road Trip template)
+- Fixed: Template item editor: essential star (★) now turns gold/amber when toggled on, making the state visually distinct; also replaced `classList.toggle(force)` with explicit `add`/`remove` for cross-browser reliability (Safari)
 
 ---
 
