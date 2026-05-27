@@ -1021,8 +1021,7 @@ async function deleteTrip(id) {
 }
 
 function openNewTripModal() {
-  const defaults = ['essentials', 'toiletries'];
-  selectedActs = activities.filter(a => defaults.includes(a.slug)).map(a => a.slug);
+  selectedActs = ['essentials', 'toiletries'];
   ['f-dest','f-start','f-end','f-notes'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-travellers').value = '1';
   document.getElementById('trip-err').innerHTML = '';
