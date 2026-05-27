@@ -22,37 +22,35 @@ DATA_FILE = Path("/app/data/activity_templates.json")
 
 
 async def seed_activity_templates() -> None:
-    """Seed built-in activity templates from JSON file if table is empty."""
+    """Seed built-in activity templates from JSON, inserting any slugs not yet in the DB."""
     if not DATA_FILE.exists():
         return
 
+    try:
+        data = json.loads(DATA_FILE.read_text(encoding="utf-8"))
+    except Exception:
+        return
+
     async with AsyncSessionLocal() as db:
-        result = await db.execute(select(ActivityTemplate).limit(1))
-        existing = result.scalar_one_or_none()
-        if existing:
-            return
-
-        try:
-            data = json.loads(DATA_FILE.read_text(encoding="utf-8"))
-        except Exception:
-            return
-
         for tmpl_data in data:
+            tmpl_data = dict(tmpl_data)
             items_data = tmpl_data.pop("items", [])
-            tmpl = ActivityTemplate(
-                is_builtin=True,
-                ha_user_id=None,
-                **{k: v for k, v in tmpl_data.items()},
+            slug = tmpl_data.get("slug")
+            if not slug:
+                continue
+
+            result = await db.execute(
+                select(ActivityTemplate).where(ActivityTemplate.slug == slug)
             )
+            if result.scalar_one_or_none() is not None:
+                continue  # already in DB — skip
+
+            tmpl = ActivityTemplate(is_builtin=True, ha_user_id=None, **tmpl_data)
             db.add(tmpl)
             await db.flush()
 
             for item_data in items_data:
-                item = ActivityTemplateItem(
-                    activity_template_id=tmpl.id,
-                    **item_data,
-                )
-                db.add(item)
+                db.add(ActivityTemplateItem(activity_template_id=tmpl.id, **item_data))
 
         await db.commit()
 
