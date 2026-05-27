@@ -279,7 +279,12 @@
 <div id="app">
   <header>
     <h1>🧳 Siap <span>Jalan</span></h1>
-    <button class="btn btn-primary btn-sm" id="btn-header-action">+ New Trip</button>
+    <div style="display:flex;gap:.4rem;align-items:center">
+      <button class="btn btn-ghost btn-sm" id="btn-export" title="Export active &amp; future trips + custom activities">↓ Export</button>
+      <button class="btn btn-ghost btn-sm" id="btn-import-trigger" title="Import from a SiapJalan JSON file">↑ Import</button>
+      <input type="file" id="btn-import-file" accept=".json,application/json" style="display:none" />
+      <button class="btn btn-primary btn-sm" id="btn-header-action">+ New Trip</button>
+    </div>
   </header>
 
   <!-- Tab bar -->
@@ -1152,6 +1157,45 @@ document.getElementById('btn-save-new-act').onclick   = saveNewActivity;
 document.querySelectorAll('.modal-bg').forEach(bg =>
   bg.addEventListener('click', e => { if (e.target === bg) bg.style.display = 'none'; })
 );
+
+// ── Export ────────────────────────────────────────────────────────────────────
+document.getElementById('btn-export').addEventListener('click', async () => {
+  try {
+    const res = await fetch('export');
+    if (!res.ok) throw new Error(await res.text());
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = `siapjalan-${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    showToast('Export failed: ' + e.message, 3500);
+  }
+});
+
+// ── Import ────────────────────────────────────────────────────────────────────
+document.getElementById('btn-import-trigger').addEventListener('click', () => {
+  document.getElementById('btn-import-file').click();
+});
+
+document.getElementById('btn-import-file').addEventListener('change', async (e) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  try {
+    const payload = JSON.parse(await file.text());
+    const result  = await POST('import', payload);
+    const msg = `Imported ${result.trips_imported} trip(s) and ${result.activities_imported} activity template(s)`;
+    showToast(result.warnings?.length ? msg + ' (with warnings)' : msg, 4000);
+    loadTrips();
+    loadActivities();
+  } catch (e) {
+    showToast('Import failed: ' + e.message, 4000);
+  } finally {
+    e.target.value = '';
+  }
+});
 
 loadActivities();
 loadTrips();

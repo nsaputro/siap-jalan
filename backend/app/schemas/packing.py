@@ -288,3 +288,77 @@ class MergedItemResponse(BaseModel):
     is_essential: bool
     source_activities: list[str]
     priority: int
+
+
+# ---------------------------------------------------------------------------
+# Import / Export
+# ---------------------------------------------------------------------------
+
+class ExportPackingItem(BaseModel):
+    name: str
+    quantity: int
+    unit: Optional[str]
+    is_packed: bool
+    is_essential: bool
+    added_by: str
+    source_activities: list[str]
+    is_customised: bool
+
+
+class ExportPackingList(BaseModel):
+    name: str
+    is_default: bool
+    items: list[ExportPackingItem]
+
+
+class ExportTrip(BaseModel):
+    destination: str
+    country: Optional[str]
+    start_date: datetime.date
+    end_date: datetime.date
+    duration_days: Optional[int]
+    trip_type: Optional[str]
+    activities: list[str]
+    notes: Optional[str]
+    traveller_count: int
+    packing_lists: list[ExportPackingList]
+
+
+class ExportActivityItem(BaseModel):
+    name: str
+    quantity: int
+    unit: Optional[str]
+    is_essential: bool
+    priority: int
+    notes: Optional[str]
+    gender_filter: str
+    is_hidden: bool
+    is_user_added: bool
+
+
+class ExportActivity(BaseModel):
+    slug: str
+    name: str
+    icon_emoji: str
+    description: Optional[str]
+    climate_types: list[str]
+    items: list[ExportActivityItem]
+
+
+class ExportPayload(BaseModel):
+    version: str
+    exported_at: str
+    trips: list[ExportTrip]
+    activities: list[ExportActivity]
+
+
+class ImportPayload(BaseModel):
+    version: str = "1"
+    trips: list[ExportTrip] = []
+    activities: list[ExportActivity] = []
+
+
+class ImportResult(BaseModel):
+    trips_imported: int
+    activities_imported: int
+    warnings: list[str] = []

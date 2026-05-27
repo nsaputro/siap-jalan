@@ -85,4 +85,22 @@ export const api = {
   // AI suggestions
   getSuggestions: (tripId: number) =>
     request<import('@/types').PackingItem[]>(`/trips/${tripId}/suggest`, { method: 'POST' }),
+
+  // Import / Export
+  exportData: async (): Promise<void> => {
+    const res = await fetch(`${BASE_URL}/export`)
+    if (!res.ok) throw new Error('Export failed')
+    const blob = await res.blob()
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `siapjalan-${new Date().toISOString().slice(0, 10)}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  },
+  importData: (payload: unknown) =>
+    request<{ trips_imported: number; activities_imported: number; warnings: string[] }>(
+      '/import',
+      { method: 'POST', body: JSON.stringify(payload) },
+    ),
 }
