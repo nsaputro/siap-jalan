@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — next: 0.2.3
+## [Unreleased] — next: 0.3.0
 
 ### Added
 - **Import / Export**: download all active and future trips plus customised activity templates as a JSON file (`GET /export`); restore them on any instance with `POST /import` — activity slug conflicts are auto-resolved and packing lists are preserved exactly as exported (both HA addon and React frontend)
