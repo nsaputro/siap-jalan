@@ -29,18 +29,26 @@ def _find_seed_path() -> Path | None:
 
 
 async def _seed_activities() -> None:
+    """Seed built-in activity templates from JSON, inserting any slugs not yet in the DB."""
     seed = _find_seed_path()
     if seed is None:
         return
 
+    data = json.loads(seed.read_text(encoding="utf-8"))
     async with AsyncSessionLocal() as db:
-        result = await db.execute(select(ActivityTemplate).limit(1))
-        if result.scalar_one_or_none() is not None:
-            return  # already seeded
-
-        data = json.loads(seed.read_text(encoding="utf-8"))
         for entry in data:
+            entry = dict(entry)
             items_data = entry.pop("items", [])
+            slug = entry.get("slug")
+            if not slug:
+                continue
+
+            result = await db.execute(
+                select(ActivityTemplate).where(ActivityTemplate.slug == slug)
+            )
+            if result.scalar_one_or_none() is not None:
+                continue  # already in DB — skip
+
             at = ActivityTemplate(is_builtin=True, ha_user_id=None, **entry)
             db.add(at)
             await db.flush()
