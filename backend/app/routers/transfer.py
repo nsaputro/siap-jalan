@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 import json
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from fastapi.responses import Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -25,24 +25,32 @@ HA_USER_ID = "default"
 
 
 @router.get("/export")
-async def export_data(db: AsyncSession = Depends(get_db)) -> Response:
+async def export_data(
+    include_trips: bool = Query(True, alias="trips"),
+    include_activities: bool = Query(True, alias="activities"),
+    db: AsyncSession = Depends(get_db),
+) -> Response:
     today = datetime.date.today()
 
-    trips_result = await db.execute(
-        select(Trip)
-        .where(Trip.ha_user_id == HA_USER_ID, Trip.end_date >= today)
-        .options(selectinload(Trip.packing_lists).selectinload(PackingList.items))
-        .order_by(Trip.start_date)
-    )
-    trips = trips_result.scalars().all()
+    trips: list = []
+    if include_trips:
+        trips_result = await db.execute(
+            select(Trip)
+            .where(Trip.ha_user_id == HA_USER_ID, Trip.end_date >= today)
+            .options(selectinload(Trip.packing_lists).selectinload(PackingList.items))
+            .order_by(Trip.start_date)
+        )
+        trips = list(trips_result.scalars().all())
 
-    acts_result = await db.execute(
-        select(ActivityTemplate)
-        .where(ActivityTemplate.ha_user_id == HA_USER_ID, ActivityTemplate.is_builtin.is_(False))
-        .options(selectinload(ActivityTemplate.items))
-        .order_by(ActivityTemplate.name)
-    )
-    activities = acts_result.scalars().all()
+    activities: list = []
+    if include_activities:
+        acts_result = await db.execute(
+            select(ActivityTemplate)
+            .where(ActivityTemplate.ha_user_id == HA_USER_ID, ActivityTemplate.is_builtin.is_(False))
+            .options(selectinload(ActivityTemplate.items))
+            .order_by(ActivityTemplate.name)
+        )
+        activities = list(acts_result.scalars().all())
 
     payload = {
         "version": "1",

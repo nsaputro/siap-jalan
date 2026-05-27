@@ -299,6 +299,47 @@
 <!-- Toast -->
 <div id="toast" class="toast"></div>
 
+<!-- Export Modal -->
+<div id="modal-export" class="modal-bg" style="display:none">
+  <div class="modal" style="max-width:300px">
+    <h2>Export</h2>
+    <p style="font-size:.85rem;color:var(--text2);margin:.2rem 0 1rem">Choose what to include in the export file:</p>
+    <div style="display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.1rem">
+      <label style="display:flex;align-items:center;gap:.6rem;font-size:.9rem;cursor:pointer">
+        <input type="checkbox" id="exp-trips" checked /> Trips <span style="font-size:.78rem;color:var(--text2)">(active &amp; future)</span>
+      </label>
+      <label style="display:flex;align-items:center;gap:.6rem;font-size:.9rem;cursor:pointer">
+        <input type="checkbox" id="exp-activities" checked /> Custom activity templates
+      </label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" id="btn-cancel-export">Cancel</button>
+      <button class="btn btn-primary btn-sm" id="btn-confirm-export">↓ Download</button>
+    </div>
+  </div>
+</div>
+
+<!-- Import Preview Modal -->
+<div id="modal-import" class="modal-bg" style="display:none">
+  <div class="modal" style="max-width:300px">
+    <h2>Import</h2>
+    <p id="import-summary" style="font-size:.85rem;color:var(--text2);margin:.2rem 0 1rem"></p>
+    <div style="display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.1rem">
+      <label style="display:flex;align-items:center;gap:.6rem;font-size:.9rem;cursor:pointer">
+        <input type="checkbox" id="imp-trips" /> Trips
+      </label>
+      <label style="display:flex;align-items:center;gap:.6rem;font-size:.9rem;cursor:pointer">
+        <input type="checkbox" id="imp-activities" /> Custom activity templates
+      </label>
+    </div>
+    <div id="import-err"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" id="btn-cancel-import">Cancel</button>
+      <button class="btn btn-primary btn-sm" id="btn-confirm-import">↑ Import</button>
+    </div>
+  </div>
+</div>
+
 <!-- New Trip Modal -->
 <div id="modal-trip" class="modal-bg" style="display:none">
   <div class="modal">
@@ -1159,9 +1200,16 @@ document.querySelectorAll('.modal-bg').forEach(bg =>
 );
 
 // ── Export ────────────────────────────────────────────────────────────────────
-document.getElementById('btn-export').addEventListener('click', async () => {
+document.getElementById('btn-export').addEventListener('click', () => openModal('modal-export'));
+document.getElementById('btn-cancel-export').onclick = () => closeModal('modal-export');
+
+document.getElementById('btn-confirm-export').addEventListener('click', async () => {
+  const incTrips = document.getElementById('exp-trips').checked;
+  const incActs  = document.getElementById('exp-activities').checked;
+  closeModal('modal-export');
   try {
-    const res = await fetch('export');
+    const params = new URLSearchParams({ trips: incTrips, activities: incActs });
+    const res = await fetch(`export?${params}`);
     if (!res.ok) throw new Error(await res.text());
     const blob = await res.blob();
     const url  = URL.createObjectURL(blob);
@@ -1176,6 +1224,8 @@ document.getElementById('btn-export').addEventListener('click', async () => {
 });
 
 // ── Import ────────────────────────────────────────────────────────────────────
+let _importPayload = null;
+
 document.getElementById('btn-import-trigger').addEventListener('click', () => {
   document.getElementById('btn-import-file').click();
 });
@@ -1184,16 +1234,49 @@ document.getElementById('btn-import-file').addEventListener('change', async (e) 
   const file = e.target.files?.[0];
   if (!file) return;
   try {
-    const payload = JSON.parse(await file.text());
-    const result  = await POST('import', payload);
+    _importPayload = JSON.parse(await file.text());
+    const tripCount = _importPayload.trips?.length ?? 0;
+    const actCount  = _importPayload.activities?.length ?? 0;
+    document.getElementById('import-summary').textContent =
+      `Found ${tripCount} trip(s) and ${actCount} activity template(s).`;
+    const tripsChk = document.getElementById('imp-trips');
+    const actsChk  = document.getElementById('imp-activities');
+    tripsChk.checked  = tripCount > 0;
+    tripsChk.disabled = tripCount === 0;
+    actsChk.checked   = actCount > 0;
+    actsChk.disabled  = actCount === 0;
+    document.getElementById('import-err').innerHTML = '';
+    openModal('modal-import');
+  } catch (e) {
+    showToast('Invalid JSON file: ' + e.message, 4000);
+  } finally {
+    e.target.value = '';
+  }
+});
+
+document.getElementById('btn-cancel-import').onclick = () => {
+  closeModal('modal-import'); _importPayload = null;
+};
+
+document.getElementById('btn-confirm-import').addEventListener('click', async () => {
+  if (!_importPayload) return;
+  const payload = {
+    ..._importPayload,
+    trips:      document.getElementById('imp-trips').checked      ? _importPayload.trips      : [],
+    activities: document.getElementById('imp-activities').checked ? _importPayload.activities : [],
+  };
+  document.getElementById('import-err').innerHTML = '';
+  try {
+    const result = await POST('import', payload);
+    closeModal('modal-import');
+    _importPayload = null;
     const msg = `Imported ${result.trips_imported} trip(s) and ${result.activities_imported} activity template(s)`;
     showToast(result.warnings?.length ? msg + ' (with warnings)' : msg, 4000);
     loadTrips();
     loadActivities();
   } catch (e) {
-    showToast('Import failed: ' + e.message, 4000);
-  } finally {
-    e.target.value = '';
+    document.getElementById('import-err').innerHTML =
+      `<div class="err-banner">${esc(String(e.message))}</div>`;
   }
 });
 
