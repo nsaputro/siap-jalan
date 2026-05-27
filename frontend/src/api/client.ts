@@ -87,8 +87,9 @@ export const api = {
     request<import('@/types').PackingItem[]>(`/trips/${tripId}/suggest`, { method: 'POST' }),
 
   // Import / Export
-  exportData: async (): Promise<void> => {
-    const res = await fetch(`${BASE_URL}/export`)
+  exportData: async (opts: { trips: boolean; activities: boolean }): Promise<void> => {
+    const params = new URLSearchParams({ trips: String(opts.trips), activities: String(opts.activities) })
+    const res = await fetch(`${BASE_URL}/export?${params}`)
     if (!res.ok) throw new Error('Export failed')
     const blob = await res.blob()
     const url = URL.createObjectURL(blob)
