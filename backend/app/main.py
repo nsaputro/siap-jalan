@@ -11,7 +11,7 @@ from sqlalchemy.future import select
 
 from .database import AsyncSessionLocal, Base, engine
 from .models.packing import ActivityTemplate, ActivityTemplateItem
-from .routers import activities, ai, packing, templates, trips
+from .routers import activities, ai, packing, templates, transfer, trips
 
 # Seed file: look next to cwd or one level up (handles both direct & Docker runs)
 _CANDIDATE_SEED_PATHS = [
@@ -94,6 +94,7 @@ app.include_router(packing.router)
 app.include_router(activities.router)
 app.include_router(templates.router)
 app.include_router(ai.router)
+app.include_router(transfer.router)
 
 
 @app.get("/health")
