@@ -19,7 +19,7 @@ interface FormValues {
 export function NewTrip() {
   const navigate = useNavigate()
   const addTrip = useAppStore((s) => s.addTrip)
-  const [activities, setActivities] = useState<string[]>([])
+  const [activities, setActivities] = useState<string[]>(['essentials', 'toiletries'])
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
