@@ -1,5 +1,288 @@
 [
   {
+    "slug": "essentials",
+    "name": "Essentials",
+    "icon_emoji": "👕",
+    "description": "Everyday clothing and personal items every traveller needs, regardless of destination or activity.",
+    "climate_types": [
+      "all"
+    ],
+    "items": [
+      {
+        "name": "T-shirts / tops",
+        "quantity": 3,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Pack one per day plus one spare"
+      },
+      {
+        "name": "Underwear",
+        "quantity": 4,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Socks",
+        "quantity": 4,
+        "unit": "pairs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Trousers / jeans",
+        "quantity": 2,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Shorts",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Sleepwear / pajamas",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Light jacket / cardigan",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": "Useful on planes and in air-conditioned spaces"
+      },
+      {
+        "name": "Walking shoes",
+        "quantity": 1,
+        "unit": "pair",
+        "is_essential": true,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Wallet / cards / cash",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": "Include local currency for destination"
+      },
+      {
+        "name": "Phone + charger",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Personal medication",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Bring enough for the full trip plus extra"
+      },
+      {
+        "name": "Sunglasses",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Belt",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 5,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Reusable bag / tote",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 5,
+        "gender_filter": "all",
+        "notes": "Handy for shopping and day trips"
+      }
+    ]
+  },
+  {
+    "slug": "toiletries",
+    "name": "Toiletries",
+    "icon_emoji": "🧴",
+    "description": "Personal care and hygiene essentials for any trip.",
+    "climate_types": [
+      "all"
+    ],
+    "items": [
+      {
+        "name": "Toothbrush",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Toothpaste",
+        "quantity": 1,
+        "unit": "tube",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Shampoo",
+        "quantity": 1,
+        "unit": "bottle",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": "Travel-size (≤100 ml) for carry-on"
+      },
+      {
+        "name": "Conditioner",
+        "quantity": 1,
+        "unit": "bottle",
+        "is_essential": false,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Body soap / shower gel",
+        "quantity": 1,
+        "unit": "bottle",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Deodorant",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": true,
+        "priority": 9,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Face wash / cleanser",
+        "quantity": 1,
+        "unit": "bottle",
+        "is_essential": false,
+        "priority": 8,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Moisturizer / face cream",
+        "quantity": 1,
+        "unit": "bottle",
+        "is_essential": false,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Razor",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 7,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Lip balm",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 5,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Nail clippers",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 5,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Comb / hairbrush",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Cotton swabs / Q-tips",
+        "quantity": 1,
+        "unit": "pack",
+        "is_essential": false,
+        "priority": 4,
+        "gender_filter": "all",
+        "notes": null
+      },
+      {
+        "name": "Feminine hygiene products",
+        "quantity": 1,
+        "unit": "pack",
+        "is_essential": true,
+        "priority": 10,
+        "gender_filter": "female",
+        "notes": null
+      },
+      {
+        "name": "Toiletry bag",
+        "quantity": 1,
+        "unit": "pcs",
+        "is_essential": false,
+        "priority": 6,
+        "gender_filter": "all",
+        "notes": "Waterproof / easy-clean material preferred"
+      }
+    ]
+  },
+  {
     "slug": "flight",
     "name": "Flight",
     "icon_emoji": "✈️",

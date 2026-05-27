@@ -16,7 +16,7 @@ SiapJalan ("Ready to Go" in Indonesian) is a smart travel packing assistant that
 
 ## Features
 
-- **Activity-based templates** — 16 built-in activities (Flight, Beach, Hiking, Camping, Skiing, Business, City Break, Road Trip, Cycling, Running, Diving, Surfing, Photography, Backpacking, Family/Kids, Swimming). Combine multiple activities; duplicates are merged automatically.
+- **Activity-based templates** — 18 built-in activities (Essentials, Toiletries, Flight, Beach, Hiking, Camping, Skiing, Business, City Break, Road Trip, Cycling, Running, Diving, Surfing, Photography, Backpacking, Family/Kids, Swimming). Combine multiple activities; duplicates are merged automatically.
 - **AI packing suggestions** — powered by the Anthropic Claude API. Generates destination-aware suggestions (e.g. cold-weather extras for Hokkaido in January).
 - **Weather integration** — fetches a live forecast from Open-Meteo (no API key required) to inform packing recommendations.
 - **Template propagation** — editing a shared activity template pushes the change to all active trips using that template.
