@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — next: 0.2.2
+## [Unreleased] — next: 0.2.3
+
+## [0.2.2] - 2026-05-27
 
 ### Added
 - Two new built-in activity templates: **Essentials** (👕) with 14 clothing and personal items (t-shirts, underwear, socks, trousers, wallet, phone, medication, etc.) and **Toiletries** (🧴) with 15 hygiene items (toothbrush, toothpaste, shampoo, soap, deodorant, face wash, etc.); both appear at the top of the template list as universal trip additions
@@ -101,7 +103,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Backend-tests and frontend-tests CI jobs run on every PR
 - `PackingItemBulkCreate` schema with `list_id` field for `/items/bulk` endpoint
 
-[Unreleased]: https://github.com/nsaputro/siap-jalan/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/nsaputro/siap-jalan/compare/v0.2.2...HEAD
+[0.2.2]: https://github.com/nsaputro/siap-jalan/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/nsaputro/siap-jalan/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/nsaputro/siap-jalan/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/nsaputro/siap-jalan/compare/v0.1.1...v0.1.2
