@@ -18,7 +18,7 @@ from ..models.packing import (
     PackingList,
     Trip,
 )
-from ..schemas.packing import ExportPayload, ImportPayload, ImportResult
+from ..schemas.packing import ImportPayload, ImportResult
 
 router = APIRouter(tags=["transfer"])
 
