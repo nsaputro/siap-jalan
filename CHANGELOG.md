@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **Import / Export**: download all active and future trips plus customised activity templates as a JSON file (`GET /export`); restore them on any instance with `POST /import` — activity slug conflicts are auto-resolved and packing lists are preserved exactly as exported (both HA addon and React frontend)
 
+### Changed
+- Import is now tolerant of partial JSON: optional fields fall back to sensible defaults instead of failing validation, so trimmed or hand-edited export files still import cleanly
+
 ## [0.2.2] - 2026-05-27
 
 ### Added

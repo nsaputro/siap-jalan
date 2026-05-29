@@ -1,5 +1,5 @@
 name: "SiapJalan (dev)"
-version: "0.3.0b1"
+version: "0.3.0b2"
 slug: siap_jalan_dev
 description: >-
   ⚠️ Development build — published manually via the Pre-release workflow.
