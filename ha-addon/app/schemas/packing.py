@@ -291,53 +291,53 @@ class MergedItemResponse(BaseModel):
 
 class ExportPackingItem(BaseModel):
     name: str
-    quantity: int
-    unit: Optional[str]
-    is_packed: bool
-    is_essential: bool
-    added_by: str
-    source_activities: list[str]
-    is_customised: bool
+    quantity: int = 1
+    unit: Optional[str] = None
+    is_packed: bool = False
+    is_essential: bool = False
+    added_by: str = "user"
+    source_activities: list[str] = []
+    is_customised: bool = False
 
 
 class ExportPackingList(BaseModel):
     name: str
-    is_default: bool
-    items: list[ExportPackingItem]
+    is_default: bool = True
+    items: list[ExportPackingItem] = []
 
 
 class ExportTrip(BaseModel):
     destination: str
-    country: Optional[str]
+    country: Optional[str] = None
     start_date: datetime.date
     end_date: datetime.date
-    duration_days: Optional[int]
-    trip_type: Optional[str]
-    activities: list[str]
-    notes: Optional[str]
-    traveller_count: int
-    packing_lists: list[ExportPackingList]
+    duration_days: Optional[int] = None
+    trip_type: Optional[str] = None
+    activities: list[str] = []
+    notes: Optional[str] = None
+    traveller_count: int = 1
+    packing_lists: list[ExportPackingList] = []
 
 
 class ExportActivityItem(BaseModel):
     name: str
-    quantity: int
-    unit: Optional[str]
-    is_essential: bool
-    priority: int
-    notes: Optional[str]
-    gender_filter: str
-    is_hidden: bool
-    is_user_added: bool
+    quantity: int = 1
+    unit: Optional[str] = None
+    is_essential: bool = False
+    priority: int = 0
+    notes: Optional[str] = None
+    gender_filter: str = "all"
+    is_hidden: bool = False
+    is_user_added: bool = True
 
 
 class ExportActivity(BaseModel):
     slug: str
     name: str
-    icon_emoji: str
-    description: Optional[str]
-    climate_types: list[str]
-    items: list[ExportActivityItem]
+    icon_emoji: str = "🎒"
+    description: Optional[str] = None
+    climate_types: list[str] = []
+    items: list[ExportActivityItem] = []
 
 
 class ExportPayload(BaseModel):
