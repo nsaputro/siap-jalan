@@ -8,6 +8,10 @@ permissions:
   packages: write      # push to ghcr.io
   pull-requests: write # open post-release PR
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
   # ── Validate NEXT_VERSION, create tag ────────────────────────────────────────
   prepare-release:

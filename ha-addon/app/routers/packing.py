@@ -9,6 +9,7 @@ from ..database import get_db
 from ..dependencies import get_ha_user
 from ..models.packing import ActivityTemplate, ActivityTemplateItem, PackingItem, PackingList, Trip
 from ..schemas.packing import (
+    PackingItemBulkCreate,
     PackingItemCreate,
     PackingItemResponse,
     PackingItemUpdate,
@@ -211,12 +212,14 @@ async def promote_item(
 
 @router.post("/items/bulk", response_model=list[PackingItemResponse], status_code=201)
 async def bulk_create_items(
-    body: list[PackingItemCreate],
+    body: list[PackingItemBulkCreate],
     db: AsyncSession = Depends(get_db),
 ):
     items = []
     for item_data in body:
         data = item_data.model_dump(exclude={"source_activity"})
+        if item_data.source_activity:
+            data["added_by"] = "adhoc"
         item = PackingItem(**data)
         db.add(item)
         items.append(item)

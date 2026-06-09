@@ -504,7 +504,7 @@ function renderTrips() {
     const days   = t.duration_days ?? Math.round((new Date(t.end_date) - new Date(t.start_date)) / 86400000);
     const acts   = (t.activities || []).map(a => {
       const act = actMap[a];
-      return `<span class="badge">${act ? `${act.icon_emoji} ${esc(act.name)}` : esc(a)}</span>`;
+      return `<span class="badge">${act ? `${esc(act.icon_emoji)} ${esc(act.name)}` : esc(a)}</span>`;
     }).join('');
     return `
       <div class="trip-card" data-id="${t.id}">
@@ -587,7 +587,7 @@ function renderTrip() {
     tripActSlugs.forEach(slug => {
       const group  = groupMap[slug];
       const act    = actMap[slug];
-      const label  = act ? `${act.icon_emoji} ${esc(act.name)}` : esc(slug);
+      const label  = act ? `${esc(act.icon_emoji)} ${esc(act.name)}` : esc(slug);
       const gPack  = group.filter(i => i.is_packed).length;
       const gTotal = group.length;
       sectionsHTML += `
@@ -621,7 +621,7 @@ function renderTrip() {
   // Activity chips for the detail view (editable)
   const actChipsHTML = tripActSlugs.map(slug => {
     const act = actMap[slug];
-    const label = act ? `${act.icon_emoji} ${esc(act.name)}` : esc(slug);
+    const label = act ? `${esc(act.icon_emoji)} ${esc(act.name)}` : esc(slug);
     return `<button class="trip-act-chip remove-act" data-slug="${esc(slug)}">${label} <span class="chip-x">✕</span></button>`;
   }).join('');
 
@@ -684,7 +684,7 @@ function renderTrip() {
     const available = activities.filter(a => !currentSlugs.includes(a.slug));
     if (!available.length) { showToast('All activities already added'); return; }
     panel.innerHTML = available.map(a =>
-      `<button class="activity-btn add-act-btn" data-slug="${esc(a.slug)}">${a.icon_emoji} ${esc(a.name)}</button>`
+      `<button class="activity-btn add-act-btn" data-slug="${esc(a.slug)}">${esc(a.icon_emoji)} ${esc(a.name)}</button>`
     ).join('');
     panel.querySelectorAll('.add-act-btn').forEach(btn =>
       btn.addEventListener('click', async () => {
@@ -725,7 +725,7 @@ function renderActivitiesTab() {
 
   const builtinCards = builtins.map(a => `
     <div class="tmpl-card">
-      <span class="tmpl-icon">${a.icon_emoji}</span>
+      <span class="tmpl-icon">${esc(a.icon_emoji)}</span>
       <div class="tmpl-info">
         <div class="tmpl-name">${esc(a.name)}</div>
         <div class="tmpl-meta">${a.items.length} items · built-in</div>
@@ -741,7 +741,7 @@ function renderActivitiesTab() {
 
   const myCards = mine.length ? mine.map(a => `
     <div class="tmpl-card">
-      <span class="tmpl-icon">${a.icon_emoji}</span>
+      <span class="tmpl-icon">${esc(a.icon_emoji)}</span>
       <div class="tmpl-info">
         <div class="tmpl-name">${esc(a.name)}</div>
         <div class="tmpl-meta">${a.items.length} items · custom</div>
@@ -834,7 +834,7 @@ function renderTemplateEdit() {
   root.innerHTML = `
     <div class="detail-header">
       <button class="btn btn-ghost btn-sm" id="btn-back-tmpl">← Activities</button>
-      <span class="detail-title">${tmpl.icon_emoji} ${esc(tmpl.name)}</span>
+      <span class="detail-title">${esc(tmpl.icon_emoji)} ${esc(tmpl.name)}</span>
     </div>
     <div class="pack-card" style="margin-bottom:.75rem">
       <div class="pack-card-header">
@@ -873,12 +873,13 @@ function renderTemplateEdit() {
   const nameInp  = document.getElementById('tmpl-name-inp');
   const emojiInp = document.getElementById('tmpl-emoji-inp');
   async function saveTemplateInfo() {
+    const cur = currentTemplate;  // read live reference, not stale closure
     const newName  = nameInp.value.trim();
-    const newEmoji = emojiInp.value.trim() || tmpl.icon_emoji;
+    const newEmoji = emojiInp.value.trim() || cur.icon_emoji;
     if (!newName) return;
-    if (newName === tmpl.name && newEmoji === tmpl.icon_emoji) return;
+    if (newName === cur.name && newEmoji === cur.icon_emoji) return;
     try {
-      const result = await PUT(`activities/${tmpl.id}`, { name: newName, icon_emoji: newEmoji });
+      const result = await PUT(`activities/${cur.id}`, { name: newName, icon_emoji: newEmoji });
       currentTemplate = result.template;
       const summary = result.propagation_summary;
       const propMsg = document.getElementById('tmpl-prop-msg');
@@ -890,7 +891,7 @@ function renderTemplateEdit() {
       }
       showToast('Template saved');
       // Update in activities cache
-      const idx = activities.findIndex(a => a.id === tmpl.id);
+      const idx = activities.findIndex(a => a.id === cur.id);
       if (idx !== -1) activities[idx] = currentTemplate;
     } catch (e) {
       showToast('Save failed: ' + e.message);
@@ -1114,7 +1115,7 @@ async function addItem(name, activitySlug = null) {
   renderTrip();
   // Re-focus the same add input
   const refSlug = activitySlug ?? '';
-  const inp = document.querySelector(`.section-add[data-slug="${refSlug}"]`);
+  const inp = document.querySelector(`.section-add[data-slug="${CSS.escape(refSlug)}"]`);
   if (inp) inp.focus();
 }
 
@@ -1143,7 +1144,7 @@ function renderActivityPicker() {
   if (!el) return;
   el.innerHTML = activities.map(a => `
     <button class="activity-btn ${selectedActs.includes(a.slug) ? 'selected' : ''}"
-            data-slug="${a.slug}">${a.icon_emoji} ${esc(a.name)}</button>
+            data-slug="${esc(a.slug)}">${esc(a.icon_emoji)} ${esc(a.name)}</button>
   `).join('');
   el.querySelectorAll('.activity-btn').forEach(btn =>
     btn.addEventListener('click', () => {
@@ -1161,7 +1162,8 @@ function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
 function esc(s) {
   return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;')
-                        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+                        .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+                        .replace(/'/g,'&#39;');
 }
 
 // ── Wire up ───────────────────────────────────────────────────────────────────
