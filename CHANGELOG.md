@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] — next: 0.3.1
 
+### Security
+- **XSS fix**: `icon_emoji` and `slug` fields are now HTML-escaped via `esc()` throughout the HA addon UI, closing a stored-XSS vector on the HA ingress origin; `esc()` now also escapes single quotes; `CSS.escape()` used for the `addItem` querySelector
+- **Dependency bumps**: `fastapi` 0.115.6 → 0.115.12 (patches starlette CVE-2025-54121, CVE-2025-62727, PYSEC-2026-161); `python-multipart` removed (unused, had 3 CVEs); `python-dotenv` 1.0.1 → 1.2.2 (patches CVE-2026-28684) — both `backend/` and `ha-addon/`
+- **HA addon config**: `anthropic_api_key` schema type changed from `str` to `password` so HA Supervisor masks it in the UI
+
+### Fixed
+- **HA addon bulk-create drift**: `POST /items/bulk` now uses `PackingItemBulkCreate` (adds required `list_id` field) and sets `added_by="adhoc"` on `source_activity` items — matching the standalone backend
+- **Template editor stale closure**: auto-save on blur now reads `currentTemplate` at call time instead of a captured `tmpl` snapshot, preventing redundant PUT requests and spurious propagation toasts after the first save
+- **Test dates**: `conftest.trip_payload` and `test_propagation._setup` now use relative dates (`today + 30d`) instead of hardcoded 2025/2029 dates
+
+### Changed
+- CI: `permissions: contents: read` added to `ci.yml`; `hadolint` download pinned to v2.12.0 with sha256 verification
+- Release/pre-release workflows: `concurrency` groups added to prevent race conditions on simultaneous dispatches
+
 ## [0.3.0] - 2026-05-30
 
 ### Added

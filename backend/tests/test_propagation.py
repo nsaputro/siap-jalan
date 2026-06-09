@@ -1,6 +1,8 @@
 """End-to-end propagation tests: edit activity template → active trip updates."""
 from __future__ import annotations
 
+import datetime
+
 from .conftest import trip_payload
 
 CUSTOM = {
@@ -18,10 +20,10 @@ CUSTOM = {
 async def _setup(client):
     """Create a custom activity + an active trip using it. Returns (activity, trip, list_id)."""
     activity = (await client.post("/activities", json=CUSTOM)).json()
+    far_future = (datetime.date.today() + datetime.timedelta(days=365)).isoformat()
     trip = (await client.post("/trips", json=trip_payload(
         destination="Test City",
-        start_date="2025-06-01",
-        end_date="2029-12-31",   # far future → always active
+        end_date=far_future,
         activities=["test_prop_act"],
     ))).json()
     list_id = trip["packing_lists"][0]["id"]

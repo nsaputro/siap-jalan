@@ -116,6 +116,11 @@ class PackingItemCreate(BaseModel):
         return self
 
 
+class PackingItemBulkCreate(PackingItemCreate):
+    """PackingItemCreate extended with list_id for the bulk-create endpoint."""
+    list_id: int
+
+
 class PackingItemUpdate(BaseModel):
     name: Optional[str] = None
     quantity: Optional[int] = None

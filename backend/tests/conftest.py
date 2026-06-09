@@ -143,10 +143,13 @@ async def db_session():
 
 
 def trip_payload(**overrides: object) -> dict:
+    import datetime
+    start = datetime.date.today() + datetime.timedelta(days=30)
+    end = start + datetime.timedelta(days=6)
     return {
         "destination": "Bali",
-        "start_date": "2025-06-01",
-        "end_date": "2025-06-07",
+        "start_date": start.isoformat(),
+        "end_date": end.isoformat(),
         "traveller_count": 1,
         **overrides,
     }

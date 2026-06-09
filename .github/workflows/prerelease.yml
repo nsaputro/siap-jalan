@@ -7,6 +7,10 @@ permissions:
   contents: write   # push git tag
   packages: write   # push to ghcr.io
 
+concurrency:
+  group: prerelease
+  cancel-in-progress: false
+
 jobs:
   # ── Guard: version must be pre-release and not already released ───────────────
   check-version:
