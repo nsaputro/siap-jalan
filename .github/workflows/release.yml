@@ -133,31 +133,7 @@ jobs:
 
           ---
 
-          ## 🏠 Installation (Home Assistant)
-
-          ### Stable addon
-          1. Go to **Settings → Add-ons → Store → ⋮ → Repositories**
-          2. Add: \`https://github.com/${REPO}\`
-          3. Install **SiapJalan** → Start → open the **SiapJalan** sidebar panel
-
-          ### Dev addon (latest unreleased build)
-          Same repository URL — install **SiapJalan (dev)** from the same store entry.
-
-          ## 🐳 Pre-built images (ghcr.io)
-
-          | Architecture | Stable | Dev |
-          |---|---|---|
-          | amd64   | \`ghcr.io/${REPO}/amd64-siap_jalan:${VERSION}\`   | \`ghcr.io/${REPO}/amd64-siap_jalan_dev:dev\`   |
-          | aarch64 | \`ghcr.io/${REPO}/aarch64-siap_jalan:${VERSION}\` | \`ghcr.io/${REPO}/aarch64-siap_jalan_dev:dev\` |
-
-          ## 🖥️ Standalone (Docker Compose)
-
-          \`\`\`bash
-          git clone https://github.com/${REPO}
-          cp backend/.env.example backend/.env   # add ANTHROPIC_API_KEY
-          docker compose up --build
-          # Frontend: http://localhost:5173  ·  API docs: http://localhost:8000/docs
-          \`\`\`"
+          📖 **[Installation instructions → README](https://github.com/${REPO}#installation)**"
 
   # ── Create post-release PR ────────────────────────────────────────────────────
   create-post-release-pr:
