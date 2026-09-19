@@ -1,0 +1,50 @@
+schema: spec-driven
+
+context: |
+  SiapJalan: Smart Travel Packing Assistant available as Home Assistant add-on and standalone Docker Compose stack.
+  Stack: Python 3.12, FastAPI, SQLAlchemy 2.x (async/aiosqlite), SQLite, React 19 / Vite / Tailwind v4 (standalone frontend), Vanilla JS SPA (ha-addon UI), Anthropic Claude API, Open-Meteo API.
+  Architecture: Standalone app (backend/ + frontend/) and HA addon (ha-addon/). HA ingress requires relative API URLs without leading slashes.
+  Conventions:
+  - Activity-driven packing: merge activity templates with deduplication; template changes propagate to active trips.
+  - Versioning: 3-file convention (ha-addon/NEXT_VERSION, ha-addon/config.yaml, ha-addon-dev/config.yaml).
+  - Git: Feature branches only, PRs targeting main, ci-pass required gate.
+  - Project Board: GitHub Project Kanban board (Backlog -> Ready [must be issue] -> In Progress -> Done).
+
+rules:
+  proposal:
+    - "Be concise: limit proposals to under 250 words using bullet points over prose."
+    - "Omit introductory filler, background fluff, and architecture restatements."
+    - "State 'Why' in 1-2 sentences and list 'What Changes' as concise bullets."
+    - "Set skip_specs: true for changes that do not alter observable system requirements (e.g. pure refactors)."
+    - "Exclude internal class names, algorithms, or implementation details."
+
+  specs:
+    - "State each requirement in 1-2 normative sentences (SHALL/MUST); avoid narrative exposition."
+    - "Keep '## Purpose' between 50-120 characters (concise yet satisfying strict validation)."
+    - "Scenarios must be ultra-compact: exactly 1 WHEN and 1-2 THEN bullet lines (single sentence each)."
+    - "Define only observable inputs, outputs, and behaviors; exclude internal code details, libraries, and class names."
+    - "Omit duplicate or redundant scenarios; cover core happy path and critical boundary/error only."
+
+  design:
+    - "Omit design.md entirely unless the change introduces complex architecture or breaking changes."
+    - "When created, cap design at 300 words using bullet points only."
+    - "Never repeat context or requirements from proposal or specs; use links/references."
+    - "Document only non-obvious technical trade-offs and decisions with 1-sentence rationales."
+
+  tasks:
+    - "Cap task checklists at 3-8 actionable checkboxes formatted as: '- [ ] X.Y Action and inline verification'."
+    - "Merge implementation and verification into a single task line; avoid separate test runner tasks."
+    - "Omit procedural meta-tasks (e.g. 'review code', 'make a plan', 'git commit')."
+    - "No narrative commentary outside headings and checkbox tasks."
+
+operations:
+  apply:
+    guidance:
+      - "Keep progress updates telegraphic (1 sentence per task completed)."
+      - "Do not echo full test logs or entire file contents in progress output."
+      - "Run syntax parsing and tests before marking tasks complete."
+  archive:
+    guidance:
+      - "Provide a 2-3 bullet summary of the archive outcome."
+      - "Verify specs with openspec validate --specs --strict before archiving."
+      - "Update CHANGELOG.md [Unreleased] with a single concise bullet."

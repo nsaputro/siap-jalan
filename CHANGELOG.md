@@ -17,9 +17,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Template editor stale closure**: auto-save on blur now reads `currentTemplate` at call time instead of a captured `tmpl` snapshot, preventing redundant PUT requests and spurious propagation toasts after the first save
 - **Test dates**: `conftest.trip_payload` and `test_propagation._setup` now use relative dates (`today + 30d`) instead of hardcoded 2025/2029 dates
 
+### Added
+- **OpenSpec & AGENTS.md**: Migrated repository to OpenSpec with Antigravity tool support and formal capability specs in `openspec/specs/`; consolidated agent instructions into `AGENTS.md`; migrated roadmap to GitHub Projects Kanban board
+
 ### Changed
-- CI: `permissions: contents: read` added to `ci.yml`; `hadolint` download pinned to v2.12.0 with sha256 verification
+- CI: Added `openspec` validation job and `ci-pass` required gate check to `ci.yml`; restricted `push` trigger solely to `main` to eliminate duplicate runs on feature branches
 - Release/pre-release workflows: `concurrency` groups added to prevent race conditions on simultaneous dispatches
+
+### Removed
+- Removed legacy `CLAUDE.md` and `PROJECT_PLAN.md` in favor of `AGENTS.md` and `openspec/specs/`
 
 ## [0.3.0] - 2026-05-30
 

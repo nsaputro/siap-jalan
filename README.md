@@ -25,6 +25,13 @@ SiapJalan ("Ready to Go" in Indonesian) is a smart travel packing assistant that
 
 ---
 
+## Specifications & Roadmap
+
+- **Core Capabilities**: Baseline behavioral specifications are formalized under [`openspec/specs/`](openspec/specs/).
+- **Project Tracking**: Task planning and progress tracking are managed on the **[SiapJalan GitHub Project Board](https://github.com/users/nsaputro/projects/3)**.
+
+---
+
 ## Installation
 
 ### Home Assistant Addon
@@ -56,11 +63,10 @@ SiapJalan ("Ready to Go" in Indonesian) is a smart travel packing assistant that
 
 ## Development
 
-See [CLAUDE.md](CLAUDE.md) for full development instructions including:
+See [AGENTS.md](AGENTS.md) for full development instructions including:
 
-- Backend (FastAPI + SQLAlchemy) setup
-- Frontend (React 19 + TypeScript + Vite) setup
-- Linting commands
-- Architecture overview (standalone vs HA addon)
-- Git / PR / versioning policy
+- Backend (FastAPI + SQLAlchemy) and frontend (React 19 + TypeScript + Vite) setup
+- Standalone container testing walkthrough (`docker build` / `docker run` with local volume and `options.json`)
+- Spec-driven workflows (`/opsx-propose`, `/opsx-apply`, `/opsx-archive`)
+- Git / PR / three-file versioning policy
 - CI/CD and release workflow
