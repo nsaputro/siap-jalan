@@ -169,11 +169,46 @@ cd frontend && npm test -- --run
 
 ---
 
-## Changelog & Release Workflows
+## Changelog
 
-Every PR changing functionality must update `CHANGELOG.md` under `## [Unreleased]`.
+Follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) categories: `Added`, `Changed`, `Fixed`, `Removed`.
 
-### Workflows in `.github/workflows/`:
+- **Root `CHANGELOG.md`**: Captures all notable repository changes, including user-facing features, developer tooling, OpenSpec specs, and CI infrastructure.
+- **Add-on `ha-addon/CHANGELOG.md` (Rendered in HA UI)**: **User-facing changes only**. This includes both HA UI / add-on configuration changes and user-accessible features such as added or updated trip management, activity templates, AI suggestions, weather integration, and data transfer. Non-user-impacting changes (such as OpenSpec specifications, internal developer docs, agent workflows, and CI refactors) must **never** be added here.
+- **Conciseness & High Signal**: Keep changelog entries compact and high-signal (single-sentence bullet points). Avoid verbose narratives, debugging backstories, and diagnostic transcripts.
+
+---
+
+## CI / Release
+
+Pipelines defined in `.github/workflows/`:
 - **CI** (`ci.yml`): Runs yamllint, hadolint, NEXT_VERSION validation, Python syntax check, OpenSpec validation (`openspec validate --all --strict`), backend pytest, frontend build/test, and Docker build smoke test. Required status check gate: `CI Pass`.
 - **Pre-release** (`prerelease.yml`): Manual dispatch. Builds and publishes `{arch}-siap_jalan_dev:{version}` from `ha-addon-dev/config.yaml` to GHCR.
 - **Release** (`release.yml`): Manual dispatch. Builds stable `{arch}-siap_jalan:{version}`, creates git tag `vX.Y.Z`, publishes GitHub Release, and automatically creates post-release bump PR.
+
+### Pre-Release End-to-End Testing (Dev Channel)
+
+Before cutting any stable release, validate all new features and changes on the dev channel first:
+
+1. **Bump Pre-Release Version**: In your feature PR, ensure `ha-addon-dev/config.yaml` version tracks `{NEXT_VERSION}b{N}` (strictly greater than any existing tags).
+2. **Merge PR**: Merge the feature PR to `main` after CI passes.
+3. **Trigger Pre-Release Workflow**:
+   ```bash
+   gh workflow run prerelease.yml --ref main
+   ```
+   This builds and publishes multi-arch images (`{arch}-siap_jalan_dev:{version}`) to GHCR and tags `v{version}`.
+4. **Upgrade Dev Add-on in Home Assistant**:
+   Reload the repository store and upgrade the dev channel add-on (`siap_jalan_dev`):
+   ```bash
+   ha store reload
+   ha apps update siap_jalan_dev
+   ```
+   *(or in the HA Web UI under Settings → Add-ons → SiapJalan (dev) → Update)*.
+5. **Verify Web UI & Core Features**:
+   - Confirm the container initializes cleanly in add-on logs and SQLite database is mounted at `/data/siapjalan.db`.
+   - Access the dev add-on via Home Assistant Ingress or direct dev port (host port `8100`):
+     ```bash
+     curl -s http://<ha-host>:8100/
+     ```
+   - Test trip creation, activity template selection, packing item toggling, and AI suggestions / weather fetching to confirm end-to-end functionality.
+6. **Cut Stable Release**: Once dev verification is green, trigger the `Release` workflow to publish the stable release.

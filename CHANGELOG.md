@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **OpenSpec & AGENTS.md**: Migrated repository to OpenSpec with Antigravity tool support and formal capability specs in `openspec/specs/`; consolidated agent instructions into `AGENTS.md`; migrated roadmap to GitHub Projects Kanban board
+- Documented two-tier changelog scope rules and dev channel pre-release end-to-end testing workflow in `AGENTS.md`
 
 ### Changed
 - CI: Added `openspec` validation job and `ci-pass` required gate check to `ci.yml`; restricted `push` trigger solely to `main` to eliminate duplicate runs on feature branches
